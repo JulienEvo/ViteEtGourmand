@@ -1,0 +1,41 @@
+// Surcharge des variables Bootstrap
+
+
+// Import de Bootstrap
+@use "bootstrap" with (
+    $primary: #D35400,
+    $secondary: #6C5B7B,
+    $success: #27AE60,
+    $danger: #C0392B,
+    $warning: #F1C40F,
+    $info: #3498DB,
+    $light: #FDF6E3,
+    $dark: #4A4A4A,
+    $black: #202020,
+    $font-family-sans-serif: ("Open Sans", sans-serif)
+);
+
+// CSS perso
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Playfair Display", serif;
+    color: $primary;
+}
+
+.footer {
+    background-color: $dark;
+    color: $light;
+}
+
+.footer a {
+    color: $light;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: $warning;
+}
+
+.footer-title {
+    font-family: "Playfair Display", serif;
+    margin-bottom: 1rem;
+}
