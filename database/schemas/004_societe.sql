@@ -8,6 +8,7 @@ CREATE TABLE societe (
     societe_rcs VARCHAR(64),
     societe_tva VARCHAR(32),
     societe_telephone VARCHAR(32) NOT NULL,
+    societe_email VARCHAR(64) NOT NULL,
     societe_adresse VARCHAR(255) NOT NULL,
     societe_code_postal VARCHAR(32) NOT NULL,
     societe_commune VARCHAR(64) NOT NULL,
@@ -19,11 +20,13 @@ CREATE TABLE societe (
 
 CREATE TABLE horaire (
     horaire_id INT NOT NULL AUTO_INCREMENT,
+    societe_id INt NOT NULL,
     horaire_jour VARCHAR(32) NOT NULL,
     horaire_ouverture TIME NULL,
     horaire_fermeture TIME NULL,
     horaire_ferme BOOLEAN NOT NULL DEFAULT 0,
-    PRIMARY KEY (horaire_id)
+    PRIMARY KEY (horaire_id),
+    INDEX(societe_id)
 );
 
 CREATE TABLE societe_horaire (

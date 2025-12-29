@@ -8,7 +8,7 @@ class DatabaseService
 {
     private PDO $pdo;
 
-    public function __construct(string $databaseUrl)
+    public function __construct()
     {
         $this->pdo = new PDO(
             $_ENV['DATABASE_URL'],

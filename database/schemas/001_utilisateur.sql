@@ -33,9 +33,11 @@ CREATE TABLE utilisateur_role (
 
 CREATE TABLE avis (
     avis_id INT NOT NULL AUTO_INCREMENT,
-    utilisateur_id INT,
+    utilisateur_id INT NOT NULL,
+    avis_note TINYINT(1) NOT NULL COMMENT 'Note de 1 à 5',
     avis_html TEXT NOT NULL,
     avis_valide BOOLEAN NULL COMMENT 'NULL = pas traité; 1 = validé; 0 = refusé',
+    createdAt DATETIME NOT NULL,
     PRIMARY KEY (avis_id),
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
 );

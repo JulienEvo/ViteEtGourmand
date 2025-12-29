@@ -1,20 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}{{ societe.societe_libelle }}{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Traiteur passionné<br> pour vos moments d’exception</h1>
+            <p>Menus faits maison – Événementiel – Commande en ligne</p>
+            <button type="button" class="btn-veg" title="Découvrir nos menus">Découvrir nos menus</button>
+        </div>
+    </section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <section class="bloc-section">
+        <div class="bloc-content">
+            <h1>Une histoire de passion et de goût</h1>
+            <p>
+                Julie et José ont fondé leur service traiteur avec une ambition simple : proposer une cuisine généreuse,
+                élégante et de qualité, adaptée à tous vos événements…
+            </p>
+        </div>
+    </section>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+    <section class="reviews-carousel">
+        <h2>Avis clients vérifiés</h2>
+
+        <div class="carousel">
+            <div class="carousel-track">
+                {% for avis in lastAvis %}
+                    <article class="review-card">
+                        <p class="comment">“{{ avis.avis_html }}”</p>
+
+                        <div class="rating">
+                            {% for i in 1..5 %}
+                                {% if i <= avis.avis_note %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <p class="author">
+                            {{ avis.utilisateur_nom }}
+                            <span class="badge">Avis vérifié</span>
+                        </p>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
 {% endblock %}

@@ -14,56 +14,63 @@ VALUES (
     'France',
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
 VALUES (
+    1,
     'Lundi',
     '09:00:00',
     '23:00:00',
     0
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
 VALUES (
+    1,
     'Mardi',
     '09:00:00',
     '23:00:00',
     0
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
 VALUES (
+    1,
     'Mercredi',
     '09:00:00',
     '23:00:00',
     0
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
 VALUES (
+    1,
     'Jeudi',
     '09:00:00',
     '23:00:00',
     0
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
 VALUES (
+    1,
     'Vendredi',
     '09:00:00',
     '23:00:00',
     0
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
 VALUES (
+    1,
     'Samedi',
     '09:00:00',
     '23:00:00',
     0
 );
 
-INSERT INTO horaire (horaire_jour, horaire_ferme)
+INSERT INTO horaire (societe_id, horaire_jour, horaire_ferme)
 VALUES (
+    1,
     'Dimanche',
     1
 );

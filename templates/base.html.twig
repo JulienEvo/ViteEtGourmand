@@ -2,10 +2,11 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Vite & Gourmand{% endblock %}</title>
+        <title>{% block title %}{{ societe.societe_libelle }}{% endblock %}</title>
 
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+            {{ encore_entry_link_tags('app') }}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
     <body>
