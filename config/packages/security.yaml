@@ -1,0 +1,29 @@
+security:
+    password_hashers:
+        App\Entity\User: 'auto'
+
+    providers:
+        app_user_provider:
+            id: App\Security\UserProvider
+
+    firewalls:
+        main:
+            lazy: true
+            provider: app_user_provider
+            #custom_authenticator: App\Security\UserAuthenticator
+
+            form_login:
+                username_parameter: email
+                password_parameter: password
+                #login_path: login
+                #check_path: login
+                enable_csrf: true
+                csrf_token_id: authenticate
+
+            logout:
+                path: logout
+                target: /
+
+    #access_control:
+        #- { path: ^/admin, roles: ROLE_ADMIN }
+        #- { path: ^/register, roles: PUBLIC_ACCESS }

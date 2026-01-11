@@ -4,7 +4,14 @@ namespace App\Service;
 
 class FonctionsService
 {
-    public function formatTelFr(?string $phone): ?string
+    public static function p($tableau)
+    {
+        echo "<pre>";
+        print_r($tableau);
+        echo "</pre>";
+    }
+
+    public static function formatTelFr(?string $phone): ?string
     {
         if (!$phone) {
             return null;
