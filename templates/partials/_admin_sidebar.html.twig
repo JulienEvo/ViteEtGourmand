@@ -1,0 +1,63 @@
+{% set user = app.session.get('user') %}
+
+<nav class="d-flex flex-column p-3 bg-dark text-white min-vh-100" style="width: 250px;">
+    <h4 class="text-center mb-4">Espace de {{ user.prenom|capitalize }}</h4>
+
+    <ul class="nav nav-pills flex-column gap-1">
+
+        <li class="nav-item">
+            <a href="{{ path('admin_dashboard') }}" class="nav-link {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : 'text-white' }}">
+                <i class="bi bi-bar-chart-line-fill"></i>&emsp;Tableau de bord
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ path('admin_profil_index') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_profil' ? 'active' : 'text-white' }}">
+                <i class="bi bi-person-square"></i>&emsp;Mon profil
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ path('admin_societe_index') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_societe' ? 'active' : 'text-white' }}">
+                <i class="bi bi-info-square-fill"></i>&emsp;Société
+            </a>
+        </li>
+
+        {% if is_admin() %}
+            <li class="nav-item">
+                <a href="{{ path('admin_employe_index') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_employe' ? 'active' : 'text-white' }}">
+                    <i class="bi bi-people-fill"></i>&emsp;Employés
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="nav-item">
+            <a href="{{ path('admin_avis_index') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_avis' ? 'active' : 'text-white' }}">
+                <i class="bi bi-star-fill"></i>&emsp;Avis clients
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ path('admin_menu_index') }}"
+               class="nav-link {{ app.request.get('_route') starts with 'admin_menu' ? 'active' : 'text-white' }}">
+                <i class="bi bi-fork-knife"></i>&emsp;Menus
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="{{ path('admin_commande_index') }}"
+               class="nav-link {{ app.request.get('_route') starts with 'admin_commande' ? 'active' : 'text-white' }}">
+                <i class="bi bi-bag-fill"></i>&emsp;Commandes
+            </a>
+        </li>
+
+        <hr class="text-secondary">
+
+        <li class="nav-item">
+            <a href="{{ path('logout') }}" class="nav-link text-danger">
+                <i class="bi bi-door-closed-fill"></i>&emsp;Déconnexion
+            </a>
+        </li>
+    </ul>
+
+</nav>

@@ -1,0 +1,65 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : Employés{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">
+        <i class="bi bi-people-fill"></i>&nbsp;Employés
+    </h1>
+
+    <a href="{{ path('admin_employe_edit', {id: 0}) }}" class="btn btn-primary mb-3">
+        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un employé
+    </a>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse</th>
+            <th>Code postal</th>
+            <th>Commune</th>
+            <th>Pays</th>
+            <th>Poste</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% set noResult = true %}
+        {% for employe in tabUser %}
+            {% if 'ROLE_EMPLOYE' in employe.roles %}
+                {% set noResult = false %}
+                <tr>
+                    <td>{{ employe.nom }}</td>
+                    <td>{{ employe.prenom }}</td>
+                    <td>{{ employe.email }}</td>
+                    <td>{{ employe.telephone }}</td>
+                    <td>{{ employe.adresse }}</td>
+                    <td>{{ employe.code_postal }}</td>
+                    <td>{{ employe.commune }}</td>
+                    <td>{{ employe.pays }}</td>
+                    <td>{{ employe.poste }}</td>
+                    <td>{{ (employe.actif) ? 'Oui':'Non' }}</td>
+                    <td>
+                        <a href="{{ path('admin_employe_edit', {id: employe.id}) }}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="{{ path('admin_employe_delete', {id: employe.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
+                            <i class="bi bi-trash3-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+
+        {% if noResult %}
+            <tr>
+                <td colspan="11" class="text-center fw-bold">Aucun résultat</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

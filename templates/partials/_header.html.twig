@@ -2,7 +2,14 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" data-bs-theme="dark">
         <div class="container-fluid">
             <h2>
-                <a class="navbar-brand" style="font-size: 24px" href="{{ path('app_home') }}">{{ societe.societe_libelle }}</a>
+                <a class="navbar-brand" style="font-size: 24px" href="{{ path('home') }}">
+                    {% set societe = query_service.getSociete(1) %}
+                    {% if societe %}
+                        {{ societe.libelle }}
+                    {% else %}
+                        {{ "Inconnue" }}
+                    {% endif %}
+                </a>
             </h2>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -10,13 +17,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_home') }}">Accueil</a>
+                        <a class="nav-link" href="{{ path('home') }}">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Menus</a>
+                        <a class="nav-link" href="{{ path('menu_index') }}">Menus</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Connexion/Déconnexion</a>
+                        {% set user = app.session.get('user') %}
+                        {% if user %}
+                            {% if 'ROLE_ADMIN' in user.roles or 'ROLE_EMPLOYE' in user.roles %}
+                                <a class="nav-link" href="{{ path('admin_dashboard') }}">Espace de {{ user.prenom|capitalize }}</a>
+                            {% else %}
+                                <a class="nav-link" href="{{ path('admin_dashboard') }}">Espace de {{ user.prenom }}</a>
+                            {% endif %}
+                        {% else %}
+                            <a class="nav-link" href="{{ path('login') }}">Connexion</a>
+                        {% endif %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contact</a>

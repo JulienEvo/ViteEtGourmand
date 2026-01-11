@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h1 class="text-center mb-4">Connexion</h1>
+
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger text-center">
+                                {{ message }}
+                                <br>
+                                <a href="/register" class="small">Je crée mon compte</a>
+                            </div>
+                        {% endfor %}
+
+                        <form method="post">
+                            <!-- Le token CSRF permet de garantir que la requête provient bien du formulaire généré
+                                 par l’application et non d’un site tiers -->
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ email }}" placeholder="mon_email@email.fr" required autofocus>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    Se connecter
+                                </button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="#" class="small">Mot de passe oublié ?</a><br>
+                                <a href="/register" class="small">Créer un compte ?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

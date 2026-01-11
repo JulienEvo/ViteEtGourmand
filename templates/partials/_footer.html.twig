@@ -1,16 +1,18 @@
-<footer class="footer mt-5">
+{% set societe = query_service.getSociete(1) %}
+
+<footer class="footer">
     <div class="container py-4">
         <div class="row">
 
             <div class="col-md-4 mb-3 text-center">
-                <h5 class="footer-title">{{ societe.societe_libelle }}</h5>
+                <h5 class="footer-title">{{ societe.Libelle }}</h5>
                 <p>
-                    {{ societe.societe_adresse }}<br>
-                    {{ societe.societe_code_postal }} {{ societe.societe_commune }}
+                    {{ societe.adresse }}<br>
+                    {{ societe.code_postal }} {{ societe.commune }}
                 </p>
                 <p>
-                    <i class="bi bi-telephone-fill"></i>&emsp;<a href="tel:0612345678">{{ societe.societe_telephone|formatTelFr }}</a><br>
-                    <i class="bi bi-envelope-at-fill"></i>&emsp;<a href="mailto:contact@viteetgourmand.fr">{{ societe.societe_email }}</a>
+                    <i class="bi bi-telephone-fill"></i>&emsp;<a href="tel:0612345678">{{ societe.telephone|formatTelFr }}</a><br>
+                    <i class="bi bi-envelope-at-fill"></i>&emsp;<a href="mailto:contact@viteetgourmand.fr">{{ societe.email }}</a>
                 </p>
             </div>
 
@@ -18,11 +20,15 @@
                 <h5 class="footer-title">Horaires</h5>
 
                 <ul class="list-unstyled">
-                    {% for horaire in horaires %}
-                        {% if horaire.horaire_ferme %}
-                            <li>{{ horaire.horaire_jour }} : Fermé</li>
+                    {% for horaire in query_service.getHoraire(societe.id) %}
+                        {% if horaire.ferme %}
+                            <li>
+                                {{ horaire.jour }} : Fermé
+                            </li>
                         {% else %}
-                            <li>{{ horaire.horaire_jour }} : {{ horaire.horaire_ouverture }} - {{ horaire.horaire_fermeture }}</li>
+                            <li>
+                                {{ horaire.jour }} : {{ horaire.ouverture|default(null)|date('H:i') }} - {{ horaire.fermeture|default(null)|date('H:i') }}
+                            </li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -45,4 +51,3 @@
         </div>
     </div>
 </footer>
-

@@ -1,13 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ societe.societe_libelle }}{% endblock %}
+{% set societe = query_service.getSociete(1) %}
+
+{% block title %}
+    {% if societe %}
+        {{ societe.libelle }}
+    {% else %}
+        V&G
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <section class="hero-section">
         <div class="hero-content">
             <h1>Traiteur passionné<br> pour vos moments d’exception</h1>
-            <p>Menus faits maison – Événementiel – Commande en ligne</p>
-            <button type="button" class="btn-veg" title="Découvrir nos menus">Découvrir nos menus</button>
+            <p>Plats faits maison – Événementiel – Commande en ligne</p>
+            <button type="button" class="btn btn-primary" title="Découvrir nos menus">Découvrir nos menus</button>
         </div>
     </section>
 
@@ -21,33 +29,15 @@
         </div>
     </section>
 
+    <!--
     <section class="reviews-carousel">
         <h2>Avis clients vérifiés</h2>
 
         <div class="carousel">
             <div class="carousel-track">
-                {% for avis in lastAvis %}
-                    <article class="review-card">
-                        <p class="comment">“{{ avis.avis_html }}”</p>
-
-                        <div class="rating">
-                            {% for i in 1..5 %}
-                                {% if i <= avis.avis_note %}
-                                    ★
-                                {% else %}
-                                    ☆
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-
-                        <p class="author">
-                            {{ avis.utilisateur_nom }}
-                            <span class="badge">Avis vérifié</span>
-                        </p>
-                    </article>
-                {% endfor %}
             </div>
         </div>
     </section>
+    -->
 
 {% endblock %}

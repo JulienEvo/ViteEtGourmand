@@ -2,7 +2,16 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}{{ societe.societe_libelle }}{% endblock %}</title>
+        <title>
+            {% block title %}
+                {% set societe = query_service.getSociete(1) %}
+                {% if societe %}
+                    {{ societe.libelle }}
+                {% else %}
+                    Vite & Gourmand
+                {% endif %}
+            {% endblock %}
+        </title>
 
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
@@ -10,10 +19,31 @@
         {% endblock %}
     </head>
     <body>
-
         {% include 'partials/_header.html.twig' %}
 
+        <script>
+            /**
+             * Affichage d'un flash-message
+             */
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    document.querySelectorAll('.flash-message').forEach(el => {
+                        el.classList.add('fade-out');
+                        setTimeout(() => el.remove(), 500);
+                    });
+                }, 3000); // 3 secondes
+            });
+        </script>
+
         <main>
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="text-center alert alert-{{ label }} flash-message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             {% block body %}{% endblock %}
         </main>
 

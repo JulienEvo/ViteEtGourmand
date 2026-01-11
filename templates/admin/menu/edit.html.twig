@@ -1,0 +1,136 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : édition d'un menu{% endblock %}
+
+{% block body %}
+    {% if menu %}
+        {% set titre = 'Modifier le menu' %}
+        {% set action_path = path('admin_menu_edit', {id: menu.id, redirect: app.request.requestUri}) %}
+    {% else %}
+        {% set titre = 'Ajouter un menu' %}
+        {% set action_path = path('admin_menu_new') %}
+    {% endif %}
+
+
+    <h1>{{ titre }}</h1>
+
+    <form method="post" id="form_menu" action="{{ action_path }}">
+        <input type="hidden" id="id" name="id" value="{{ menu.id ?? 0 }}">
+
+        <div class="card mb-3">
+            <div class="card-header">
+                Informations générales
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="titre" class="form-label">Titre</label>
+                        <input type="text" class="form-control" name="titre" id="titre" value="{{ menu.titre ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="min_personne" class="form-label">Nombre minimum de personne</label>
+                        <input type="number" step="1" min="1" class="form-control" name="min_personne" id="min_personne" value="{{ menu.min_personne ?? 1 }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="tarif_personne" class="form-label">Tarif par personne</label>
+                        <input type="number" step="1" min="0" class="form-control" name="tarif_personne" id="tarif_personne" value="{{ menu.tarif_personne ?? 'nc' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="quantite" class="form-label">Quantité restante</label>
+                        <input type="number" step="1" min="0" class="form-control" name="quantite" id="quantite" value="{{ menu.quantite ?? '0' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" rows="5" name="description" id="description" required>{{ menu.description ?? '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="themes" class="form-label">Thèmes</label>
+                        <select class="form-select" size="5" name="themes[]" id="themes" multiple>
+                            {% for theme in tab_theme %}
+                                <option value="{{ theme.id }}" {% if theme.id in (menu_theme ?? []) %}selected{% endif %}>
+                                    {{ theme.libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="regimes" class="form-label">Régime</label>
+                        <select class="form-select" size="5" name="regimes[]" id="regimes" multiple>
+                            {% for regime in tab_regime %}
+                                <option value="{{ regime.id }}" {% if regime.id in (menu_regime ?? []) %}selected{% endif %}>
+                                    {{ regime.libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="actif_1" class="form-label">Actif</label>
+                        <div>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_1" value="1" {% if (menu.actif ?? 1) %} {{ 'checked' }} {% endif %}>
+
+                            <span>Non :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_0" value="0" {% if not (menu.actif ?? 1) %} {{ 'checked' }} {% endif %}>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                Galerie
+                <a href="{{ path('admin_employe_edit', {id: 0}) }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>&nbsp;Ajouter une photo
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+
+                    <div class="row g-3">
+                        {% for image in menu.images %}
+                            <div class="col-md-3 text-center">
+                                <img
+                                    src="{{ asset('uploads/menus/' ~ image.nom) }}"
+                                    class="img-fluid rounded"
+                                    alt="{{ image.titre ?? '' }}"
+                                >
+
+                                <div class="mt-2">
+                                    <label class="form-check">
+                                        <input
+                                            type="checkbox"
+                                            name="delete_images[]"
+                                            value="{{ image.id }}"
+                                        >
+                                        Supprimer
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('admin_menu_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
+        </div>
+    </form>
+{% endblock %}
+

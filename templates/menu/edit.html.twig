@@ -1,0 +1,18 @@
+{% extends '../base.html.twig' %}
+
+{% block body %}
+    <h1>Modifier le menu</h1>
+
+    <form method="post">
+        <input name="nom" value="{{ menu.nom }}" required>
+        <textarea name="description">{{ menu.description }}</textarea>
+        <input name="prix" type="number" step="0.01" value="{{ menu.prix }}" required>
+
+        <label>
+            Actif
+            <input type="checkbox" name="actif" value="1" {{ menu.actif ? 'checked' }}>
+        </label>
+
+        <button>Enregistrer</button>
+    </form>
+{% endblock %}

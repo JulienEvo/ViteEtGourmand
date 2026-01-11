@@ -1,0 +1,114 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : Employés{% endblock %}
+
+{% block body %}
+    <script src="{{ asset('js/user.js') }}"></script>
+
+    <h1>{{ employe ? 'Modifier' : 'Ajouter' }} un employé</h1>
+
+    <form method="post" action="{{ employe ? path('admin_employe_edit', {id: employe.id}) : path('admin_employe_edit', {id: 0}) }}">
+        <input type="hidden" id="id" name="id" value="{{ employe.id ?? 0 }}">
+        <input type="hidden" id="role" name="role" value="['ROLE_USER', 'ROLE_EMPLOYE']">
+
+        <div class="card mb-3">
+            <div class="card-header">
+                Informations de connexion
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" value="{{ employe.email ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        {% if employe %}
+                            <input type="password" class="form-control" name="password" id="password" value="{{ employe.password ?? '' }}" disabled>
+                        {% else %}
+                            <input type="text" class="form-control" name="password" id="password" value="" disabled>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="actif_1" class="form-label">Actif</label>
+                        <div>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_1" value="1" {% if (employe.actif ?? 1) %} {{ 'checked' }} {% endif %}>
+
+                            <span>Non :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_0" value="0" {% if not (employe.actif ?? 1) %} {{ 'checked' }} {% endif %}>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                Informations générales
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="nom" class="form-label">Nom</label>
+                        <input type="text" class="form-control" name="nom" id="nom"
+                               value="{{ employe.nom ?? '' }}"
+                               {% if not employe %}onkeyup="setPassAuto()" {% endif %}
+                               required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="prenom" class="form-label">Prénom</label>
+                        <input type="text" class="form-control" name="prenom" id="prenom"
+                               value="{{ employe.prenom ?? '' }}"
+                               {% if not employe %}onkeyup="setPassAuto()" {% endif %}
+                               required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="telephone" class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" name="telephone" id="telephone" value="{{ employe.telephone ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="poste" class="form-label">Poste</label>
+                        <input type="text" class="form-control" name="poste" id="poste" value="{{ employe.poste ?? '' }}">
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="adresse" class="form-label">Adresse</label>
+                        <input type="text" class="form-control" name="adresse" id="adresse" value="{{ employe.adresse ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="code_postal" class="form-label">Code postal</label>
+                        <input type="text" class="form-control" name="code_postal" id="code_postal" value="{{ employe.code_postal ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="commune" class="form-label">Commune</label>
+                        <input type="text" class="form-control" name="commune" id="commune" value="{{ employe.commune ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="pays" class="form-label">Pays</label>
+                        <input type="text" class="form-control" name="pays" id="pays" value="{{ employe.pays ?? '' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('admin_employe_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
+        </div>
+    </form>
+{% endblock %}
+

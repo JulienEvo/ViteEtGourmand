@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% set user = app.session.get('user') %}
+
+    <section class="hero-section mb-3">
+        <div class="hero-content">
+            <h1>Nos menus</h1>
+            <p>Plats faits maison – Événementiel – Commande en ligne</p>
+            {% if user %}
+                <a href="{{ path('login') }}">
+                    <button type="button" class="btn btn-primary" title="??">Mettre un lien !</button>
+                </a>
+            {% else %}
+                <a href="{{ path('login', {redirect: app.request.requestUri}) }}">
+                    <button type="button" class="btn btn-primary" title="Se connecter">Se connecter</button>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+
+    <div class="row justify-content-center">
+
+        <div class="col-12 col-md-11">
+
+            <!-- FILTRES DE RECHERCHE -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2>Filtres de recherche</h2>
+
+                    <form method="get" class="row g-2 mb-4">
+                        <div class="col-md-4">
+                            <input type="text" name="term" class="form-control" placeholder="Rechercher un menu" value="{{ (filters.term) ?? '' }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <select name="theme" class="form-select">
+                                <option value="">Toutes thèmes</option>
+                                {% for theme in themes %}
+                                    <option value="{{ theme.id }}"
+                                        {{ filters.theme == theme.id ? 'selected' }}>
+                                        {{ theme.libelle }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <input type="number" name="tarif_max" class="form-control" placeholder="Prix max" value="{{ filters.tarif_max }}">
+                        </div>
+
+                        <div class="col-md-2 form-check mt-2">
+                            <input type="checkbox" class="form-check-input" name="disponible" id="disponible" {{ filters.disponible ? 'checked' }}>
+                            <label for="disponible" class="form-check-label"> Disponible </label>
+                        </div>
+
+                        <div class="col-md-1">
+                            <button class="btn btn-primary w-100">Filtrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- LISTE DES MENUS -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2>Liste des menus : {{ menus|length }} résultat{{ (menus|length > 1) ? 's':'' }}</h2>
+
+                    <div class="row g-3">
+                        {% if menus|length > 0 %}
+                            {% for menu in menus %}
+                                <div class="col-md-3">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <h6>{{ menu.titre }}</h6>
+                                            <p class="fs-4">
+                                                {{ menu.description }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <table class="w-100 text-center">
+                                <tbody>
+                                <tr>
+                                    <td class="border p-3">
+                                        <b>Aucun résultat</b>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
