@@ -1,6 +1,6 @@
--- Société
-INSERT INTO societe (societe_libelle, societe_type, societe_capital, societe_rcs, societe_tva, societe_telephone,
-                     societe_adresse, societe_code_postal, societe_commune, societe_pays)
+/*** SOCIETE ***/
+INSERT INTO societe (libelle, type, capital, rcs, tva, telephone, email,
+                     adresse, code_postal, commune, pays, created_at)
 VALUES (
     'Vite & Gourmand',
     'SAS',
@@ -8,13 +8,16 @@ VALUES (
     'Bordeaux A 123 456 789',
     'FR99887766554',
     '0511223344',
+    'contact@vite_et_gourmand.fr',
     '14 rue des Saveurs',
     '33000',
     'Bordeaux',
     'France',
+    CURRENT_DATE
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+/*** HORAIRES ***/
+INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Lundi',
@@ -23,7 +26,7 @@ VALUES (
     0
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Mardi',
@@ -32,7 +35,7 @@ VALUES (
     0
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Mercredi',
@@ -41,7 +44,7 @@ VALUES (
     0
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Jeudi',
@@ -50,7 +53,7 @@ VALUES (
     0
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Vendredi',
@@ -59,7 +62,7 @@ VALUES (
     0
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ouverture, horaire_fermeture, horaire_ferme)
+INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Samedi',
@@ -68,7 +71,7 @@ VALUES (
     0
 );
 
-INSERT INTO horaire (societe_id, horaire_jour, horaire_ferme)
+INSERT INTO horaire (societe_id, jour, ferme)
 VALUES (
     1,
     'Dimanche',

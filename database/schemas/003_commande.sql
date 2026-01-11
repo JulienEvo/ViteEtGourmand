@@ -1,19 +1,26 @@
 -- Commande
 
 CREATE TABLE commande (
-    commande_id INT NOT NULL AUTO_INCREMENT,
-    utilisateur_id INT NOT NULL,
-    commande_etat_id INT NOT NULL,
-    commande_numero VARCHAR(32),
-    commande_date DATETIME,
-    commande_reduction DATETIME,
-    PRIMARY KEY (commande_id),
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(utilisateur_id) ON DELETE CASCADE
-);
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    etat_id INT NOT NULL,
+    numero VARCHAR(32),
+    date DATETIME,
+    reduction DATETIME,
+    PRIMARY KEY (id),
+    INDEX(user_id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE commande_etat (
-    commande_etat_id INT NOT NULL AUTO_INCREMENT,
-    commande_etat_libelle VARCHAR(32) NOT NULL,
-    PRIMARY KEY (commande_etat_id)
-);
+    id INT NOT NULL AUTO_INCREMENT,
+    libelle VARCHAR(32) NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 

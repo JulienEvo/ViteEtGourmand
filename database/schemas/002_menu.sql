@@ -1,97 +1,147 @@
--- Menu
-
 CREATE TABLE menu (
-    menu_id INT NOT NULL AUTO_INCREMENT,
-    menu_titre VARCHAR(32) NOT NULL,
-    menu_description TEXT NOT NULL,
-    menu_theme VARCHAR(64) NOT NULL,
-    menu_min_personne SMALLINT NOT NULL,
-    menu_tarif_personne DOUBLE NOT NULL,
-    menu_regime VARCHAR(64) NOT NULL,
-    menu_quantite SMALLINT NOT NULL,
-    PRIMARY KEY (menu_id)
-);
-
-CREATE TABLE image (
-    image_id INT NOT NULL AUTO_INCREMENT,
-    image_titre VARCHAR(64) NOT NULL,
-    image_lien VARCHAR(255) NOT NULL,
-    createdAt DATETIME NOT NULL,
-    updatedAt DATETIME NULL,
-    PRIMARY KEY (image_id)
-);
+    id INT NOT NULL AUTO_INCREMENT,
+    titre VARCHAR(32) NOT NULL,
+    description TEXT NOT NULL,
+    theme VARCHAR(64) NOT NULL,
+    min_personne SMALLINT NOT NULL,
+    tarif_personne DOUBLE NOT NULL,
+    regime VARCHAR(64) NOT NULL,
+    quantite SMALLINT NOT NULL,
+    actif BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE menu_image (
+    id INT NOT NULL AUTO_INCREMENT,
     menu_id INT NOT NULL,
-    image_id INT NOT NULL,
-    PRIMARY KEY (menu_id, image_id),
-    FOREIGN KEY (menu_id) REFERENCES menu(menu_id) ON DELETE CASCADE,
-    FOREIGN KEY (image_id) REFERENCES image(image_id) ON DELETE CASCADE
-);
+    nom VARCHAR(64) NOT NULL,
+    titre VARCHAR(64) NOT NULL,
+    PRIMARY KEY (id),
+    INDEX (menu_id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE plat (
-    plat_id INT NOT NULL AUTO_INCREMENT,
-    plat_titre VARCHAR(64) NOT NULL,
-    plat_type_id INT NOT NULL,
+    id INT NOT NULL AUTO_INCREMENT,
+    titre VARCHAR(64) NOT NULL,
+    type_id INT NOT NULL,
     image_id INT NOT NULL,
-    PRIMARY KEY (plat_id)
-);
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE plat_type (
-    plat_type_id INT NOT NULL AUTO_INCREMENT,
-    plat_type_libelle VARCHAR(32) NOT NULL,
-    PRIMARY KEY (plat_type_id)
-);
+    id INT NOT NULL AUTO_INCREMENT,
+    libelle VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE allergene (
-    allergene_id INT NOT NULL AUTO_INCREMENT,
-    allergene_libelle VARCHAR(32) NOT NULL,
-    PRIMARY KEY (allergene_id)
-);
+    id INT NOT NULL AUTO_INCREMENT,
+    libelle VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE conditions (
+    id INT NOT NULL AUTO_INCREMENT,
+    libelle VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE theme (
+    id INT NOT NULL AUTO_INCREMENT,
+    libelle VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE regime (
+    id INT NOT NULL AUTO_INCREMENT,
+    libelle VARCHAR(64) NOT NULL,
+    description TEXT NOT NULL,
+    PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
+
+/*************************************************************************/
 
 CREATE TABLE plat_allergene (
     plat_id INT NOT NULL,
     allergene_id INT NOT NULL,
     PRIMARY KEY (plat_id, allergene_id),
-    FOREIGN KEY (plat_id) REFERENCES plat(plat_id) ON DELETE CASCADE,
-    FOREIGN KEY (allergene_id) REFERENCES allergene(allergene_id) ON DELETE CASCADE
-);
-
-CREATE TABLE conditions (
-    condition_id INT NOT NULL AUTO_INCREMENT,
-    condition_libelle VARCHAR(32) NOT NULL,
-    condition_description TEXT NOT NULL,
-    PRIMARY KEY (condition_id)
-);
+    FOREIGN KEY (plat_id) REFERENCES plat(id) ON DELETE CASCADE,
+    FOREIGN KEY (allergene_id) REFERENCES allergene(id) ON DELETE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE menu_condition (
     menu_id INT NOT NULL,
     condition_id INT NOT NULL,
     PRIMARY KEY (menu_id, condition_id),
-    FOREIGN KEY (menu_id) REFERENCES menu(menu_id) ON DELETE CASCADE,
-    FOREIGN KEY (condition_id) REFERENCES conditions(condition_id) ON DELETE CASCADE
-);
+    FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE,
+    FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE regime (
-    regime_id INT NOT NULL AUTO_INCREMENT,
-    regime_libelle VARCHAR(32) NOT NULL,
-    regime_description TEXT NOT NULL,
-    PRIMARY KEY (regime_id)
-);
+CREATE TABLE menu_theme (
+    menu_id INT NOT NULL,
+    theme_id INT NOT NULL,
+    PRIMARY KEY (menu_id, theme_id),
+    FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE,
+    FOREIGN KEY (theme_id) REFERENCES theme(id) ON DELETE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE menu_regime (
     menu_id INT NOT NULL,
     regime_id INT NOT NULL,
     PRIMARY KEY (menu_id, regime_id),
-    FOREIGN KEY (menu_id) REFERENCES menu(menu_id) ON DELETE CASCADE,
-    FOREIGN KEY (regime_id) REFERENCES regime(regime_id) ON DELETE CASCADE
-);
+    FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE,
+    FOREIGN KEY (regime_id) REFERENCES regime(id) ON DELETE CASCADE
+)
+    ENGINE=InnoDB
+    DEFAULT CHARSET=utf8mb4
+    COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE menu_plat (
     menu_id INT NOT NULL,
     plat_id INT NOT NULL,
     PRIMARY KEY (menu_id, plat_id),
-    FOREIGN KEY (menu_id) REFERENCES menu(menu_id) ON DELETE CASCADE,
-    FOREIGN KEY (plat_id) REFERENCES plat(plat_id) ON DELETE CASCADE
-);
+    FOREIGN KEY (menu_id) REFERENCES menu(id) ON DELETE CASCADE,
+    FOREIGN KEY (plat_id) REFERENCES plat(id) ON DELETE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 
