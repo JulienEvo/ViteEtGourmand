@@ -10,19 +10,16 @@ class MenuRepository
     protected PDO $pdo;
     private MenuThemeRepository $menuThemeRepository;
     private MenuRegimeRepository $menuRegimeRepository;
-    private MenuImageRepository $menuImageRepository;
 
     public function __construct(
         PDO $pdo,
         MenuThemeRepository $menuThemeRepository,
         MenuRegimeRepository $menuRegimeRepository,
-        MenuImageRepository $menuImageRepository
     )
     {
         $this->pdo = $pdo;
         $this->menuThemeRepository = $menuThemeRepository;
         $this->menuRegimeRepository = $menuRegimeRepository;
-        $this->menuImageRepository = $menuImageRepository;
     }
 
     public function insert(array $menu): bool
@@ -61,8 +58,8 @@ class MenuRepository
         return $stmt->execute([
             ':titre' => $menu->getTitre(),
             ':description' => $menu->getDescription(),
-            ':min_personne' => $menu->getMinPersonne(),
-            ':tarif_personne' => $menu->getTarifPersonne(),
+            ':min_personne' => $menu->getMin_personne(),
+            ':tarif_personne' => $menu->getTarif_personne(),
             ':quantite' => $menu->getQuantite(),
             ':actif' => $menu->isActif(),
             ':id' => $id
@@ -96,7 +93,7 @@ class MenuRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findById(int $menu_id)
+    public function findById(int $menu_id): Menu
     {
         $sql = "SELECT *
                 FROM menu
@@ -107,9 +104,8 @@ class MenuRepository
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $themes  = $this->menuThemeRepository->findByMenuId($menu_id);
-        $regimes = $this->menuRegimeRepository->findByMenuId($menu_id);
-        $images  = $this->menuImageRepository->findByMenuId($menu_id);
+        $themes  = $this->menuThemeRepository->findAllByMenuId($menu_id);
+        $regimes = $this->menuRegimeRepository->findAllByMenuId($menu_id);
 
         return new Menu(
             $row['id'],
@@ -121,7 +117,6 @@ class MenuRepository
             $row['actif'],
             $themes,
             $regimes,
-            $images
         );
     }
 

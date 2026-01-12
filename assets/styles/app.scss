@@ -4,12 +4,14 @@
 // Import de Bootstrap
 @use "bootstrap" with (
     $primary: #D35400,
-    $secondary: #6C5B7B,
+    $secondary: #2c3f66,
+    /*
     $success: #27AE60,
     $danger: #C0392B,
     $warning: #F1C40F,
     $info: #3498DB,
     $light: #FDF6E3,
+    */
     $dark: #4A4A4A,
     $black: #202020,
     $font-family-sans-serif: ("Open Sans", sans-serif)
@@ -20,6 +22,14 @@
 h1, h2, h3, h4, h5, h6 {
     font-family: "Playfair Display", serif;
     color: bootstrap.$primary;
+}
+
+.card-header h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+.form-label {
+    font-weight: bold;
 }
 
 .hero-section {

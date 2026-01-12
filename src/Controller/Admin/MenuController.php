@@ -3,11 +3,15 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Menu;
+use App\Entity\MenuImage;
 use App\Repository\GeneriqueRepository;
+use App\Repository\MenuImageRepository;
 use App\Repository\MenuRegimeRepository;
 use App\Repository\MenuRepository;
 use App\Repository\MenuThemeRepository;
+use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,70 +57,136 @@ class MenuController extends AbstractController
         GeneriqueRepository $generiqueRepository,
         MenuThemeRepository $menuThemeRepository,
         MenuRegimeRepository $menuRegimeRepository,
+        MenuImageRepository $menuImageRepository,
         Request $request
     ): Response
     {
+
         // Validation du formulaire
         if ($request->isMethod('POST')) {
+            $erreurs = "";
 
-            $menu = new Menu();
-            $menu->setTitre(trim($request->request->get('titre')));
-            $menu->setDescription(trim($request->request->get('description')));
-            $menu->setMinPersonne(trim($request->request->get('min_personne')));
-            $menu->setTarifPersonne(trim($request->request->get('tarif_personne')));
-            $menu->setQuantite(trim($request->request->get('quantite')));
-            $menu->setActif(trim($request->request->get('actif')));
+            // Récupère les informations du formulaire
+            $menu_theme = $request->request->all('menu_theme');
+            $menu_regime = $request->request->all('menu_regime');
+            $menu_image = $request->files->all('menu_image');
+            $delete_image = $request->request->all('delete_image');
+
+            $menu = new Menu(
+                $id,
+                trim($request->request->get('titre')),
+                trim($request->request->get('description')),
+                trim($request->request->get('min_personne')),
+                trim($request->request->get('tarif_personne')),
+                trim($request->request->get('quantite')),
+                trim($request->request->get('actif')),
+                $menu_theme,
+                $menu_regime,
+            );
 
             // Met à jour le menu
-            $res = $menuRepository->update($id, $menu);
+            if (!$menuRepository->update($id, $menu))
+            {
+                $erreurs .= "Erreur lors de la mise à jour du menu \n";
+            }
 
             // Met à jour les thèmes du menu
-            $menuThemeRepository->insert($id, $request->request->all('themes'));
+            if (!$menuThemeRepository->insert($id, $menu_theme))
+            {
+                $erreurs .= "Erreur lors de la mise à jour des thèmes du menu \n";
+            }
 
             // Met à jour les régimes du menu
-            $menuRegimeRepository->insert($id, $request->request->all('regimes'));
+            if (!$menuRegimeRepository->insert($id, $menu_regime))
+            {
+                $erreurs .= "Erreur lors de la mise à jour des régimes du menu \n";
+            }
 
+            // Met à jour les images du menu
+            //-- Suppression des images
+            $menuImageRepository->delete($delete_image);
 
-            if ($res)
+            //-- Ajout des images
+            foreach ($menu_image as $image)
+            {
+                //*** VERIFICATION DU FICHIER téléchargé ***//
+                $tailleMax = 5 * 1024 * 1024;
+                $extensionsValides = [
+                    'image/jpeg',
+                    'image/png',
+                ];
+
+                // Provenance du fichier
+                if (!$image instanceof UploadedFile) {
+                    continue;
+                }
+                // Téléchargement réussi
+                if (!$image->isValid()) {
+                    $erreurs .= 'Erreur lors de l’envoi du fichier : '.$image->getClientOriginalName();
+                    continue;
+                }
+                // Taille Max
+                if ($image->getSize() > $tailleMax) {
+                    $erreurs .= $image->getClientOriginalName()." dépasse la taille maximale autorisée (5 Mo) \n";
+                    continue;
+                }
+                // Extensions autorisées
+                if (!in_array($image->getMimeType(), $extensionsValides, true)) {
+                    $erreurs .= $image->getClientOriginalName()." : type de fichier non autorisé \n";
+                    continue;
+                }
+
+                // Enregistre le fichier dans le dossier uploads
+                $fichier = uniqid().'.'.$image->guessExtension();
+                $dossier = './documents/menus/'.$menu->getId().'/';
+
+                if (!is_dir($dossier))
+                {
+                    mkdir($dossier, 0775, true);
+                }
+                $image->move($dossier, $fichier);
+
+                // Enregistre l'image en bdd
+                $menuImageRepository->insert(new MenuImage(
+                    0,
+                    $menu->getId(),
+                    $dossier.$fichier,
+                    $image->getClientOriginalName(),
+                ));
+            }
+
+            if ($erreurs == "")
             {
                 $this->addFlash('success', 'Menu modifié avec succès'); // MODIF : Ne marche pas, ajour dans layout.html.twig
-                return $this->redirectToRoute('admin_menu_edit', ['id' => $id]);
             }
             else
             {
-                $this->addFlash('danger', 'Erreur lors de la modification du menu');
-                return $this->redirectToRoute('admin_menu_index');
+                $this->addFlash('danger', $erreurs);
             }
+
+            return $this->redirectToRoute('admin_menu_edit', ['id' => $id]);
         }
 
         // Récupère le menu par son ID
         $menu = $menuRepository->findById($id);
 
-        /*
-        // Récupère les thèmes du menu
-        $menu_theme = $menuThemeRepository->findAll(" AND menu_id = :menu_id", ["menu_id" => $id]);
-
-        // Récupère les régimes du menu
-        $menu_regime = $menuRegimeRepository->findAll(" AND menu_id = :menu_id", ["menu_id" => $id]);
-
         // Récupère les images du menu
-        */
+        $images = $menuImageRepository->findByMenuId($menu->getId());
+
 
         // Récupère la liste de thèmes => MODIF : ajouter champs Actif
-        $tab_theme = $generiqueRepository->findAll('theme');
+        $tab_themes = $generiqueRepository->findAll('theme');
 
         // Récupère la liste de régime => MODIF : ajouter champs Actif
-        $tab_regime = $generiqueRepository->findAll('regime');
+        $tab_regimes = $generiqueRepository->findAll('regime');
 
         // Affiche le menu
         return $this->render('admin/menu/edit.html.twig', [
             'id' => $id,
             'menu' => $menu,
-            'menu_themes' => $menu->getThemes(),
-            'menu_regimes' => $menu->getRegime(),
-            'menu_images' => $menu->getImages(),
-            'tab_theme' => $tab_theme,
-            'tab_regime' => $tab_regime,
+            'images' => $images,
+            'tab_themes' => $tab_themes,
+            'tab_regimes' => $tab_regimes,
         ]);
     }
 

@@ -18,7 +18,7 @@ class MenuRegimeRepository
 
         foreach ($tab_regime as $regime_id)
         {
-            $sql = "INSERT INTO {$this->table} (menu_id, regime_id)
+            $sql = "INSERT INTO menu_regime (menu_id, regime_id)
                     VALUES (:menu_id, :regime_id)";
             $stmt = $this->pdo->prepare($sql);
 
@@ -38,22 +38,29 @@ class MenuRegimeRepository
 
     public function delete(int $menu_id): bool
     {
-        $sql = "DELETE FROM {$this->table} WHERE menu_id = :menu_id";
+        $sql = "DELETE FROM menu_regime WHERE menu_id = :menu_id";
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute(['menu_id' => $menu_id]);
     }
 
-    public function findByMenuId($menu_id): array
+    public function findAllByMenuId($menu_id): array
     {
-        $sql = "SELECT *
+        $retour = [];
+
+        $sql = "SELECT regime_id
                 FROM menu_regime
                 WHERE menu_id = :menu_id";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['menu_id' => $menu_id]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        while ($row = $stmt->fetch())
+        {
+            $retour[] = $row['regime_id'];
+        }
+
+        return $retour;
     }
 
 }

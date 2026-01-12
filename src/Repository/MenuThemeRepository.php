@@ -19,7 +19,7 @@ class MenuThemeRepository
 
         foreach ($tab_theme as $theme_id)
         {
-            $sql = "INSERT INTO {$this->table} (menu_id, theme_id)
+            $sql = "INSERT INTO menu_theme (menu_id, theme_id)
                 VALUES (:menu_id, :theme_id)";
             $stmt = $this->pdo->prepare($sql);
 
@@ -39,22 +39,29 @@ class MenuThemeRepository
 
     public function delete(int $menu_id): bool
     {
-        $sql = "DELETE FROM {$this->table} WHERE menu_id = :menu_id";
+        $sql = "DELETE FROM menu_theme WHERE menu_id = :menu_id";
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute(['menu_id' => $menu_id]);
     }
 
-    public function findByMenuId($menu_id): array
+    public function findAllByMenuId($menu_id): array
     {
-        $sql = "SELECT *
+        $retour = [];
+
+        $sql = "SELECT theme_id
                 FROM menu_theme
                 WHERE menu_id = :menu_id";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['menu_id' => $menu_id]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        while ($row = $stmt->fetch())
+        {
+            $retour[] = $row['theme_id'];
+        }
+
+        return $retour;
     }
 
 }

@@ -2,47 +2,40 @@
 
 namespace App\Entity;
 
-use App\Repository\MenuImageRepository;
-use App\Repository\MenuRegimeRepository;
-use App\Repository\MenuThemeRepository;
-
 class Menu
 {
     private int $id;
     private string $titre;
     private string $description;
-    private int $minPersonne;
-    private float $tarifPersonne;
+    private int $min_personne;
+    private float $tarif_personne;
     private int $quantite;
     private array $themes;
     private array $regimes;
-    private array $images;
     private bool $actif;
 
     public function __construct(
         int $id,
         string $titre,
         string $description,
-        int $minPersonne,
-        float $tarifPersonne,
+        int $min_personne,
+        float $tarif_personne,
         int $quantite,
         bool $actif,
-        array $menu_themes,
-        array $menu_regime,
-        array $menu_images
+        array $themes,
+        array $regime
     )
     {
         $this->setId($id);
         $this->setTitre($titre);
         $this->setDescription($description);
-        $this->setMinPersonne($minPersonne);
-        $this->setTarifPersonne($tarifPersonne);
+        $this->setmin_personne($min_personne);
+        $this->settarif_personne($tarif_personne);
         $this->setQuantite($quantite);
         $this->setActif($actif);
 
-        $this->setThemes($menu_themes);
-        $this->setRegime($menu_regime);
-        $this->setImages($menu_images);
+        $this->setThemes($themes);
+        $this->setRegimes($regime);
     }
 
     public function getId(): int
@@ -57,27 +50,23 @@ class Menu
     {
         return $this->description;
     }
-    public function getMinPersonne(): int
+    public function getMin_personne(): int
     {
-        return $this->minPersonne;
+        return $this->min_personne;
     }
-    public function getTarifPersonne(): float
+    public function getTarif_personne(): float
     {
-        return $this->tarifPersonne;
+        return $this->tarif_personne;
     }
     public function getQuantite(): int
     {
         return $this->quantite;
     }
-    public function getImages(): array
-    {
-        return $this->images;
-    }
     public function getThemes(): array
     {
         return $this->themes;
     }
-    public function getRegime(): array
+    public function getRegimes(): array
     {
         return $this->regimes;
     }
@@ -98,27 +87,23 @@ class Menu
     {
         $this->description = $description;
     }
-    public function setMinPersonne(int $minPersonne): void
+    public function setMin_personne(int $min_personne): void
     {
-        $this->minPersonne = $minPersonne;
+        $this->min_personne = $min_personne;
     }
-    public function setTarifPersonne(float $tarifPersonne): void
+    public function setTarif_personne(float $tarif_personne): void
     {
-        $this->tarifPersonne = $tarifPersonne;
+        $this->tarif_personne = $tarif_personne;
     }
     public function setQuantite(int $quantite): void
     {
         $this->quantite = $quantite;
     }
-    public function setImages(array $tab_images): void
-    {
-        $this->images = $tab_images;
-    }
     public function setThemes(array $tab_theme): void
     {
         $this->themes = $tab_theme;
     }
-    public function setRegime(array $tab_regime): void
+    public function setRegimes(array $tab_regime): void
     {
         $this->regimes = $tab_regime;
     }

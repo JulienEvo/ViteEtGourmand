@@ -2,9 +2,9 @@ CREATE TABLE menu (
     id INT NOT NULL AUTO_INCREMENT,
     titre VARCHAR(32) NOT NULL,
     description TEXT NOT NULL,
-    theme VARCHAR(64) NOT NULL,
     min_personne SMALLINT NOT NULL,
     tarif_personne DOUBLE NOT NULL,
+    theme VARCHAR(64) NOT NULL,
     regime VARCHAR(64) NOT NULL,
     quantite SMALLINT NOT NULL,
     actif BOOLEAN NOT NULL DEFAULT TRUE,
@@ -17,7 +17,7 @@ COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE menu_image (
     id INT NOT NULL AUTO_INCREMENT,
     menu_id INT NOT NULL,
-    nom VARCHAR(64) NOT NULL,
+    fichier VARCHAR(64) NOT NULL,
     titre VARCHAR(64) NOT NULL,
     PRIMARY KEY (id),
     INDEX (menu_id)
