@@ -1,5 +1,4 @@
--- Infos société
-
+#--- SOCIETE ---#
 CREATE TABLE societe (
     id INT NOT NULL AUTO_INCREMENT,
     libelle VARCHAR(64) NOT NULL,
@@ -22,6 +21,8 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 
+
+#--- HORAIRE ---#
 CREATE TABLE horaire (
     id INT NOT NULL AUTO_INCREMENT,
     societe_id INT NOT NULL,
@@ -35,6 +36,10 @@ CREATE TABLE horaire (
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
+
+
+/*** JOINTURES ***/
+
 
 CREATE TABLE societe_horaire (
     societe_id INT NOT NULL,

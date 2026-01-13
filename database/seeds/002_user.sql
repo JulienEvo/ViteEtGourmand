@@ -30,3 +30,6 @@ VALUES (
     'Administrateur',
     CURRENT_DATE
 );
+
+
+/*** AVIS ***/

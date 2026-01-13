@@ -1,5 +1,4 @@
--- Commande
-
+#--- COMMANDE ---#
 CREATE TABLE commande (
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -14,6 +13,8 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 
+
+#--- COMMANDE_ETAT ---#
 CREATE TABLE commande_etat (
     id INT NOT NULL AUTO_INCREMENT,
     libelle VARCHAR(32) NOT NULL,
