@@ -2,40 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\PlatType;
 use PDO;
 
-class PlatTypeRepository extends BaseRepository
+class PlatTypeRepository
 {
-    protected string $table = 'plat_type';
+    protected PDO $pdo;
 
-    protected function map(array $row): PlatType
+    public function __construct(PDO $pdo)
     {
-        return new PlatType(
-            (int)$row['id'],
-            $row['libelle']
-        );
+        $this->pdo = $pdo;
     }
 
-    public function insert(PlatType $type): bool
+    public function findAll(): array
     {
-        $sql = "INSERT INTO {$this->table} (libelle)
-                VALUES (:libelle)";
+        $sql = "SELECT *
+                FROM plat_type";
+
         $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
 
-        return $stmt->execute(['libelle' => $type->getLibelle()]);
+        return $stmt->fetchAll();
     }
 
-    public function update(PlatType $type): bool
-    {
-        $sql = "UPDATE {$this->table}
-                SET libelle=:libelle
-                WHERE id=:id";
-        $stmt = $this->pdo->prepare($sql);
-
-        return $stmt->execute([
-            'libelle' => $type->getLibelle(),
-            'id' => $type->getId()
-        ]);
-    }
 }

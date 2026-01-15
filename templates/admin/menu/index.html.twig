@@ -7,19 +7,19 @@
         <i class="bi bi-people-fill"></i>&nbsp;Menus
     </h1>
 
-    <a href="{{ path('admin_employe_edit', {id: 0}) }}" class="btn btn-primary mb-3">
+    <a href="{{ path('admin_menu_edit', {id: 0}) }}" class="btn btn-primary mb-3">
         <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un menu
     </a>
 
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Titre</th>
+            <th>Libellé</th>
             <th>Description</th>
-            <th>thème</th>
+            <th>thèmes</th>
+            <th>Regimes</th>
             <th>Min personne</th>
             <th>Tarif / Personne</th>
-            <th>Regime</th>
             <th>Quantité</th>
             <th>Actif</th>
             <th>Actions</th>
@@ -29,12 +29,12 @@
         {% if tabMenu|length > 0 %}
             {% for menu in tabMenu %}
                 <tr>
-                    <td>{{ menu.titre }}</td>
+                    <td>{{ menu.libelle }}</td>
                     <td>{{ menu.description }}</td>
-                    <td>{{ menu.theme }}</td>
+                    <td>{{ menu.themes }}</td>
+                    <td>{{ menu.regimes }}</td>
                     <td>{{ menu.min_personne }}</td>
                     <td>{{ menu.tarif_personne }}</td>
-                    <td>{{ menu.regime }}</td>
                     <td>{{ menu.quantite }}</td>
                     <td>{{ (menu.actif) ? 'Oui':'Non' }}</td>
                     <td>
@@ -42,14 +42,14 @@
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="{{ path('admin_menu_delete', {id: menu.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
-                            <i class="bi bi-trash3-fill"></i>
+                            <i class="bi bi-trash"></i>
                         </a>
                     </td>
                 </tr>
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="11" class="text-center fw-bold">Aucun résultat</td>
+                <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
             </tr>
         {% endif %}
         </tbody>

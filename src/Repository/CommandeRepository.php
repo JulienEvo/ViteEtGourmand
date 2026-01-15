@@ -6,25 +6,18 @@ use App\Entity\Commande;
 use PDO;
 use DateTime;
 
-class CommandeRepository extends BaseRepository
+class CommandeRepository
 {
-    protected string $table = 'commande';
+    protected PDO $pdo;
 
-    protected function map(array $row): Commande
+    public function __construct(PDO $pdo)
     {
-        return new Commande(
-            (int)$row['id'],
-            (int)$row['utilisateur_id'],
-            (int)$row['etat_id'],
-            $row['numero'],
-            $row['date'] ? new DateTime($row['date']) : null,
-            $row['reduction'] ? new DateTime($row['reduction']) : null
-        );
+        $this->pdo = $pdo;
     }
 
     public function insert(Commande $commande): bool
     {
-        $sql = "INSERT INTO {$this->table} (utilisateur_id, etat_id, numero, date, reduction)
+        $sql = "INSERT INTO commande (user_id, etat_id, numero, date, reduction)
                 VALUES (:uid, :etat, :numero, :date, :reduction)";
         $stmt = $this->pdo->prepare($sql);
 
@@ -39,8 +32,8 @@ class CommandeRepository extends BaseRepository
 
     public function update(Commande $commande): bool
     {
-        $sql = "UPDATE {$this->table}
-                SET utilisateur_id=:uid, etat_id=:etat, numero=:numero, date=:date, reduction=:reduction
+        $sql = "UPDATE commande
+                SET user_id=:uid, etat_id=:etat, numero=:numero, date=:date, reduction=:reduction
                 WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
 

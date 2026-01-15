@@ -3,29 +3,20 @@
 namespace App\Repository;
 
 use App\Entity\Avis;
-use App\Service\FonctionsService;
 use PDO;
-USE DateTime;
 
-class AvisRepository extends BaseRepository
+class AvisRepository
 {
-    protected string $table = 'avis';
+    protected PDO $pdo;
 
-    protected function map(array $row): Avis
+    public function __construct(PDO $pdo)
     {
-        return new Avis(
-            (int)$row['id'],
-            (int)$row['utilisateur_id'],
-            (int)$row['note'],
-            $row['commentaire'],
-            isset($row['valide']) ? (bool)$row['valide'] : null,
-            new DateTime($row['created_at'])
-        );
+        $this->pdo = $pdo;
     }
 
     public function insert(Avis $avis): bool
     {
-        $sql = "INSERT INTO {$this->table}
+        $sql = "INSERT INTO avis
                     (utilisateur_id, note, commentaire, valide, created_at)
                 VALUES
                     (:uid, :note, :commentaire, :valide, :created)";
@@ -42,7 +33,7 @@ class AvisRepository extends BaseRepository
 
     public function update(Avis $avis): bool
     {
-        $sql = "UPDATE {$this->table}
+        $sql = "UPDATE avis
                 SET note=:note, commentaire=:commentaire, valide=:valide
                 WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
@@ -68,9 +59,7 @@ class AvisRepository extends BaseRepository
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
 
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map([$this, 'map'], $rows);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 }

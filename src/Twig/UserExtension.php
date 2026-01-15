@@ -14,6 +14,7 @@ class UserExtension extends AbstractExtension
     {
         return [
             new TwigFunction('is_admin', [$this, 'isAdmin']),
+            new TwigFunction('is_employe', [$this, 'isEmploye']),
         ];
     }
 
@@ -27,5 +28,17 @@ class UserExtension extends AbstractExtension
         }
 
         return in_array('ROLE_ADMIN', $user['roles'], true);
+    }
+
+    public function isEmploye(): bool
+    {
+        $session = $this->requestStack->getSession();
+        $user = $session->get('user');
+
+        if (!$user || !isset($user['roles'])) {
+            return false;
+        }
+
+        return in_array('ROLE_EMPLOYE', $user['roles'], true);
     }
 }

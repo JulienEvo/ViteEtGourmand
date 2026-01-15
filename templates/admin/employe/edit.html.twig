@@ -5,15 +5,23 @@
 {% block body %}
     <script src="{{ asset('js/user.js') }}"></script>
 
-    <h1>{{ employe ? 'Modifier' : 'Ajouter' }} un employé</h1>
+    {% if employe %}
+        {% set titre = 'Modifier un employé' %}
+        {% set action_path = path('admin_employe_edit', {id: employe.id}) %}
+    {% else %}
+        {% set titre = 'Ajouter un employé' %}
+        {% set action_path = path('admin_employe_edit', {id: 0}) %}
+    {% endif %}
 
-    <form method="post" action="{{ employe ? path('admin_employe_edit', {id: employe.id}) : path('admin_employe_edit', {id: 0}) }}">
+    <h1>{{ titre }}</h1>
+
+    <form method="post" action="{{ action_path }}">
         <input type="hidden" id="id" name="id" value="{{ employe.id ?? 0 }}">
         <input type="hidden" id="role" name="role" value="['ROLE_USER', 'ROLE_EMPLOYE']">
 
         <div class="card mb-3">
             <div class="card-header">
-                Informations de connexion
+                <h4>Informations de connexion</h4>
             </div>
             <div class="card-body">
                 <div class="row col-12">
@@ -24,18 +32,14 @@
 
                     <div class="mb-3 col-12 col-lg-4">
                         <label for="password" class="form-label">Mot de passe</label>
-                        {% if employe %}
-                            <input type="password" class="form-control" name="password" id="password" value="{{ employe.password ?? '' }}" disabled>
-                        {% else %}
-                            <input type="text" class="form-control" name="password" id="password" value="" disabled>
-                        {% endif %}
+                        <input type="password" class="form-control" name="password" id="password" value="{{ employe.password ?? '' }}" {% if employe %} {{ 'disabled' }} {% endif %}>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-4">
                         <label for="actif_1" class="form-label">Actif</label>
                         <div>
                             <span>Oui :&nbsp;</span>
-                            <input type="radio" name="actif" id="actif_1" value="1" {% if (employe.actif ?? 1) %} {{ 'checked' }} {% endif %}>
+                            <input type="radio" name="actif" id="actif_1" value="1" {% if (employe.actif == 1) %} {{ 'checked' }} {% endif %}>
 
                             <span>Non :&nbsp;</span>
                             <input type="radio" name="actif" id="actif_0" value="0" {% if not (employe.actif ?? 1) %} {{ 'checked' }} {% endif %}>
@@ -47,7 +51,7 @@
 
         <div class="card mb-3">
             <div class="card-header">
-                Informations générales
+                <h4>Informations générales</h4>
             </div>
             <div class="card-body">
                 <div class="row col-12">

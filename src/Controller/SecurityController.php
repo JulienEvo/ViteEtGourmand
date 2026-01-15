@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,10 +41,11 @@ class SecurityController extends AbstractController
                 $session->set('user', $userData);
 
                 $redirect = str_replace('/', '', $this->getTargetPath($request->getSession(), 'main'));
-                if ($redirect == '')
+
+                if ($redirect == '' || $redirect == 'home')
                 {
                     $redirect = 'home';
-                }
+                } else
                 {
                     $redirect .= '_index';
                 }

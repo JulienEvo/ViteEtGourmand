@@ -5,11 +5,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Allergene;
-use App\Entity\CommandeEtat;
-use App\Entity\PlatType;
-use App\Entity\Regime;
-use App\Repository\BaseRepository;
 use App\Repository\GeneriqueRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

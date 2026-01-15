@@ -5,7 +5,7 @@ namespace App\Entity;
 class Menu
 {
     private int $id;
-    private string $titre;
+    private string $libelle;
     private string $description;
     private int $min_personne;
     private float $tarif_personne;
@@ -16,7 +16,7 @@ class Menu
 
     public function __construct(
         int $id,
-        string $titre,
+        string $libelle,
         string $description,
         int $min_personne,
         float $tarif_personne,
@@ -27,7 +27,7 @@ class Menu
     )
     {
         $this->setId($id);
-        $this->setTitre($titre);
+        $this->setLibelle($libelle);
         $this->setDescription($description);
         $this->setmin_personne($min_personne);
         $this->settarif_personne($tarif_personne);
@@ -42,9 +42,9 @@ class Menu
     {
         return $this->id;
     }
-    public function getTitre(): string
+    public function getLibelle(): string
     {
-        return $this->titre;
+        return $this->libelle;
     }
     public function getDescription(): string
     {
@@ -79,9 +79,9 @@ class Menu
     {
         $this->id = $id;
     }
-    public function setTitre(string $titre): void
+    public function setLibelle(string $libelle): void
     {
-        $this->titre = $titre;
+        $this->libelle = $libelle;
     }
     public function setDescription(string $description): void
     {

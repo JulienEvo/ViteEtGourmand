@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\FonctionsService;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,48 +31,48 @@ class EmployeController extends AbstractController
             $nom = trim($request->request->get('nom'));
             $prenom = trim($request->request->get('prenom'));
             $email = trim($request->request->get('email'));
-            $password = trim($request->request->get('password'));
-            if (empty($id))
+            $password = password_hash(trim($request->request->get('password')), PASSWORD_DEFAULT);
+
+            $employe = new User(
+                $id,
+                ['ROLE_USER', 'ROLE_EMPLOYE'],
+                $email,
+                $password,
+                $prenom,
+                $nom,
+                trim($request->request->get('telephone')),
+                trim($request->request->get('adresse')),
+                trim($request->request->get('code_postal')),
+                trim($request->request->get('commune')),
+                trim($request->request->get('pays')),
+                trim($request->request->get('poste')),
+                $request->request->get('actif'),
+                new DateTime(),
+                new DateTime(),
+            );
+
+            if ($id == 0)
             {
-                // Nouvel employé : MdP par défaut = nom-prénom
-                $password = password_hash($nom.'-'.$prenom, PASSWORD_DEFAULT);
+                //*** INSERT ***//
+                $ret = $userRepository->insert($employe);
+                if (!is_array($ret) )
+                {
+                    $id = $ret;
+                    $this->addFlash('success', 'Employé ajouté avec succès');
+                }
+                else
+                {
+                    $this->addFlash('danger', "Erreur lors de l'ajout de l'employé : ".$ret['message'] );
+                }
             }
-
-            $employe = new User();
-            $employe->setId($id);
-            $employe->setroles(['ROLE_USER', 'ROLE_EMPLOYE']);
-            $employe->setemail($email);
-            $employe->setpassword($password);
-            $employe->setprenom($prenom);
-            $employe->setnom($nom);
-            $employe->settelephone(trim($request->request->get('telephone')));
-            $employe->setadresse(trim($request->request->get('adresse')));
-            $employe->setcode_postal(trim($request->request->get('code_postal')));
-            $employe->setcommune(trim($request->request->get('commune')));
-            $employe->setpays(trim($request->request->get('pays')));
-            $employe->setposte(trim($request->request->get('poste')));
-            $employe->setactif(trim($request->request->get('actif')));
-
-            if ($id) {
-                //-- UPDATE --//
-
+            else
+            {
+                //*** UPDATE ***//
                 $userRepository->update($employe);
                 $this->addFlash('success', 'Employé modifié avec succès');
-            } else {
-                //-- CREATE --//
-
-                // Pas de doublons de comptes avec le même email
-                if ($userRepository->findByEmail($email) != null)
-                {
-                    $this->addFlash('danger', 'un compte existe déjà avec cet email');
-                    return $this->redirectToRoute('login', ['email' => $email]);
-                }
-
-                $userRepository->insert($employe);
-                $this->addFlash('success', 'Employé ajouté avec succès');
             }
 
-            return $this->redirectToRoute('admin_employe_index');
+            return $this->redirectToRoute('admin_employe_edit', ['id' => $id]);
         }
 
         // Récupère l'employé par son ID
@@ -84,16 +85,19 @@ class EmployeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete')]
     public function delete(int $id, UserRepository $userRepository): Response
     {
-        if ($userRepository->delete($id))
+        //= À TESTER avec erreur
+        $ret = $userRepository->delete($id);
+
+        if ($ret)
             {
                 $this->addFlash('success', 'Employé supprimé avec succès');
             }
         else
             {
-                $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement');
+                $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement : '.$ret);
             }
 
         return $this->redirectToRoute('admin_employe_index');

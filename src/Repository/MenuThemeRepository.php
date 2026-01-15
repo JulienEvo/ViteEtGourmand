@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Service\FonctionsService;
 use PDO;
 
 class MenuThemeRepository
@@ -45,7 +46,7 @@ class MenuThemeRepository
         return $stmt->execute(['menu_id' => $menu_id]);
     }
 
-    public function findAllByMenuId($menu_id): array
+    public function findAllIdByMenuId($menu_id): array
     {
         $retour = [];
 
@@ -59,6 +60,26 @@ class MenuThemeRepository
         while ($row = $stmt->fetch())
         {
             $retour[] = $row['theme_id'];
+        }
+
+        return $retour;
+    }
+
+    public function findAllLibelleByMenuId($menu_id): array
+    {
+        $retour = [];
+
+        $sql = "SELECT theme.libelle
+                FROM theme
+                INNER JOIN menu_theme ON menu_theme.theme_id = theme.id
+                WHERE menu_theme.menu_id = :menu_id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['menu_id' => $menu_id]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $retour[] = $row['libelle'];
         }
 
         return $retour;

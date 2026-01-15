@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Service\FonctionsService;
 use PDO;
 use DateTime;
 
@@ -10,35 +11,12 @@ class UserRepository
 {
     protected PDO $pdo;
 
-    /*
-    protected function map(array $row): User
-    {
-        $user = new User();
-        $user->setId($row['id']);
-        $user->setRoles(json_decode($row['roles'], true));
-        $user->setEmail($row['email']);
-        $user->setPassword($row['password']);
-        $user->setNom($row['nom']);
-        $user->setPrenom($row['prenom']);
-        $user->setTelephone($row['telephone']);
-        $user->setAdresse($row['adresse']);
-        $user->setCode_postal($row['code_postal']);
-        $user->setCommune($row['commune']);
-        $user->setPays($row['pays']);
-        $user->setPoste(($row['poste'] != null) ? $row['poste'] : "",);
-        $user->setActif($row['actif'],);
-        $user->setUpdatedAt($row['updated_at'] ? new DateTime($row['updated_at']) : null);
-
-        return $user;
-    }
-    */
-
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    public function insert(User $user): bool
+    public function insert(User $user): int|array
     {
         $sql = "INSERT INTO utilisateur
                     (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, poste, created_at)
@@ -46,7 +24,7 @@ class UserRepository
                     (:roles, :email, :password, :prenom, :nom, :telephone, :adresse, :code_postal, :commune, :pays, :poste, :created_at)";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([
+        if ($stmt->execute([
             'roles' => json_encode($user->getRoles()),
             'email' => $user->getEmail(),
             'password' => $user->getPassword(),
@@ -59,10 +37,17 @@ class UserRepository
             'pays' => $user->getPays(),
             'poste' => $user->getPoste(),
             'created_at' => date('Y-m-d H:i:s') //$user->getCreatedAt()->format('Y-m-d H:i:s')
-        ]);
+        ]))
+        {
+            return $this->pdo->lastInsertId();
+        }
+        else{
+            return $stmt->errorInfo();
+        }
     }
 
-    public function update(User $user): bool
+    public function update(User $user): bool|array
+
     {
         $sql = "UPDATE utilisateur
                 SET roles=:roles, email=:email, password=:password, prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
@@ -70,7 +55,7 @@ class UserRepository
                 WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([
+        if ($stmt->execute([
             'roles' => json_encode($user->getRoles()),
             'email' => $user->getEmail(),
             'password' => $user->getPassword(),
@@ -85,7 +70,29 @@ class UserRepository
             'actif' => $user->getActif(),
             'updated' => date('Y-m-d'),
             'id' => $user->getId()
-        ]);
+        ]))
+        {
+            return true;
+        }
+        else
+        {
+            return $stmt->errorInfo();
+        }
+    }
+
+    public function delete(int $id): bool|array
+    {
+        $sql = "DELETE FROM utilisateur WHERE id=:id";
+        $stmt = $this->pdo->prepare($sql);
+
+        if ($stmt->execute(['id' => $id]))
+        {
+            return true;
+        }
+        else
+        {
+            return $stmt->errorInfo();
+        }
     }
 
     public function findAll(): array
@@ -100,8 +107,10 @@ class UserRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findById(int $utilisateur_id): User
+    public function findById(int $utilisateur_id): User|null
     {
+        $utilisateur = null;
+
         $sql = "SELECT *
                 FROM utilisateur
                 WHERE id = :utilisateur_id";
@@ -109,7 +118,30 @@ class UserRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':utilisateur_id' => $utilisateur_id]);
 
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        if ($stmt->rowCount() > 0)
+        {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $utilisateur = new User(
+                (int)$row['id'],
+                json_decode($row['roles']),
+                $row['email'],
+                $row['password'],
+                $row['prenom'],
+                $row['nom'],
+                $row['telephone'],
+                $row['adresse'],
+                $row['code_postal'],
+                $row['commune'],
+                $row['pays'],
+                $row['poste'],
+                $row['actif'],
+                new DateTime($row['created_at']),
+                new DateTime($row['updated_at']),
+            );
+        }
+
+        return $utilisateur;
     }
 
     public function findByEmail(string $email): ?User
@@ -137,7 +169,7 @@ class UserRepository
             $row['pays'],
             $row['poste'],
             $row['actif'],
-            new DateTime($row['cereated_at']),
+            new DateTime($row['created_at']),
             new DateTime($row['updated_at'])
         );
     }

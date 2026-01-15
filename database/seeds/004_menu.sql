@@ -21,8 +21,46 @@ INSERT INTO regime (libelle, description) VALUES ('Faible en calories', '');
 
 
 /*** MENUS ***/
-INSERT INTO menu (titre, description, conditions, min_personne, tarif_personne, quantite, actif)
-VALUES ('Végétarien', 'Végétarien', 'Conditions : à conserver au frais', '2', '30', '10', '1');
+INSERT INTO menu (libelle, description, conditions, min_personne, tarif_personne, quantite, actif)
+VALUES (
+        'Végétarien',
+        'Végétarien',
+        'Conditions : à conserver au frais',
+        '2',
+        '30',
+        '10',
+        '1'
+       );
+INSERT INTO menu (libelle, description, conditions, min_personne, tarif_personne, quantite, actif)
+VALUES (
+           'Menu 2',
+           'Description 2',
+           'Conditions 2',
+           '2',
+           '40',
+           '8',
+           '1'
+       );
+INSERT INTO menu (libelle, description, conditions, min_personne, tarif_personne, quantite, actif)
+VALUES (
+           'Menu 4',
+           'Description 4',
+           'Conditions 4',
+           '4',
+           '40',
+           '12',
+           '1'
+       );
+INSERT INTO menu (libelle, description, conditions, min_personne, tarif_personne, quantite, actif)
+VALUES (
+           'Menu 3',
+           'Description 3',
+           'Conditions 3',
+           '3',
+           '30',
+           '15',
+           '1'
+       );
 
 
 /*** MENUS_THEME ***/

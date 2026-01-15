@@ -5,22 +5,18 @@ namespace App\Repository;
 use App\Entity\Regime;
 use PDO;
 
-class RegimeRepository extends BaseRepository
+class RegimeRepository
 {
-    protected string $table = 'regime';
+    protected PDO $pdo;
 
-    protected function map(array $row): Regime
+    public function __construct(PDO $pdo)
     {
-        return new Regime(
-            (int)$row['id'],
-            $row['libelle'],
-            $row['description']
-        );
+        $this->pdo = $pdo;
     }
 
     public function insert(Regime $regime): bool
     {
-        $sql = "INSERT INTO {$this->table} (libelle, description)
+        $sql = "INSERT INTO regime (libelle, description)
                 VALUES (:libelle, :description)";
         $stmt = $this->pdo->prepare($sql);
 
@@ -32,7 +28,7 @@ class RegimeRepository extends BaseRepository
 
     public function update(Regime $regime): bool
     {
-        $sql = "UPDATE {$this->table}
+        $sql = "UPDATE regime
                 SET libelle=:libelle, description=:description
                 WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);

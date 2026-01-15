@@ -5,35 +5,33 @@ namespace App\Repository;
 use App\Entity\Allergene;
 use PDO;
 
-class AllergeneRepository extends BaseRepository
+class AllergeneRepository
 {
-    protected string $table = 'allergene';
+    protected PDO $pdo;
 
-    protected function map(array $row): Allergene
+    public function __construct(PDO $pdo)
     {
-        return new Allergene(
-            (int)$row['id'],
-            $row['libelle']
-        );
+        $this->pdo = $pdo;
     }
 
     public function insert(Allergene $allergene): bool
     {
-        $sql = "INSERT INTO $this->table (libelle)
-                VALUES (:libelle)";
+        $sql = "INSERT INTO allergene (libelle, description)
+                VALUES (:libelle, :description)";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute(['libelle' => $allergene->getLibelle()]);
+        return $stmt->execute(['libelle' => $allergene->getLibelle(), 'description' => $allergene->getDescription()]);
     }
 
     public function update(Allergene $allergene): bool
     {
-        $sql = "UPDATE $this->table SET libelle = :libelle
+        $sql = "UPDATE allergene SET libelle = :libelle, description = :description
                 WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
             'libelle' => $allergene->getLibelle(),
+            'description' => $allergene->getDescription(),
             'id' => $allergene->getId()
         ]);
     }

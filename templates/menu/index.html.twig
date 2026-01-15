@@ -25,17 +25,19 @@
 
             <!-- FILTRES DE RECHERCHE -->
             <div class="card mb-3">
+                <div class="card-header">
+                    <h4>Filtres de recherche</h4>
+                </div>
                 <div class="card-body">
-                    <h2>Filtres de recherche</h2>
 
-                    <form method="get" class="row g-2 mb-4">
+                    <form method="get" action="{{ path('menu_filter_ajax') }}" class="row g-2" id="filters-form">
                         <div class="col-md-4">
                             <input type="text" name="term" class="form-control" placeholder="Rechercher un menu" value="{{ (filters.term) ?? '' }}">
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <select name="theme" class="form-select">
-                                <option value="">Toutes thèmes</option>
+                                <option value="">Tout les thèmes</option>
                                 {% for theme in themes %}
                                     <option value="{{ theme.id }}"
                                         {{ filters.theme == theme.id ? 'selected' }}>
@@ -46,16 +48,35 @@
                         </div>
 
                         <div class="col-md-2">
+                            <select name="regime" class="form-select">
+                                <option value="">Tout les régimes</option>
+                                {% for regime in regimes %}
+                                    <option value="{{ regime.id }}"
+                                        {{ filters.regime == regime.id ? 'selected' }}>
+                                        {{ regime.libelle }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
                             <input type="number" name="tarif_max" class="form-control" placeholder="Prix max" value="{{ filters.tarif_max }}">
                         </div>
 
-                        <div class="col-md-2 form-check mt-2">
-                            <input type="checkbox" class="form-check-input" name="disponible" id="disponible" {{ filters.disponible ? 'checked' }}>
+                        <div class="col-md-1 d-flex justify-content-end align-items-center">
+                            <input type="checkbox" class="form-check-input me-2" name="disponible" id="disponible" {{ filters.disponible ? 'checked' }}>
                             <label for="disponible" class="form-check-label"> Disponible </label>
                         </div>
 
-                        <div class="col-md-1">
-                            <button class="btn btn-primary w-100">Filtrer</button>
+                        <div class="col-md-1 text-end">
+                            <div class="">
+                                <button type="submit" class="btn btn-warning btn-sm px-3" title="Rechercher">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" id="reset-filters" class="btn btn-danger btn-sm px-3" title="Supprimer les filtres">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -63,34 +84,12 @@
 
             <!-- LISTE DES MENUS -->
             <div class="card mb-3">
+                <div class="card-header">
+                    <h4>Liste des menus</h4>
+                </div>
                 <div class="card-body">
-                    <h2>Liste des menus : {{ menus|length }} résultat{{ (menus|length > 1) ? 's':'' }}</h2>
-
-                    <div class="row g-3">
-                        {% if menus|length > 0 %}
-                            {% for menu in menus %}
-                                <div class="col-md-3">
-                                    <div class="card shadow-sm">
-                                        <div class="card-body">
-                                            <h6>{{ menu.titre }}</h6>
-                                            <p class="fs-4">
-                                                {{ menu.description }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <table class="w-100 text-center">
-                                <tbody>
-                                <tr>
-                                    <td class="border p-3">
-                                        <b>Aucun résultat</b>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        {% endif %}
+                    <div class="row g-3" id="menus-list">
+                        {% include 'menu/_list.html.twig' with { menus: menus } %}
                     </div>
                 </div>
             </div>
@@ -98,4 +97,5 @@
         </div>
     </div>
 
+    <script src="{{ asset('js/menu.js') }}"></script>
 {% endblock %}

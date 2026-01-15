@@ -25,6 +25,7 @@ services:
     PDO:
         class: PDO
         factory: ['App\Factory\PDOFactory', 'create']
+        #  factory: ['@doctrine.dbal.default_connection', 'getWrappedConnection']
         arguments:
             - '%env(DATABASE_URL)%'
             - '%env(DATABASE_USER)%'
@@ -34,3 +35,4 @@ services:
               arguments:
                   - !php/const PDO::ATTR_ERRMODE
                   - !php/const PDO::ERRMODE_EXCEPTION
+

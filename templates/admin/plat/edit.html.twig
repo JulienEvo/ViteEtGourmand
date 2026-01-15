@@ -1,0 +1,89 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : Édition d'un plat{% endblock %}
+
+{% block body %}
+
+    {% if plat %}
+        {% set titre = 'Modifier le plat' %}
+        {% set action_path = path('admin_plat_edit', {id: plat.id, redirect: app.request.requestUri}) %}
+    {% else %}
+        {% set titre = 'Ajouter un plat' %}
+        {% set action_path = path('admin_plat_edit', {id: 0}) %}
+    {% endif %}
+
+
+    <h1>{{ titre }}</h1>
+
+    <form method="post" id="form_plat" action="{{ action_path }}" enctype="multipart/form-data">
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Informations générales</h4>
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-lg-3" style="width: 250px; margin-right: 20px">
+                        <label for="image_id" class="form-label">Image :</label>
+                        <div class="image-wrapper" style="width: 250px; min-width: 250px">
+                            <div class="image-actions position-absolute m-1" style="top: 100px; left: 175px">
+                                <button type="button" class="btn btn-sm btn-warning" title="Modifier" onclick="changeImage()"><i class="bi bi-pencil-square"></i></button>
+                                <button type="button" class="btn btn-sm btn-danger" title="Supprimer" onclick="removeImage()"><i class="bi bi-trash"></i></button>
+                            </div>
+
+                            {% if plat.image %}
+                                <img id="previewImage" src="{{ asset(plat.image) }}" class="img-fluid rounded">
+                            {% else %}
+                                <img id="previewImage" src="{{ asset('/images/no_image.jpg') }}" class="img-fluid rounded">
+                            {% endif %}
+
+                            <input type="file" name="image" id="imageInput" accept="image/*" class="d-none" onchange="previewFile(this)">
+                            <input type="hidden" name="remove_image" id="removeImageInput" value="0">
+                        </div>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="libelle" class="form-label">Libellé :</label>
+                        <input type="text" class="form-control" name="libelle" id="libelle" value="{{ plat.libelle ?? '' }}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="type_id" class="form-label">Catégorie :</label>
+                        <select class="form-select" name="type_id" id="type_id">
+                            <option value="">Choix</option>
+                            {% for type in tab_plat_type %}
+                                <option value="{{ type.id }}" {% if (type.id == (plat.type_id ?? 0)) %}selected{% endif %}>
+                                    {{ type.libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="actif_1" class="form-label">Actif :</label>
+                        <div>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_1" value="1" {% if (plat.actif == 1) %} {{ 'checked' }} {% endif %}>
+
+                            <span>Non :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_0" value="0" {% if (plat.actif != 1) %} {{ 'checked' }} {% endif %}>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('admin_menu_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
+        </div>
+    </form>
+
+    <script src="{{ asset('js/image.js') }}"></script>
+{% endblock %}
+

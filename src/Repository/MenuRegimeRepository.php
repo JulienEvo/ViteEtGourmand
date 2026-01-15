@@ -44,7 +44,7 @@ class MenuRegimeRepository
         return $stmt->execute(['menu_id' => $menu_id]);
     }
 
-    public function findAllByMenuId($menu_id): array
+    public function findAllIdByMenuId($menu_id): array
     {
         $retour = [];
 
@@ -58,6 +58,26 @@ class MenuRegimeRepository
         while ($row = $stmt->fetch())
         {
             $retour[] = $row['regime_id'];
+        }
+
+        return $retour;
+    }
+
+    public function findAllLibelleByMenuId($menu_id): array
+    {
+        $retour = [];
+
+        $sql = "SELECT regime.libelle
+                FROM regime
+                INNER JOIN menu_regime ON menu_regime.regime_id = regime.id
+                WHERE menu_regime.menu_id = :menu_id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['menu_id' => $menu_id]);
+
+        while ($row = $stmt->fetch())
+        {
+            $retour[] = $row['libelle'];
         }
 
         return $retour;

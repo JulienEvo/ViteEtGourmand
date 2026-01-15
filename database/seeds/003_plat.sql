@@ -18,8 +18,8 @@ INSERT INTO allergene (libelle, description) VALUES ('Céréales', '');
 
 
 /*** PLAT ***/
-INSERT INTO plat (titre, type_id, actif) VALUES ('Mini quiches lorraines', 1, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Gougères au fromage', 1, 1);
+INSERT INTO plat (titre, type_id, image, actif) VALUES ('Mini quiches lorraines', 1, 'images/plat/1/Image-1.jpg', 1);
+INSERT INTO plat (titre, type_id, image, actif) VALUES ('Gougères au fromage', 1, 'images/plat/1/image-2.jgp', 1);
 INSERT INTO plat (titre, type_id, actif) VALUES ('Verrines avocat saumon', 1, 1);
 INSERT INTO plat (titre, type_id, actif) VALUES ('Toasts de tapenade', 1, 1);
 INSERT INTO plat (titre, type_id, actif) VALUES ('Brochettes tomate mozzarella', 1, 1);

@@ -6,7 +6,7 @@ use App\Entity\Societe;
 use PDO;
 use DateTime;
 
-class SocieteRepository // extends BaseRepository
+class SocieteRepository
 {
     protected PDO $pdo;
 
@@ -38,34 +38,9 @@ class SocieteRepository // extends BaseRepository
     }
     */
 
-    public function insert(Societe $societe): bool
-    {
-        $sql = "INSERT INTO {$this->table}
-                    (libelle, type, capital, rcs, tva, telephone, email, adresse, code_postal, commune, pays, actif)
-                VALUES
-                    (:libelle, :type, :capital, :rcs, :tva, :telephone, :email, :adresse, :code_postal, :commune, :pays, :actif)";
-
-        $stmt = $this->pdo->prepare($sql);
-
-        return $stmt->execute([
-            ':libelle' => $societe->getLibelle(),
-            ':type' => $societe->getType(),
-            ':capital' => $societe->getCapital(),
-            ':rcs' => $societe->getRcs(),
-            ':tva' => $societe->getTva(),
-            ':telephone' => $societe->getTelephone(),
-            ':email' => $societe->getEmail(),
-            ':adresse' => $societe->getAdresse(),
-            ':code_postal' => $societe->getCode_postal(),
-            ':commune' => $societe->getCommune(),
-            ':pays' => $societe->getPays(),
-            ':actif' => $societe->isActif() ?? 1
-        ]);
-    }
-
     public function update(int $id, Societe $societe): bool
     {
-        $sql = "UPDATE {$this->table}
+        $sql = "UPDATE societe
                 SET libelle = :libelle,
                     type = :type,
                     capital = :capital,
@@ -103,11 +78,11 @@ class SocieteRepository // extends BaseRepository
     {
         if ($definitif)
         {
-            $sql = "DELETE FROM {$this->table} WHERE id = :id";
+            $sql = "DELETE FROM societe WHERE id = :id";
         }
         else
         {
-            $sql = "UPDATE {$this->table} SET actif = 0 WHERE id = :id";
+            $sql = "UPDATE societe SET actif = 0 WHERE id = :id";
         }
         $stmt = $this->pdo->prepare($sql);
 

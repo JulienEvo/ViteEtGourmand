@@ -5,18 +5,18 @@ namespace App\Repository;
 use App\Entity\CommandeEtat;
 use PDO;
 
-class CommandeEtatRepository extends BaseRepository
+class CommandeEtatRepository
 {
-    protected string $table = 'commande_etat';
+    protected PDO $pdo;
 
-    protected function map(array $row): CommandeEtat
+    public function __construct(PDO $pdo)
     {
-        return new CommandeEtat((int)$row['id'], $row['libelle']);
+        $this->pdo = $pdo;
     }
 
     public function insert(CommandeEtat $etat): bool
     {
-        $sql = "INSERT INTO {$this->table} (libelle)
+        $sql = "INSERT INTO commande_etat (libelle)
                 VALUES (:libelle)";
         $stmt = $this->pdo->prepare($sql);
 
@@ -25,7 +25,7 @@ class CommandeEtatRepository extends BaseRepository
 
     public function update(CommandeEtat $etat): bool
     {
-        $sql = "UPDATE {$this->table} SET libelle = :libelle WHERE id = :id";
+        $sql = "UPDATE commande_etat SET libelle = :libelle WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([

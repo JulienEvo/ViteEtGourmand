@@ -1,0 +1,79 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : liste des plats{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">
+        <i class="bi bi-people-fill"></i>&nbsp;Plat
+    </h1>
+
+    {% if (comeFrom == 'plat') %}
+        <a href="{{ path('admin_plat_edit', {id: 0}) }}" class="btn btn-primary mb-3">
+            <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un plat
+        </a>
+    {% endif %}
+
+    {% if (comeFrom == 'menu') %}
+        <form method="post" action="{{ path('admin_menu_edit', {id: menu_id, comeFrom: 'plat'}) }}">
+    {% endif %}
+
+        <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>Libelle</th>
+            <th>Catégorie</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if tab_plat|length > 0 %}
+            {% for plat in tab_plat %}
+                <tr>
+                    <td>
+                        <div class="preview-item" style="width: 100px !important; height: 100px !important;">
+                            {% if (plat.image != '') %}
+                                <img src="{{ asset(plat.image) }}" alt=" image de {{ plat.libelle ?? '' }}">
+                            {% else %}
+                                <img src="/images/no_image.jpg" alt=" image de {{ plat.libelle ?? '' }}">
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>{{ plat.libelle }}</td>
+                    <td>{{ plat.type_libelle }}</td>
+                    <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
+                    <td>
+                        {% if (comeFrom == 'plat') %}
+                            <a href="{{ path('admin_plat_edit', {id: plat.id}) }}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{{ path('admin_plat_delete', {id: plat.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
+                                <i class="bi bi-trash3-fill"></i>
+                            </a>
+                        {% elseif (comeFrom == 'menu') %}
+                            <input type="checkbox" class="form-check" name="PLATS[{{ plat.id }}]" id="plat_{{ plat.id }}">
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    {% if (comeFrom == 'menu') %}
+            <div class="d-flex justify-content-between">
+                <a href="{{ path('admin_menu_edit', {id: menu_id}) }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-floppy-fill"></i>&nbsp;Ajouter les plats
+                </button>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

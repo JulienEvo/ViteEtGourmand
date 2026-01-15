@@ -1,7 +1,7 @@
 #--- MENU ---#
 CREATE TABLE menu (
     id INT NOT NULL AUTO_INCREMENT,
-    titre VARCHAR(32) NOT NULL,
+    libelle VARCHAR(32) NOT NULL,
     description TEXT NOT NULL,
     conditions TEXT NOT NULL,
     min_personne SMALLINT NOT NULL,

@@ -5,45 +5,55 @@ namespace App\Entity;
 class Plat
 {
     private int $id;
-    private string $titre;
-    private int $typeId;
-    private int $imageId;
+    private string $libelle;
+    private int $type_id;
+    private string $image;
+    private bool $actif;
 
-    public function __construct(int $id, string $titre, int $typeId, int $imageId)
+    public function __construct(int $id, string $libelle, int $type_id, string $image, bool $actif)
     {
         $this->id = $id;
-        $this->titre = $titre;
-        $this->typeId = $typeId;
-        $this->imageId = $imageId;
+        $this->libelle = $libelle;
+        $this->type_id = $type_id;
+        $this->image = $image;
+        $this->actif = $actif;
     }
 
     public function getId(): int
     {
         return $this->id;
     }
-    public function getTitre(): string
+    public function getLibelle(): string
     {
-        return $this->titre;
+        return $this->libelle;
     }
-    public function getTypeId(): int
+    public function getType_id(): int
     {
-        return $this->typeId;
+        return $this->type_id;
     }
-    public function getImageId(): int
+    public function getImage(): string
     {
-        return $this->imageId;
+        return $this->image;
+    }
+    public function isActif(): bool
+    {
+        return $this->actif;
     }
 
-    public function setTitre(string $titre): void
+    public function setLibelle(string $libelle): void
     {
-        $this->titre = $titre;
+        $this->libelle = $libelle;
     }
-    public function setTypeId(int $typeId): void
+    public function setType_id(int $type_id): void
     {
-        $this->typeId = $typeId;
+        $this->type_id = $type_id;
     }
-    public function setImageId(int $imageId): void
+    public function setImage(string $image): void
     {
-        $this->imageId = $imageId;
+        $this->image = $image;
+    }
+    public function setActif(bool $actif): void
+    {
+        $this->actif = $actif;
     }
 }

@@ -10,27 +10,30 @@ class MenuRepository
     protected PDO $pdo;
     private MenuThemeRepository $menuThemeRepository;
     private MenuRegimeRepository $menuRegimeRepository;
+    private PlatRepository $platRepository;
 
     public function __construct(
         PDO $pdo,
         MenuThemeRepository $menuThemeRepository,
         MenuRegimeRepository $menuRegimeRepository,
+        PlatRepository $platRepository,
     )
     {
         $this->pdo = $pdo;
         $this->menuThemeRepository = $menuThemeRepository;
         $this->menuRegimeRepository = $menuRegimeRepository;
+        $this->platRepository = $platRepository;
     }
 
     public function insert(array $menu): bool
     {
-        $sql = "INSERT INTO menu (titre, description, theme, min_personne, tarif_personne, regime, quantite, actif)
-                VALUES (:titre, :description, :theme, :min_personne, :tarif_personne, :regime, :quantite, :actif)";
+        $sql = "INSERT INTO menu (libelle, description, theme, min_personne, tarif_personne, regime, quantite, actif)
+                VALUES (:libelle, :description, :theme, :min_personne, :tarif_personne, :regime, :quantite, :actif)";
 
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            ':titre' => $menu['titre'],
+            ':libelle' => $menu['libelle'],
             ':description' => $menu['description'],
             ':theme' => $menu['theme'],
             ':min_personne' => $menu['min_personne'],
@@ -45,7 +48,7 @@ class MenuRepository
     {
         // Met à jour le menu
         $sql = "UPDATE menu
-                SET titre = :titre,
+                SET libelle = :libelle,
                     description = :description,
                     min_personne = :min_personne,
                     tarif_personne = :tarif_personne,
@@ -56,7 +59,7 @@ class MenuRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            ':titre' => $menu->getTitre(),
+            ':libelle' => $menu->getLibelle(),
             ':description' => $menu->getDescription(),
             ':min_personne' => $menu->getMin_personne(),
             ':tarif_personne' => $menu->getTarif_personne(),
@@ -83,9 +86,20 @@ class MenuRepository
 
     public function findAll(): array
     {
-        $sql = "SELECT *
-                FROM menu
-                WHERE 1 ";
+        $sql = "SELECT menu.*,
+                    (
+                        SELECT GROUP_CONCAT(theme.libelle SEPARATOR ', ')
+                        FROM menu_theme
+                        JOIN theme ON theme.id = menu_theme.theme_id
+                        WHERE menu_theme.menu_id = menu.id
+                    ) AS themes,
+                    (
+                        SELECT GROUP_CONCAT(regime.libelle SEPARATOR ', ')
+                        FROM menu_regime
+                        JOIN regime ON regime.id = menu_regime.regime_id
+                        WHERE menu_regime.menu_id = menu.id
+                    ) AS regimes
+                FROM menu";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -104,12 +118,12 @@ class MenuRepository
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $themes  = $this->menuThemeRepository->findAllByMenuId($menu_id);
-        $regimes = $this->menuRegimeRepository->findAllByMenuId($menu_id);
+        $themes  = $this->menuThemeRepository->findAllIdByMenuId($menu_id);
+        $regimes = $this->menuRegimeRepository->findAllIdByMenuId($menu_id);
 
         return new Menu(
             $row['id'],
-            $row['titre'],
+            $row['libelle'],
             $row['description'],
             $row['min_personne'],
             $row['tarif_personne'],
@@ -123,30 +137,58 @@ class MenuRepository
     public function findByFilters(array $filters): array
     {
         $vars = [];
-        $sql = "SELECT *
+        $sql = "SELECT DISTINCT(menu.id), menu.*
                 FROM menu
+                LEFT OUTER JOIN menu_theme ON menu_theme.menu_id = menu.id
+                LEFT OUTER JOIN theme ON theme.id = menu_theme.theme_id
+                LEFT OUTER JOIN menu_regime ON menu_regime.menu_id = menu.id
+                LEFT OUTER JOIN regime ON regime.id = menu_regime.regime_id
                 WHERE 1 ";
 
-        if (!empty($filters['q'])) {
-            $sql .= " AND titre LIKE :q";
-            $vars['q'] = "%" . $filters['q'] . "%";
+        if (!empty($filters['term'])) {
+            $sql .= " AND
+                        (
+                            menu.libelle LIKE :term
+                            OR
+                            menu.description LIKE :term
+                            OR
+                            menu.conditions LIKE :term
+                        )";
+            $vars[':term'] = "%" . $filters['term'] . "%";
         }
 
-        if (!empty($filters['category'])) {
-            $sql .= " AND titre LIKE :q";
-            $vars['q'] = "%" . $filters['q'] . "%";
+        if (!empty($filters['theme'])) {
+            $sql .= " AND menu_theme.theme_id iN (:theme)";
+            $vars[':theme'] = $filters['theme'];
+        }
+
+        if (!empty($filters['regime'])) {
+            $sql .= " AND menu_regime.regime_id iN (:regime)";
+            $vars[':regime'] = $filters['regime'];
         }
 
         if (!empty($filters['tarif_max'])) {
-            $sql .= " AND titre LIKE :q";
-            $vars['q'] = "%" . $filters['q'] . "%";
+            $sql .= " AND menu.tarif_personne <= :tarif_max";
+            $vars[':tarif_max'] = $filters['tarif_max'];
         }
 
+        if (!empty($filters['disponible'])) {
+            $sql .= " AND menu.quantite > 0";
+        }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
 
-        return $stmt->fetchAll();
+        $menus = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $menus[$row['id']] = $row;
+            $menus[$row['id']]['themes'] = $this->menuThemeRepository->findAllLibelleByMenuId($row['id']);
+            $menus[$row['id']]['regimes'] = $this->menuRegimeRepository->findAllLibelleByMenuId($row['id']);
+            $menus[$row['id']]['images'] = $this->platRepository->findImagesByMenuId($row['id']);
+        }
+
+        return $menus;
     }
 
 }

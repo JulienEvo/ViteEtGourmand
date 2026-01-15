@@ -21,26 +21,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $commune;
     private string $pays;
     private string $poste;
-    private string $actif;
+    private bool $actif;
     private DateTime $createdAt;
     private ?DateTime $updatedAt;
 
     public function __construct(
-        int $id,
-        array $roles,
-        string $email,
-        string $password,
-        string $prenom,
-        string $nom,
-        string $telephone,
-        string $adresse,
-        string $code_postal,
-        string $commune,
-        string $pays,
-        string $poste,
-        string $actif,
-        dateTime $createdAt,
-        DateTime $updatedAt
+        int $id = 0,
+        array $roles = ['ROLE_USER'],
+        string $email = '',
+        string $password = '',
+        string $prenom = '',
+        string $nom = '',
+        string $telephone = '',
+        string $adresse = '',
+        string $code_postal = '',
+        string $commune = '',
+        string $pays = '',
+        string $poste = '',
+        bool $actif = true,
+        dateTime $createdAt = new DateTime,
+        DateTime $updatedAt = new DateTime
     ) {
         $this->setId($id);
         $this->setRoles($roles);
@@ -127,7 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->poste;
     }
-    public function getActif(): string
+    public function getActif(): bool
     {
         return $this->actif;
     }

@@ -1,0 +1,58 @@
+{% if menus|length > 0 %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for menu in menus %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if menu.images|length > 0 %}
+                        <img src="{{ asset(menu.images[0].image) }}" class="card-img-top" style="max-height: none" alt="{{ menu.libelle }}">
+                    {% else %}
+                        <img src="{{ asset('images/no_image.jpg') }}" class="card-img-top" alt="Image par défaut">
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column justify-content-end">
+                        <h5 class="card-title">{{ menu.libelle }}</h5>
+
+                        <p class="mb-1">
+                            {% for theme in menu.themes %}
+                                <span class="badge bg-primary">{{ theme }}</span>
+                            {% endfor %}
+                            {% for regime in menu.regimes %}
+                                <span class="badge bg-success">{{ regime }}</span>
+                            {% endfor %}
+                        </p>
+
+                        <p class="card-text text-truncate">{{ menu.description }}</p>
+
+                        <p class="mb-1"><b>Min. {{ menu.min_personne }} pers. - {{ menu.tarif_personne }}€</b></p>
+                        <p class="mb-3">Stock : {{ menu.quantite }}</p>
+
+                        <form method="post" action="">
+                            <table class="w-100 text-center">
+                                <tr>
+                                    <td style="width: 50%">
+                                        <a href="{{ path('menu_edit', {id: menu.id}) }}" class="btn btn-outline-primary mt-auto">
+                                            Voir le détail
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <input type="hidden" name="menu_id" value="{{ menu.id }}">
+                                        <input type="number" name="quantity" min="1" max="{{ menu.quantite }}" value="1" class="form-control mb-2">
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-cart-plus-fill"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-warning text-center">
+        Aucun menu trouvé
+    </div>
+{% endif %}

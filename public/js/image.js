@@ -1,4 +1,4 @@
-
+/*
 const menu_image = document.getElementById('menu_image');
 const preview = document.getElementById('preview');
 
@@ -47,4 +47,30 @@ function updateInputFiles()
 
     tab_images.forEach(file => dataTransfer.items.add(file));
     menu_image.files = dataTransfer.files;
+}
+*/
+
+/*****************************************************/
+
+function changeImage() {
+    document.getElementById('imageInput').click();
+}
+
+function previewFile(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('previewImage').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+
+        // annule une éventuelle suppression
+        document.getElementById('removeImageInput').value = 0;
+    }
+}
+
+function removeImage() {
+    document.getElementById('previewImage').src = "/images/no_image.jpg";
+    document.getElementById('imageInput').value = '';
+    document.getElementById('removeImageInput').value = 1;
 }
