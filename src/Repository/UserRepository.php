@@ -36,7 +36,7 @@ class UserRepository
             'commune' => $user->getCommune(),
             'pays' => $user->getPays(),
             'poste' => $user->getPoste(),
-            'created_at' => date('Y-m-d H:i:s') //$user->getCreatedAt()->format('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s')
         ]))
         {
             return $this->pdo->lastInsertId();
@@ -49,31 +49,33 @@ class UserRepository
     public function update(User $user, bool $save_pass): bool|array
 
     {
-        $sql = "UPDATE utilisateur
-                SET roles=:roles, email=:email, prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
-                    code_postal=:code_postal, commune=:commune, pays=:pays, poste=:poste, actif=:actif, updated_at=:updated";
+        $password = "";
         if ($save_pass)
         {
-            $sql .= ", password=:password";
+            $password = ", password=:password";
         }
-        $sql .= " WHERE id=:id";
+
+        $sql = "UPDATE utilisateur
+                SET roles=:roles, email=:email {$password} , prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
+                    code_postal=:code_postal, commune=:commune, pays=:pays, poste=:poste, actif=:actif, updated_at=:updated
+                WHERE id = :id";
+
         $stmt = $this->pdo->prepare($sql);
 
         $vars = [
-            'roles' => json_encode($user->getRoles()),
-            'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
-            'prenom' => $user->getPrenom(),
-            'nom' => $user->getNom(),
-            'telephone' => $user->getTelephone(),
-            'adresse' => $user->getAdresse(),
-            'code_postal' => $user->getCode_postal(),
-            'commune' => $user->getCommune(),
-            'pays' => $user->getPays(),
-            'poste' => $user->getPoste(),
-            'actif' => $user->getActif(),
-            'updated' => date('Y-m-d'),
-            'id' => $user->getId()
+            ':roles' => json_encode($user->getRoles()),
+            ':email' => $user->getEmail(),
+            ':prenom' => $user->getPrenom(),
+            ':nom' => $user->getNom(),
+            ':telephone' => $user->getTelephone(),
+            ':adresse' => $user->getAdresse(),
+            ':code_postal' => $user->getCode_postal(),
+            ':commune' => $user->getCommune(),
+            ':pays' => $user->getPays(),
+            ':poste' => $user->getPoste(),
+            ':actif' => $user->getActif(),
+            ':updated' => date('Y-m-d'),
+            ':id' => $user->getId(),
         ];
         if ($save_pass)
         {
@@ -105,7 +107,7 @@ class UserRepository
         }
     }
 
-    public function findAll(string $roles = ''): array
+    public function findAll(string $role = ''): array
     {
         $sql = "SELECT *
                 FROM utilisateur
@@ -117,7 +119,7 @@ class UserRepository
         $tabUtilisateur = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            if (in_array($roles, json_decode($row['roles'])))
+            if (in_array($role, json_decode($row['roles'])))
             {
                 $tabUtilisateur[$row['id']] = $row;
             }
@@ -165,6 +167,8 @@ class UserRepository
 
     public function findByEmail(string $email): ?User
     {
+        $utilisateur = null;
+
         $sql = "SELECT *
                 FROM utilisateur
                 WHERE email = :email";
@@ -172,25 +176,30 @@ class UserRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($stmt->rowCount() > 0)
+        {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new User(
-            $row['id'],
-            json_decode($row['roles']),
-            $row['email'],
-            $row['password'],
-            $row['prenom'],
-            $row['nom'],
-            $row['telephone'],
-            $row['adresse'],
-            $row['code_postal'],
-            $row['commune'],
-            $row['pays'],
-            $row['poste'],
-            $row['actif'],
-            new DateTime($row['created_at']),
-            new DateTime($row['updated_at'])
-        );
+            $utilisateur = new User(
+                $row['id'],
+                json_decode($row['roles']),
+                $row['email'],
+                $row['password'],
+                $row['prenom'],
+                $row['nom'],
+                $row['telephone'],
+                $row['adresse'],
+                $row['code_postal'],
+                $row['commune'],
+                $row['pays'],
+                $row['poste'],
+                $row['actif'],
+                new DateTime($row['created_at']),
+                new DateTime($row['updated_at'])
+            );
+        }
+
+        return $utilisateur;
     }
 
     public function authenticate(string $email, string $password): ?array
@@ -223,5 +232,29 @@ class UserRepository
         return preg_match($regex, $password) === 1;
     }
 
+    public function isValidUtilisateur(User $utilisateur, string $confirmPass, bool $checkValidPass = true): bool|string
+    {
+        // Vérifie s'il existe déjà un compte avec cet email
+        if ($this->findByEmail($utilisateur->getEmail()))
+        {
+            return "Un compte existe déjà avec cet e-mail";
+        }
+
+        // Vérifie la confirmation du mot de passe
+        if ($checkValidPass)
+        {
+            if ($this->isValidPassword($utilisateur->getPassword()))
+            {
+                return "Le mot de passe doit contenir au moins : 10 caractères, 1 minuscule, 1 majuscule, 1 caractère spécial et 1 chiffre";
+            }
+
+            if ($utilisateur->getPassword() != $confirmPass)
+            {
+                return "Les mots de passe ne correspondent pas";
+            }
+        }
+
+        return true;
+    }
 
 }

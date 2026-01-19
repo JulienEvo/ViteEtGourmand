@@ -35,7 +35,7 @@
                         <div class="row col-12">
                             <div class="mb-3 col-12 col-lg-4">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="email" id="email" value="" required>
+                                <input type="email" class="form-control" name="email" id="email" value="{{ utilisateur.email ?? '' }}" required>
                             </div>
                             <div class="mb-3 col-12 col-lg-4">
                                 <label for="password" class="form-label">Mot de passe</label>
@@ -57,22 +57,22 @@
                         <div class="row col-12">
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="nom" class="form-label">Nom</label>
-                                <input type="text" class="form-control" name="nom" id="nom" value="" required>
+                                <input type="text" class="form-control" name="nom" id="nom" value="{{ utilisateur.nom ?? '' }}" required>
                             </div>
 
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="prenom" class="form-label">Prénom</label>
-                                <input type="text" class="form-control" name="prenom" id="prenom" value="" required>
+                                <input type="text" class="form-control" name="prenom" id="prenom" value="{{ utilisateur.prenom ?? '' }}" required>
                             </div>
 
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="telephone" class="form-label">Téléphone</label>
-                                <input type="tel" class="form-control" name="telephone" id="telephone" value="" required>
+                                <input type="tel" class="form-control" name="telephone" id="telephone" value="{{ utilisateur.telephone ?? '' }}" required>
                             </div>
                             {% if user and not is_user() %}
                                 <div class="mb-3 col-12 col-lg-3">
                                     <label for="poste" class="form-label">Poste</label>
-                                    <input type="text" class="form-control" name="poste" id="poste" value="" required>
+                                    <input type="text" class="form-control" name="poste" id="poste" value="{{ utilisateur.poste ?? '' }}" required>
                                 </div>
                             {% endif %}
                         </div>
@@ -80,22 +80,22 @@
                         <div class="row col-12">
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="adresse" class="form-label">Adresse</label>
-                                <input type="text" class="form-control" name="adresse" id="adresse" value="" required>
+                                <input type="text" class="form-control" name="adresse" id="adresse" value="{{ utilisateur.adresse ?? '' }}" required>
                             </div>
 
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="code_postal" class="form-label">Code postal</label>
-                                <input type="text" class="form-control" name="code_postal" id="code_postal" value="" required>
+                                <input type="text" class="form-control" name="code_postal" id="code_postal" value="{{ utilisateur.code_postal ?? '' }}" required>
                             </div>
 
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="commune" class="form-label">Commune</label>
-                                <input type="text" class="form-control" name="commune" id="commune" value="" required>
+                                <input type="text" class="form-control" name="commune" id="commune" value="{{ utilisateur.commune ?? '' }}" required>
                             </div>
 
                             <div class="mb-3 col-12 col-lg-3">
                                 <label for="pays" class="form-label">Pays</label>
-                                <input type="text" class="form-control" name="pays" id="pays" value="France" required>
+                                <input type="text" class="form-control" name="pays" id="pays" value="{{ utilisateur.pays ?? 'France' }}" required>
                             </div>
                         </div>
                     </div>

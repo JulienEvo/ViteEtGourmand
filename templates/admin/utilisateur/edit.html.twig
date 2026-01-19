@@ -1,23 +1,31 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}V&G : Employés{% endblock %}
+{% if type == 'employe' %}
+    {% set lib = 'employé' %}
+    {% set role = 'ROLE_EMPLOYE' %}
+{% else %}
+    {% set lib = 'utilisateur' %}
+    {% set role = 'ROLE_USER' %}
+{% endif %}
+
+{% block title %}V&G : {{ lib|capitalize }}s{% endblock %}
 
 {% block body %}
     <script src="{{ asset('js/user.js') }}"></script>
 
-    {% if utilisateur %}
-        {% set titre = 'Modifier un employé' %}
-        {% set action_path = path('admin_utilisateur_edit', {id: utilisateur.id}) %}
+    {% if mode == 'ajout' %}
+        {% set titre = 'Ajouter un ' ~ lib %}
+        {% set action_path = path('admin_utilisateur_edit', {id: 0, mode: mode, type: type}) %}
     {% else %}
-        {% set titre = 'Ajouter un employé' %}
-        {% set action_path = path('admin_utilisateur_edit', {id: 0}) %}
+        {% set titre = 'Modifier un ' ~ lib %}
+        {% set action_path = path('admin_utilisateur_edit', {id: utilisateur.id, mode: mode, type: type}) %}
     {% endif %}
 
     <h1>{{ titre }}</h1>
 
     <form method="post" action="{{ action_path }}">
         <input type="hidden" id="id" name="id" value="{{ utilisateur.id ?? 0 }}">
-        <input type="hidden" id="role" name="role" value="['ROLE_USER', 'ROLE_EMPLOYE']">
+        <input type="hidden" id="role" name="role" value="{{ role }}">
 
         <div class="card mb-3">
             <div class="card-header">
@@ -30,14 +38,24 @@
                         <input type="email" class="form-control" name="email" id="email" value="{{ utilisateur.email ?? '' }}" required>
                     </div>
 
+                    {% if not utilisateur %}
+                        {% set input_type = 'text' %}
+                        {% set disabled = ' disabled' %}
+                        {% set placeholder = '' %}
+                    {% else %}
+                        {% set input_type = 'password' %}
+                        {% set disabled = '' %}
+                        {% set placeholder = 'Renseigner pour modifier' %}
+                    {% endif %}
+
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="password" class="form-label">Mot de passe</label>
-                        <input type="password" class="form-control" name="password" id="password" value="" {% if not utilisateur %} disabled{% endif %}>
+                        <input type="{{ input_type }}" class="form-control" name="password" id="password" value="" {{ disabled }} placeholder="{{ placeholder }}">
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="confirm" class="form-label">Confirmer le mot de passe</label>
-                        <input type="password" class="form-control" name="confirm" id="confirm" value="" {% if not utilisateur %} disabled{% endif %}>
+                        <input type="{{ input_type }}" class="form-control" name="confirm" id="confirm" value="" {{ disabled }}  placeholder="{{ placeholder }}">
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">
@@ -103,14 +121,14 @@
 
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="pays" class="form-label">Pays</label>
-                        <input type="text" class="form-control" name="pays" id="pays" value="{{ utilisateur.pays ?? '' }}" required>
+                        <input type="text" class="form-control" name="pays" id="pays" value="{{ utilisateur.pays ?? 'France' }}" required>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="d-flex justify-content-between">
-            <a href="{{ path('admin_utilisateur_index') }}" class="btn btn-secondary">
+            <a href="{{ path('admin_utilisateur_index', {type: type}) }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
             </a>
             <button type="submit" class="btn btn-success">

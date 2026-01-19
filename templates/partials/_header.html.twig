@@ -23,9 +23,9 @@
                         <a class="nav-link" href="{{ path('menu_index') }}">Menus</a>
                     </li>
                     <li class="nav-item">
-                        {% set user = app.session.get('user') %}
+                        {% set user = app.user %}
                         {% if user %}
-                            {% if 'ROLE_ADMIN' in user.roles or 'ROLE_EMPLOYE' in user.roles %}
+                            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
                                 <a class="nav-link" href="{{ path('admin_dashboard') }}">Espace de {{ user.prenom|capitalize }}</a>
                             {% else %}
                                 <a class="nav-link" href="{{ path('admin_dashboard') }}">Espace de {{ user.prenom }}</a>

@@ -21,13 +21,13 @@
                 <div class="card shadow-sm">
                     <div class="card-body p-4">
 
-                        {% for message in app.flashes('error') %}
+                        {% if error %}
                             <div class="alert alert-danger text-center">
-                                {{ message }}
+                                {{ error.message }}
                                 <br>
-                                <a href="/register" class="small">Je crée mon compte</a>
+                                <a href="{{ path('register') }}" class="small">Je crée mon compte</a>
                             </div>
-                        {% endfor %}
+                        {% endif %}
 
                         <form method="post">
                             <!-- Le token CSRF permet de garantir que la requête provient bien du formulaire généré
@@ -35,13 +35,13 @@
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ email }}" required autofocus>
+                                <label for="_username" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="_username" name="_username" value="{{ last_username ?? '' }}" required autofocus>
                             </div>
 
                             <div class="mb-3">
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <label for="_password" class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" id="_password" name="_password" required>
                             </div>
 
                             <div class="d-grid">

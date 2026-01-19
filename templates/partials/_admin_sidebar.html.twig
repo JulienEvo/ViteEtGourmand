@@ -1,4 +1,4 @@
-{% set user = app.session.get('user') %}
+{% set user = app.user %}
 
 <nav class="d-flex flex-column p-3 bg-secondary text-white min-vh-100" style="width: 250px;">
     <h4 class="text-center mb-4">Espace de {{ user.prenom|capitalize }}</h4>
@@ -12,12 +12,20 @@
         </li>
 
         <li class="nav-item">
-            <a href="{{ path('admin_utilisateur_edit', {id: user.id}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_profil' ? 'active' : 'text-white' }}">
+            {% if is_granted('ROLE_ADMIN') %}
+                {% set type = 'admin' %}
+            {% elseif is_granted('ROLE_EMPLOYE') %}
+                {% set type = 'employe' %}
+            {% else %}
+                {% set type = 'utilisateur' %}
+            {% endif %}
+
+            <a href="{{ path('admin_utilisateur_edit', {id: user.id, type: type, mode: 'modif'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_profil' ? 'active' : 'text-white' }}">
                 <i class="bi bi-person-square"></i>&emsp;Mon profil
             </a>
         </li>
 
-        {% if is_admin() or is_employe() %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
             <li class="nav-item">
                 <a href="{{ path('admin_societe_edit', {id: societe.id}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_societe' ? 'active' : 'text-white' }}">
                     <i class="bi bi-info-square-fill"></i>&emsp;Société
@@ -25,10 +33,15 @@
             </li>
         {% endif %}
 
-        {% if is_admin() %}
+        {% if is_granted('ROLE_ADMIN') %}
             <li class="nav-item">
-                <a href="{{ path('admin_utilisateur_index', {type: 'employe'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_employe' ? 'active' : 'text-white' }}">
+                <a href="{{ path('admin_utilisateur_index', {type: 'employe'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_utilisateur' and app.request.get('type') == 'employe' ? 'active' : 'text-white' }}">
                     <i class="bi bi-people-fill"></i>&emsp;Employés
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ path('admin_utilisateur_index', {type: 'utilisateur'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_utilisateur' and app.request.get('type') == 'utilisateur' ? 'active' : 'text-white' }}">
+                    <i class="bi bi-people-fill"></i>&emsp;Utilisateurs
                 </a>
             </li>
         {% endif %}
@@ -39,7 +52,7 @@
             </a>
         </li>
 
-        {% if is_admin() or is_employe() %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
             <li class="nav-item">
                 <a href="{{ path('admin_menu_index') }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_menu' ? 'active' : 'text-white' }}">

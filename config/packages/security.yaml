@@ -13,10 +13,10 @@ security:
             #custom_authenticator: App\Security\UserAuthenticator
 
             form_login:
-                username_parameter: email
-                password_parameter: password
-                #login_path: login
-                #check_path: login
+                # username_parameter: email
+                # password_parameter: password
+                login_path: login
+                check_path: login
                 enable_csrf: true
                 csrf_token_id: authenticate
 

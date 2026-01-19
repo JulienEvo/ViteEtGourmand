@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         string $poste = '',
         bool $actif = true,
         dateTime $createdAt = new DateTime,
-        DateTime $updatedAt = new DateTime
+        DateTime $updatedAt = null
     ) {
         $this->setId($id);
         $this->setRoles($roles);
@@ -73,19 +73,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
     public function eraseCredentials(): void
-    {
-        // Si tu stockais un plainPassword, ce serait ici
-    }
+    {}
 
     public function getRoles(): array
     {
         $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
 
-        if (!in_array('ROLE_USER', $roles, true)) {
-            $roles[] = 'ROLE_USER';
-        }
-
-        return $roles;
+        return array_unique($roles);
     }
     public function getEmail(): string
     {

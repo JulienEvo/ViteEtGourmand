@@ -12,6 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class SecurityController extends AbstractController
@@ -26,8 +27,19 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
-    public function login(Request $request): Response
+    public function login(AuthenticationUtils $authUtils, Request $request): Response
     {
+        // Si déjà connecté, redirection
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('security/login.html.twig', [
+            'last_username' => $authUtils->getLastUsername(),
+            'error' => $authUtils->getLastAuthenticationError()
+        ]);
+
+        /*
         $email = $request->request->get('email');
         $password = $request->request->get('password');
 
@@ -63,6 +75,7 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/login.html.twig', ['email' => $email]);
+        */
     }
 
     #[Route('/logout', name: 'logout')]
@@ -98,21 +111,31 @@ class SecurityController extends AbstractController
                 throw $this->createAccessDeniedException('Le mot de passe doit contenir au moins : 10 caractères, 1 minuscule, 1 majuscule, 1 caractère spécial et 1 chiffre');
             }
 
-            $user = new User();
-            $user->setEmail($request->request->get('email'));
-            $hashedPassword = $passwordHasher->hashPassword($user, $password);
-            $user->setPassword($hashedPassword);
-            $user->setNom($request->request->get('nom'));
-            $user->setPrenom($request->request->get('prenom'));
+            $utilisateur = new User(
+                0,
+                json_decode($request->request->get('roles')),
+                $request->request->get('email'),
+                password_hash($password, PASSWORD_DEFAULT),
+                $request->request->get('nom'),
+                $request->request->get('prenom'),
+                $request->request->get('telephone'),
+                $request->request->get('adresse'),
+                $request->request->get('code_postal'),
+                $request->request->get('commune'),
+                $request->request->get('pays'),
+                ($request->request->get('poste') ?? '')
+            );
 
-            $user->setTelephone($request->request->get('telephone'));
-            $user->setAdresse($request->request->get('adresse'));
-            $user->setCode_postal($request->request->get('code_postal'));
-            $user->setCommune($request->request->get('commune'));
-            $user->setPays($request->request->get('pays'));
-            $user->setPoste($request->request->get('poste') ?? '');
+            $retValid = $userRepository->isValidUtilisateur($utilisateur, $confirm);
+            if ($retValid !== true)
+            {
+                $this->addFlash('danger', $retValid);
+                return $this->render('security/register.html.twig', [
+                    'utilisateur' => $utilisateur,
+                ]);
+            }
 
-            if ($userRepository->insert($user))
+            if ($userRepository->insert($utilisateur))
             {
                 $this->addFlash('success', 'Compte créé avec succès');
                 return $this->redirectToRoute('login', ['email' => $email]);

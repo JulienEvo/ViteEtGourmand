@@ -1,15 +1,23 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}V&G : Utilisateurs{% endblock %}
+{% if type == 'employe' %}
+    {% set lib = 'employé' %}
+    {% set role = '[ROLE_EMPLOYE]' %}
+{% else %}
+    {% set lib = 'utilisateur' %}
+    {% set role = '[ROLE_USER]' %}
+{% endif %}
+
+{% block title %}V&G : {{ lib|capitalize }}s{% endblock %}
 
 {% block body %}
 
     <h1 class="mb-4">
-        <i class="bi bi-people-fill"></i>&nbsp;Utilisateur
+        <i class="bi bi-people-fill"></i>&nbsp;Liste des {{ lib|capitalize }}s : <span class="fs-3">{{ tabUtilisateur|length }} résultat(s)</span>
     </h1>
 
-    <a href="{{ path('admin_utilisateur_edit', {id: 0}) }}" class="btn btn-primary mb-3">
-        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un utilisateur
+    <a href="{{ path('admin_utilisateur_edit', {id: 0, mode: 'ajout', type: type}) }}" class="btn btn-primary mb-3">
+        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un {{ lib }}
     </a>
 
     <table class="table table-striped">
@@ -43,7 +51,7 @@
                     <td>{{ utilisateur.poste }}</td>
                     <td>{{ (utilisateur.actif) ? 'Oui':'Non' }}</td>
                     <td>
-                        <a href="{{ path('admin_utilisateur_edit', {id: utilisateur.id}) }}" class="btn btn-sm btn-warning">
+                        <a href="{{ path('admin_utilisateur_edit', {id: utilisateur.id, mode: 'modif', type: type}) }}" class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="{{ path('admin_utilisateur_delete', {id: utilisateur.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
