@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('form_filtre_menu');
+    const form = document.getElementById('form_filtre_commande');
     if (!form) return;
 
     form.addEventListener('submit', function (e) {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById('reset-filters').addEventListener('click', () => {
-    const form = document.getElementById('form_filtre_menu');
+    const form = document.getElementById('form_filtre_commande');
     form.reset();
 
     form.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {input.value = '';});

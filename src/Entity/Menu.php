@@ -10,20 +10,20 @@ class Menu
     private int $min_personne;
     private float $tarif_personne;
     private int $quantite;
-    private array $themes;
-    private array $regimes;
+    private string $themes;
+    private string $regimes;
     private bool $actif;
 
     public function __construct(
-        int $id,
-        string $libelle,
-        string $description,
-        int $min_personne,
-        float $tarif_personne,
-        int $quantite,
-        bool $actif,
-        array $themes,
-        array $regime
+        int $id = 0,
+        string $libelle = '',
+        string $description = '',
+        int $min_personne = 1,
+        float $tarif_personne = 0,
+        int $quantite = 0,
+        bool $actif = true,
+        string $themes = '',
+        string $regime = ''
     )
     {
         $this->setId($id);
@@ -62,11 +62,11 @@ class Menu
     {
         return $this->quantite;
     }
-    public function getThemes(): array
+    public function getThemes(): string
     {
         return $this->themes;
     }
-    public function getRegimes(): array
+    public function getRegimes(): string
     {
         return $this->regimes;
     }
@@ -99,11 +99,11 @@ class Menu
     {
         $this->quantite = $quantite;
     }
-    public function setThemes(array $tab_theme): void
+    public function setThemes(string $tab_theme): void
     {
         $this->themes = $tab_theme;
     }
-    public function setRegimes(array $tab_regime): void
+    public function setRegimes(string $tab_regime): void
     {
         $this->regimes = $tab_regime;
     }

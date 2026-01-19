@@ -5,6 +5,7 @@
         <title>
             {% block title %}
                 {% set societe = query_service.getSociete(1) %}
+
                 {% if societe %}
                     {{ societe.libelle }}
                 {% else %}
@@ -20,7 +21,6 @@
     </head>
     <body>
         {% include 'partials/_header.html.twig' %}
-        <script src="{{ asset('js/alerte.js') }}"></script>
 
         <main>
             {% for label, messages in app.flashes %}
@@ -36,5 +36,6 @@
 
         {% include 'partials/_footer.html.twig' %}
 
+        <script src="{{ asset('js/alerte.js') }}"></script>
     </body>
 </html>

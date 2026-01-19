@@ -3,6 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Plat;
+use App\Repository\AllergeneRepository;
+use App\Repository\GeneriqueRepository;
+use App\Repository\PlatAllergeneRepository;
 use App\Repository\PlatRepository;
 use App\Repository\PlatTypeRepository;
 use App\Service\FonctionsService;
@@ -22,10 +25,10 @@ class PlatController extends AbstractController
         $menu_id = $request->query->get('menu_id', 0);
         $comeFrom = $request->query->get('comeFrom', '');
 
-        $tab_plats = $platRepository->findAll();
+        $tabPlat = $platRepository->findAll();
 
         return $this->render('admin/plat/index.html.twig', [
-            'tab_plat' => $tab_plats,
+            'tabPlat' => $tabPlat,
             'menu_id' => $menu_id,
             'comeFrom' => $comeFrom,
         ]);
@@ -35,10 +38,13 @@ class PlatController extends AbstractController
     public function edit(
         int $id,
         PlatRepository $platRepository,
-        Request $request,
         PlatTypeRepository $platTypeRepository,
+        PlatAllergeneRepository $platAllergeneRepository,
+        GeneriqueRepository $generiqueRepository,
+        Request $request,
     ): Response
     {
+        $erreurs = "";
 
         // Validation du formulaire
         if ($request->isMethod('POST')) {
@@ -48,6 +54,7 @@ class PlatController extends AbstractController
             // Récupère les données du formulaire
             $new_image = $request->files->get('image');
             $removeImage = $request->request->get('remove_image');
+            $plat_allergenes = $request->request->all('plat_allergenes');
 
             $erreur = "";
             if (isset($new_image) && !$removeImage)
@@ -114,16 +121,29 @@ class PlatController extends AbstractController
                 $request->request->get('type_id'),
                 $image,
                 $request->request->get('actif'),
+                $plat_allergenes,
             );
+
+            // Met à jour les allergènes du plat
+            if (!$platAllergeneRepository->insert($id, $plat_allergenes))
+            {
+                $erreurs .= "Erreur lors de la mise à jour des allergènes du plat \n";
+            }
+
 
             // Met à jour le plat
             if (!$platRepository->update($plat))
             {
-                $this->addFlash('danger', "Erreur lors de l'enregistrement du plat");
+                $erreurs .= "Erreur lors de la mise à jour du plat \n";
             }
-            else
+
+            if ($erreurs == "")
             {
                 $this->addFlash('success', 'Plat modifié avec succès');
+            }
+        else
+            {
+                $this->addFlash('danger', "Erreur lors de l'enregistrement du plat : " . $erreurs);
             }
 
             return $this->redirectToRoute('admin_plat_edit', ['id' => $id]);
@@ -135,11 +155,14 @@ class PlatController extends AbstractController
         // Récupère les types de plat
         $tab_plat_type = $platTypeRepository->findAll();
 
+        $tab_allergenes = $generiqueRepository->findAll('allergene');
+
         // Affiche le plat
         return $this->render('admin/plat/edit.html.twig', [
             'id' => $id,
             'plat' => $plat,
             'tab_plat_type' => $tab_plat_type,
+            'tab_allergenes' => $tab_allergenes,
         ]);
     }
 

@@ -46,16 +46,20 @@ class UserRepository
         }
     }
 
-    public function update(User $user): bool|array
+    public function update(User $user, bool $save_pass): bool|array
 
     {
         $sql = "UPDATE utilisateur
-                SET roles=:roles, email=:email, password=:password, prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
-                    code_postal=:code_postal, commune=:commune, pays=:pays, poste=:poste, actif=:actif, updated_at=:updated
-                WHERE id=:id";
+                SET roles=:roles, email=:email, prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
+                    code_postal=:code_postal, commune=:commune, pays=:pays, poste=:poste, actif=:actif, updated_at=:updated";
+        if ($save_pass)
+        {
+            $sql .= ", password=:password";
+        }
+        $sql .= " WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
 
-        if ($stmt->execute([
+        $vars = [
             'roles' => json_encode($user->getRoles()),
             'email' => $user->getEmail(),
             'password' => $user->getPassword(),
@@ -70,7 +74,13 @@ class UserRepository
             'actif' => $user->getActif(),
             'updated' => date('Y-m-d'),
             'id' => $user->getId()
-        ]))
+        ];
+        if ($save_pass)
+        {
+            $vars['password'] = $user->getPassword();
+        }
+
+        if ($stmt->execute($vars))
         {
             return true;
         }
@@ -95,7 +105,7 @@ class UserRepository
         }
     }
 
-    public function findAll(): array
+    public function findAll(string $roles = ''): array
     {
         $sql = "SELECT *
                 FROM utilisateur
@@ -104,10 +114,19 @@ class UserRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $tabUtilisateur = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            if (in_array($roles, json_decode($row['roles'])))
+            {
+                $tabUtilisateur[$row['id']] = $row;
+            }
+        }
+
+        return $tabUtilisateur;
     }
 
-    public function findById(int $utilisateur_id): User|null
+    public function findById(int $utilisateur_id): ?User
     {
         $utilisateur = null;
 
@@ -197,4 +216,12 @@ class UserRepository
             'roles' => $user->getRoles(),
         ];
     }
+
+    public function isValidPassword(string $password): bool
+    {
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{10,}$/';
+        return preg_match($regex, $password) === 1;
+    }
+
+
 }

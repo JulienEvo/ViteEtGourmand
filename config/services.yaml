@@ -25,7 +25,6 @@ services:
     PDO:
         class: PDO
         factory: ['App\Factory\PDOFactory', 'create']
-        #  factory: ['@doctrine.dbal.default_connection', 'getWrappedConnection']
         arguments:
             - '%env(DATABASE_URL)%'
             - '%env(DATABASE_USER)%'

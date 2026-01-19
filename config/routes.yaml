@@ -9,5 +9,4 @@
 
 controllers:
     resource: routing.controllers
-    #resource: ../src/Controller/
     type: attribute

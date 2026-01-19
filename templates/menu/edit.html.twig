@@ -1,18 +1,42 @@
-{% extends '../base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Modifier le menu</h1>
+    <div class="card m-3">
+        <div class="card-header">
+            <h1>{{ menu.libelle }}</h1>
+        </div>
 
-    <form method="post">
-        <input name="nom" value="{{ menu.nom }}" required>
-        <textarea name="description">{{ menu.description }}</textarea>
-        <input name="prix" type="number" step="0.01" value="{{ menu.prix }}" required>
+        <div class="card-body">
+            <h2 class="mt-1">Composition du menu</h2>
 
-        <label>
-            Actif
-            <input type="checkbox" name="actif" value="1" {{ menu.actif ? 'checked' }}>
-        </label>
+            {% for type, plats in plats_par_type %}
+                <h3 class="mt-4">{{ type }}</h3>
 
-        <button>Enregistrer</button>
-    </form>
+                <div class="row">
+                    {% for plat in plats %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="row g-0">
+                                    <div class="col-4">
+                                        <img src="{{ asset(plat.image) }}"
+                                             class="img-fluid rounded-start"
+                                             alt="{{ plat.libelle }}">
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ plat.libelle }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="card-footer">
+            TEST footer
+        </div>
+    </div>
 {% endblock %}

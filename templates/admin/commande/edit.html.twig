@@ -1,0 +1,89 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : Édition d'une commande{% endblock %}
+
+{% block body %}
+
+    {% if commande %}
+        {% set titre = 'Modifier la commande N°' ~ commande.numero %}
+        {% set action_path = path('admin_commande_edit', {id: commande.id, redirect: app.request.requestUri}) %}
+    {% else %}
+        {% set titre = 'Ajouter une commande' %}
+        {% set action_path = path('admin_commande_edit', {id: 0}) %}
+    {% endif %}
+
+
+    <h1>{{ titre }}</h1>
+
+    <form method="post" id="form_commande" action="{{ action_path }}">
+        <input type="hidden" name="numero" id="numero" value="{{ commande.numero ?? '' }}">
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Informations générales</h4>
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+
+                    <div class="mb-3 col-12 col-lg-2">
+                        <label for="menu_id" class="form-label">Menu :</label>
+                        <select class="form-select" name="menu_id" id="menu_id" required>
+                            <option value="">Choix</option>
+                            {% for menu in tabMenu %}
+                                <option value="{{ menu.id }}" {% if (menu.id == (commande.menu_id ?? 0)) %}selected{% endif %}>
+                                    {{ menu.libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="utilisateur_id" class="form-label">Client :</label>
+                        <select class="form-select" name="utilisateur_id" id="utilisateur_id" required>
+                            <option value="">Choix</option>
+                            {% for utilisateur in tabUtilisateur %}
+                                <option value="{{ utilisateur.id }}" {% if (utilisateur.id == (commande.utilisateur_id ?? 0)) %}selected{% endif %}>
+                                    {{ utilisateur.nom ~ ' ' ~ utilisateur.prenom ~ ' (' ~ utilisateur.commune ~ ' - ' ~ utilisateur.code_postal ~ ')' }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-2">
+                        <label for="commande_etat_id" class="form-label">État :</label>
+                        <select class="form-select" name="commande_etat_id" id="commande_etat_id">
+                            {% for etat in tabCommandeEtat %}
+                                <option value="{{ etat.id }}" style="background-color: {{ etat.couleur ?? '' }}" {% if (etat.id == (commande.commande_etat_id ?? 0)) %}selected{% endif %}>
+                                    {{ etat.libelle }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-2">
+                        <label for="date_livraison" class="form-label">Date de livraison :</label>
+                        <input type="date" class="form-control" name="date_livraison" id="date_livraison" value="{% if commande %}{{ commande.date|date('Y-m-d') }}{% endif %}" required>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-2">
+                        <label for="remise" class="form-label">Remise (%) :</label>
+                        <input type="number" step="0.1" min="0" max="100" class="form-control" name="remise" id="remise" value="{{ commande.remise ?? '' }}">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ path('admin_commande_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
+        </div>
+    </form>
+
+    <script src="{{ asset('js/image.js') }}"></script>
+{% endblock %}
+

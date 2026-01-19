@@ -3,106 +3,115 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <div class="row w-100 justify-content-center">
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <h1 class="text-center mb-4">Créer un compte</h1>
+    {% set user = app.session.get('user') %}
 
-                        {% for message in app.flashes('error') %}
-                            <div class="alert alert-danger text-center">
-                                {{ message }}
+    <section class="hero-section mb-3">
+        <div class="hero-content">
+            <h1>Créer un compte</h1>
+            <p>Plats faits maison – Événementiel – Commande en ligne</p>
+            <a href="{{ path('login') }}">
+                <button type="button" class="btn btn-primary" title="Se connecter">Se connecter</button>
+            </a>
+        </div>
+    </section>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-11">
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <form method="post" action="{{ path('register') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h4>INFORMATIONS DE CONNEXION</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row col-12">
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" value="" required>
                             </div>
-                        {% endfor %}
-
-                        <form method="post" action="{{ path('register') }}">
-                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
-
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    Informations de connexion
-                                </div>
-                                <div class="card-body">
-                                    <div class="row col-12">
-                                        <div class="mb-3 col-12 col-lg-4">
-                                            <label for="email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" name="email" id="email" value="" required>
-                                        </div>
-                                        <div class="mb-3 col-12 col-lg-4">
-                                            <label for="password" class="form-label">Mot de passe</label>
-                                            <input type="password" class="form-control" name="password" id="password" value="" required>
-                                        </div>
-                                        <div class="mb-3 col-12 col-lg-4">
-                                            <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
-                                            <input type="password" class="form-control" name="confirm_password" id="confirm_password" value="" required>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" name="password" id="password" value="" required>
                             </div>
-
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    Informations générales
-                                </div>
-                                <div class="card-body">
-                                    <div class="row col-12">
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="nom" class="form-label">Nom</label>
-                                            <input type="text" class="form-control" name="nom" id="nom" value="" required>
-                                        </div>
-
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="prenom" class="form-label">Prénom</label>
-                                            <input type="text" class="form-control" name="prenom" id="prenom" value="" required>
-                                        </div>
-
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="telephone" class="form-label">Téléphone</label>
-                                            <input type="tel" class="form-control" name="telephone" id="telephone" value="" required>
-                                        </div>
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="poste" class="form-label">Poste</label>
-                                            <input type="text" class="form-control" name="poste" id="poste" value="" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="row col-12">
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="adresse" class="form-label">Adresse</label>
-                                            <input type="text" class="form-control" name="adresse" id="adresse" value="" required>
-                                        </div>
-
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="code_postal" class="form-label">Code postal</label>
-                                            <input type="text" class="form-control" name="code_postal" id="code_postal" value="" required>
-                                        </div>
-
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="commune" class="form-label">Commune</label>
-                                            <input type="text" class="form-control" name="commune" id="commune" value="" required>
-                                        </div>
-
-                                        <div class="mb-3 col-12 col-lg-3">
-                                            <label for="pays" class="form-label">Pays</label>
-                                            <input type="text" class="form-control" name="pays" id="pays" value="France" required>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="confirm_password" class="form-label">Confirmer le mot de passe</label>
+                                <input type="password" class="form-control" name="confirm_password" id="confirm_password" value="" required>
                             </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">
-                                    Créer un compte
-                                </button>
-                            </div>
-                            <div class="text-center mt-3">
-                                <a href="{{ path('login') }}" class="small">
-                                    Déjà un compte ? Se connecter
-                                </a>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h4>INFORMATIONS GÉNÉRALES</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row col-12">
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" name="nom" id="nom" value="" required>
+                            </div>
+
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="prenom" class="form-label">Prénom</label>
+                                <input type="text" class="form-control" name="prenom" id="prenom" value="" required>
+                            </div>
+
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="telephone" class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" name="telephone" id="telephone" value="" required>
+                            </div>
+                            {% if user and not is_user() %}
+                                <div class="mb-3 col-12 col-lg-3">
+                                    <label for="poste" class="form-label">Poste</label>
+                                    <input type="text" class="form-control" name="poste" id="poste" value="" required>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row col-12">
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="adresse" class="form-label">Adresse</label>
+                                <input type="text" class="form-control" name="adresse" id="adresse" value="" required>
+                            </div>
+
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="code_postal" class="form-label">Code postal</label>
+                                <input type="text" class="form-control" name="code_postal" id="code_postal" value="" required>
+                            </div>
+
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="commune" class="form-label">Commune</label>
+                                <input type="text" class="form-control" name="commune" id="commune" value="" required>
+                            </div>
+
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="pays" class="form-label">Pays</label>
+                                <input type="text" class="form-control" name="pays" id="pays" value="France" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">
+                        Créer un compte
+                    </button>
+                </div>
+                <div class="text-center mt-3 mb-3">
+                    <a href="{{ path('login') }}" class="small">
+                        Déjà un compte ? Se connecter
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}

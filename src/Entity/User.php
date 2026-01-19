@@ -20,7 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $code_postal;
     private string $commune;
     private string $pays;
-    private string $poste;
+    private ?string $poste;
     private bool $actif;
     private DateTime $createdAt;
     private ?DateTime $updatedAt;

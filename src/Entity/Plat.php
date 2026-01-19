@@ -9,14 +9,16 @@ class Plat
     private int $type_id;
     private string $image;
     private bool $actif;
+    private array $allergenes;
 
-    public function __construct(int $id, string $libelle, int $type_id, string $image, bool $actif)
+    public function __construct(int $id, string $libelle, int $type_id, string $image, bool $actif, array $allergenes)
     {
         $this->id = $id;
         $this->libelle = $libelle;
         $this->type_id = $type_id;
         $this->image = $image;
         $this->actif = $actif;
+        $this->allergenes = $allergenes;
     }
 
     public function getId(): int
@@ -39,6 +41,10 @@ class Plat
     {
         return $this->actif;
     }
+    public function getAllergenes(): array
+    {
+        return $this->allergenes;
+    }
 
     public function setLibelle(string $libelle): void
     {
@@ -55,5 +61,9 @@ class Plat
     public function setActif(bool $actif): void
     {
         $this->actif = $actif;
+    }
+    public function setAllergenes(array $allergenes): void
+    {
+        $this->allergenes = $allergenes;
     }
 }

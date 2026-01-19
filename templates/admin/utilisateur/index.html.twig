@@ -1,0 +1,62 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : Utilisateurs{% endblock %}
+
+{% block body %}
+
+    <h1 class="mb-4">
+        <i class="bi bi-people-fill"></i>&nbsp;Utilisateur
+    </h1>
+
+    <a href="{{ path('admin_utilisateur_edit', {id: 0}) }}" class="btn btn-primary mb-3">
+        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un utilisateur
+    </a>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse</th>
+            <th>Code postal</th>
+            <th>Commune</th>
+            <th>Pays</th>
+            <th>Poste</th>
+            <th>Actif</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if tabUtilisateur|length > 0 %}
+            {% for utilisateur in tabUtilisateur %}
+                <tr>
+                    <td>{{ utilisateur.nom }}</td>
+                    <td>{{ utilisateur.prenom }}</td>
+                    <td>{{ utilisateur.email }}</td>
+                    <td>{{ utilisateur.telephone }}</td>
+                    <td>{{ utilisateur.adresse }}</td>
+                    <td>{{ utilisateur.code_postal }}</td>
+                    <td>{{ utilisateur.commune }}</td>
+                    <td>{{ utilisateur.pays }}</td>
+                    <td>{{ utilisateur.poste }}</td>
+                    <td>{{ (utilisateur.actif) ? 'Oui':'Non' }}</td>
+                    <td>
+                        <a href="{{ path('admin_utilisateur_edit', {id: utilisateur.id}) }}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="{{ path('admin_utilisateur_delete', {id: utilisateur.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
+                            <i class="bi bi-trash3-fill"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

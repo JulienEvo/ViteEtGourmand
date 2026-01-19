@@ -7,31 +7,50 @@ use DateTime;
 class Commande
 {
     private int $id;
-    private int $utilisateurId;
-    private int $etatId;
+    private int $utilisateur_id;
+    private int $menu_id;
+    private int $commande_etat_id;
     private ?string $numero;
     private ?DateTime $date;
-    private ?DateTime $reduction;
+    private ?float $remise;
+    private ?DateTime $created_at;
 
-    public function __construct(int $id, int $utilisateurId, int $etatId, ?string $numero, ?DateTime $date, ?DateTime $reduction)
+    public function __construct(
+        int $id = 0,
+        int $utilisateur_id = 0,
+        int $menu_id = 0,
+        int $commande_etat_id = 1,
+        ?string $numero = null,
+        ?DateTime $date = null,
+        ?float $remise = null,
+        ?DateTime $created_at = new DateTime(),
+    )
     {
         $this->id = $id;
-        $this->utilisateurId = $utilisateurId;
-        $this->etatId = $etatId;
+        $this->utilisateur_id = $utilisateur_id;
+        $this->menu_id = $menu_id;
+        $this->commande_etat_id = $commande_etat_id;
         $this->numero = $numero;
         $this->date = $date;
-        $this->reduction = $reduction;
+        $this->remise = $remise;
+        $this->created_at = $created_at;
     }
 
     public function getId(): int
-    { return $this->id; }
-    public function getUtilisateurId(): int
     {
-        return $this->utilisateurId;
+        return $this->id;
     }
-    public function getEtatId(): int
+    public function getUtilisateur_id(): int
     {
-        return $this->etatId;
+        return $this->utilisateur_id;
+    }
+    public function getMenu_id(): int
+    {
+        return $this->menu_id;
+    }
+    public function getCommande_etat_id(): int
+    {
+        return $this->commande_etat_id;
     }
     public function getNumero(): ?string
     {
@@ -41,14 +60,30 @@ class Commande
     {
         return $this->date;
     }
-    public function getReduction(): ?DateTime
+    public function getRemise(): ?float
     {
-        return $this->reduction;
+        return $this->remise;
+    }
+    public function getCreated_at(): ?DateTime
+    {
+        return $this->created_at;
     }
 
-    public function setEtatId(int $etatId): void
+    public function setId(int $id): void
     {
-        $this->etatId = $etatId;
+        $this->id = $id;
+    }
+    public function setUtilisateur_id(int $utilisateur_id): void
+    {
+        $this->utilisateur_id = $utilisateur_id;
+    }
+    public function setMenu_id(int $menu_id): void
+    {
+        $this->menu_id = $menu_id;
+    }
+    public function setCommande_etat_id(int $commande_etat_id): void
+    {
+        $this->commande_etat_id = $commande_etat_id;
     }
     public function setNumero(?string $numero): void
     {
@@ -58,8 +93,12 @@ class Commande
     {
         $this->date = $date;
     }
-    public function setReduction(?DateTime $reduction): void
+    public function setRemise(?float $remise): void
     {
-        $this->reduction = $reduction;
+        $this->remise = $remise;
+    }
+    public function setCreated_at(?DateTime $created_at): void
+    {
+        $this->created_at = $created_at;
     }
 }

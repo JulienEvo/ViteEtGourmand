@@ -8,10 +8,12 @@ use PDO;
 class PlatRepository
 {
     protected PDO $pdo;
+    private PlatAllergeneRepository $platAllergeneRepository;
 
-    public function __construct(PDO $pdo)
+    public function __construct(PDO $pdo, PlatAllergeneRepository $platAllergeneRepository)
     {
         $this->pdo = $pdo;
+        $this->platAllergeneRepository = $platAllergeneRepository;
     }
 
     public function insert(Plat $plat): bool
@@ -77,12 +79,15 @@ class PlatRepository
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $allergenes  = $this->platAllergeneRepository->findAllIdByPlatId($id);
+
         return new Plat(
-                $row['id'],
-                $row['libelle'],
-                $row['type_id'],
-                $row['image'],
-                $row['actif']
+            $row['id'],
+            $row['libelle'],
+            $row['type_id'],
+            $row['image'],
+            $row['actif'],
+            $allergenes,
         );
     }
 

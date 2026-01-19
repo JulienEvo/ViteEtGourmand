@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1 class="mb-4">
-        <i class="bi bi-people-fill"></i>&nbsp;Plat
+        <i class="bi bi-people-fill"></i>&nbsp;Liste des plats : <span class="fs-3">{{ tabPlat|length }} résultat(s)</span>
     </h1>
 
     {% if (comeFrom == 'plat') %}
@@ -28,8 +28,8 @@
         </tr>
         </thead>
         <tbody>
-        {% if tab_plat|length > 0 %}
-            {% for plat in tab_plat %}
+        {% if tabPlat|length > 0 %}
+            {% for plat in tabPlat %}
                 <tr>
                     <td>
                         <div class="preview-item" style="width: 100px !important; height: 100px !important;">

@@ -11,33 +11,66 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/employe', name: 'admin_employe_')]
-class EmployeController extends AbstractController
+#[Route('/admin/utilisateur', name: 'admin_utilisateur_')]
+class AdminUtilisateurController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository, Request $request): Response
     {
-        $tabUser = $userRepository->findAll();
+        $type = $request->query->get('type', 'sss');
 
-        return $this->render('admin/employe/index.html.twig', ['tabUser' => $tabUser]);
+        switch ($type)
+        {
+            case 'admin':
+                $role = 'ROLE_ADMIN';
+                break;
+            case 'employe':
+                $role = 'ROLE_EMPLOYE';
+                break;
+            case 'utilisateur':
+                $role = 'ROLE_USER';
+                break;
+            default:
+                $role = '';
+                break;
+        }
+
+        $tabUtilisateur = $userRepository->findAll($role);
+
+        return $this->render('admin/utilisateur/index.html.twig', ['tabUtilisateur' => $tabUtilisateur]);
     }
 
     #[Route('/{id}/edit', name: 'edit')]
     public function edit(int $id, UserRepository $userRepository, Request $request): Response
     {
-        // Validation du formulaire ?
+        //--- VALIDATION DU FORMULAIRE ---//
         if ($request->isMethod('POST')) {
 
             $nom = trim($request->request->get('nom'));
             $prenom = trim($request->request->get('prenom'));
             $email = trim($request->request->get('email'));
-            $password = password_hash(trim($request->request->get('password')), PASSWORD_DEFAULT);
+            $password = trim($request->request->get('password'));
+            $confirm = trim($request->request->get('confirm'));
 
-            $employe = new User(
+            if ($password != "")
+            {
+                if ($userRepository->isValidPassword($password))
+                {
+                    throw $this->createAccessDeniedException('Le mot de passe doit contenir au moins : 10 caractères, 1 minuscule, 1 majuscule, 1 caractère spécial et 1 chiffre');
+                }
+
+                if ($password != $confirm)
+                {
+                    $this->addFlash('danger', 'Les mots de passe ne correspondent pas');
+                    return $this->redirectToRoute('admin_utilisateur_edit', ['id' => $id]);
+                }
+            }
+
+            $utilisateur = new User(
                 $id,
-                ['ROLE_USER', 'ROLE_EMPLOYE'],
+                [$request->request->get('role')],
                 $email,
-                $password,
+                password_hash($password, PASSWORD_DEFAULT),
                 $prenom,
                 $nom,
                 trim($request->request->get('telephone')),
@@ -54,10 +87,14 @@ class EmployeController extends AbstractController
             if ($id == 0)
             {
                 //*** INSERT ***//
-                $ret = $userRepository->insert($employe);
+                $ret = $userRepository->insert($utilisateur);
                 if (!is_array($ret) )
                 {
                     $id = $ret;
+
+                    // Envoi d'un mail à l'utilisateur
+
+
                     $this->addFlash('success', 'Employé ajouté avec succès');
                 }
                 else
@@ -68,20 +105,20 @@ class EmployeController extends AbstractController
             else
             {
                 //*** UPDATE ***//
-                $userRepository->update($employe);
+                $userRepository->update($utilisateur, $password != "");
                 $this->addFlash('success', 'Employé modifié avec succès');
             }
 
-            return $this->redirectToRoute('admin_employe_edit', ['id' => $id]);
+            return $this->redirectToRoute('admin_utilisateur_edit', ['id' => $id]);
         }
 
         // Récupère l'employé par son ID
-        $employe = $userRepository->findById($id);
+        $utilisateur = $userRepository->findById($id);
 
         // Affiche l'employé
-        return $this->render('admin/employe/edit.html.twig', [
+        return $this->render('admin/utilisateur/edit.html.twig', [
             'id' => $id,
-            'employe' => $employe
+            'utilisateur' => $utilisateur
         ]);
     }
 
@@ -100,6 +137,6 @@ class EmployeController extends AbstractController
                 $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement : '.$ret);
             }
 
-        return $this->redirectToRoute('admin_employe_index');
+        return $this->redirectToRoute('admin_utilisateur_index');
     }
 }

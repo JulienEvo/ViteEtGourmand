@@ -17,11 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/menus', name: 'admin_menu_')]
-class MenuController extends AbstractController
+class AdminMenuController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    public function index(MenuRepository $menuRepository, MenuThemeRepository $menuThemeRepository, MenuRegimeRepository $menuRegimeRepository): Response
+    public function index(MenuRepository $menuRepository): Response
     {
         $tabMenu = $menuRepository->findAll();
 
@@ -44,7 +44,7 @@ class MenuController extends AbstractController
     {
         $comeFrom = $request->query->get('comeFrom', '');
 
-        // Validation du formulaire
+        //--- VALIDATION DU FORMULAIRE ---//
         if ($request->isMethod('POST')) {
 
             switch ($comeFrom) {

@@ -1,13 +1,17 @@
 #--- COMMANDE ---#
 CREATE TABLE commande (
     id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    etat_id INT NOT NULL,
+    utilisateur_id INT NOT NULL,
+    menu_id INT NOT NULL,
+    commande_etat_id TINYINT(3) NOT NULL,
     numero VARCHAR(32),
     date DATETIME,
-    reduction DATETIME,
+    reduction DECIMAL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    INDEX(user_id)
+    INDEX(utilisateur_id),
+    INDEX(menu_id),
+    INDEX(commande_etat_id)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
@@ -18,7 +22,7 @@ COLLATE=utf8mb4_unicode_ci;
 CREATE TABLE commande_etat (
     id INT NOT NULL AUTO_INCREMENT,
     libelle VARCHAR(32) NOT NULL,
-    description TEXT NOT NULL,
+    couleur VARCHAR(10) NULL,
     PRIMARY KEY (id)
 )
 ENGINE=InnoDB

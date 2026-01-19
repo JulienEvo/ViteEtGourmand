@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Generique;
 use PDO;
 
 class GeneriqueRepository
@@ -16,18 +15,33 @@ class GeneriqueRepository
 
     public function findAll(string $table): array
     {
+        if ($table == "")
+        {
+            return [];
+        }
+
         $sql = "SELECT *
-                FROM {$table}
-                WHERE 1 ";
+                FROM {$table}";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $tabRetour = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tabRetour[$row['id']] = $row;
+        }
+
+        return $tabRetour;
     }
 
-    public function findById(string $table, int $id)
+    public function findById(string $table, int $id): array
     {
+        if ($table == "")
+        {
+            return [];
+        }
+
         $sql = "SELECT *
                 FROM {$table}
                 WHERE id = :id";

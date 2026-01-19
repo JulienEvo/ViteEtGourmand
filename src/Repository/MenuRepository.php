@@ -84,31 +84,56 @@ class MenuRepository
         return $stmt->execute([':menu_id' => $menu_id]);
     }
 
-    public function findAll(): array
+    public function findAll($only_actif = false): array
     {
         $sql = "SELECT menu.*,
-                    (
+                    IFNULL((
                         SELECT GROUP_CONCAT(theme.libelle SEPARATOR ', ')
                         FROM menu_theme
                         JOIN theme ON theme.id = menu_theme.theme_id
                         WHERE menu_theme.menu_id = menu.id
-                    ) AS themes,
-                    (
+                    ), '') AS themes,
+                    IFNULL((
                         SELECT GROUP_CONCAT(regime.libelle SEPARATOR ', ')
                         FROM menu_regime
                         JOIN regime ON regime.id = menu_regime.regime_id
                         WHERE menu_regime.menu_id = menu.id
-                    ) AS regimes
+                    ), '') AS regimes
                 FROM menu";
+
+        if ($only_actif)
+        {
+            $sql .= " WHERE actif = 1";
+        }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $tabMenus = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tabMenus[$row['id']] = new Menu(
+                $row['id'],
+                $row['libelle'],
+                $row['description'],
+                $row['min_personne'],
+                $row['tarif_personne'],
+                $row['quantite'],
+                $row['actif'],
+                $row['themes'],
+                $row['regimes'],
+            );
+        }
+
+        return $tabMenus;
     }
 
-    public function findById(int $menu_id): Menu
+    public function findById(int $menu_id): ?Menu
     {
+        $menu = null;
+        $themes  = $this->menuThemeRepository->findAllIdByMenuId($menu_id);
+        $regimes = $this->menuRegimeRepository->findAllIdByMenuId($menu_id);
+
         $sql = "SELECT *
                 FROM menu
                 WHERE id = :menu_id";
@@ -116,22 +141,24 @@ class MenuRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':menu_id' => $menu_id]);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($stmt->rowCount() > 0)
+        {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $themes  = $this->menuThemeRepository->findAllIdByMenuId($menu_id);
-        $regimes = $this->menuRegimeRepository->findAllIdByMenuId($menu_id);
+            $menu = new Menu(
+                $row['id'],
+                $row['libelle'],
+                $row['description'],
+                $row['min_personne'],
+                $row['tarif_personne'],
+                $row['quantite'],
+                $row['actif'],
+                $themes,
+                $regimes
+            );
+        }
 
-        return new Menu(
-            $row['id'],
-            $row['libelle'],
-            $row['description'],
-            $row['min_personne'],
-            $row['tarif_personne'],
-            $row['quantite'],
-            $row['actif'],
-            $themes,
-            $regimes,
-        );
+        return $menu;
     }
 
     public function findByFilters(array $filters): array
@@ -165,6 +192,11 @@ class MenuRepository
         if (!empty($filters['regime'])) {
             $sql .= " AND menu_regime.regime_id iN (:regime)";
             $vars[':regime'] = $filters['regime'];
+        }
+
+        if (!empty($filters['tarif_min'])) {
+            $sql .= " AND menu.tarif_personne >= :tarif_min";
+            $vars[':tarif_min'] = $filters['tarif_min'];
         }
 
         if (!empty($filters['tarif_max'])) {
