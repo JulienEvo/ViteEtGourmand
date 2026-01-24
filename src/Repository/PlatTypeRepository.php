@@ -21,7 +21,13 @@ class PlatTypeRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        $plat_types = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $plat_types[$row['id']] = $row;
+        }
+
+        return $plat_types;
     }
 
 }

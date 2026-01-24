@@ -12,6 +12,7 @@ class Commande
     private int $commande_etat_id;
     private ?string $numero;
     private ?DateTime $date;
+    private ?float $montant_ht;
     private ?float $remise;
     private ?DateTime $created_at;
 
@@ -22,6 +23,7 @@ class Commande
         int $commande_etat_id = 1,
         ?string $numero = null,
         ?DateTime $date = null,
+        ?float $montant_ht = null,
         ?float $remise = null,
         ?DateTime $created_at = new DateTime(),
     )
@@ -32,6 +34,7 @@ class Commande
         $this->commande_etat_id = $commande_etat_id;
         $this->numero = $numero;
         $this->date = $date;
+        $this->montant_ht = $montant_ht;
         $this->remise = $remise;
         $this->created_at = $created_at;
     }
@@ -63,6 +66,10 @@ class Commande
     public function getRemise(): ?float
     {
         return $this->remise;
+    }
+    public function getMontant_ht(): ?float
+    {
+        return $this->montant_ht;
     }
     public function getCreated_at(): ?DateTime
     {
@@ -96,6 +103,10 @@ class Commande
     public function setRemise(?float $remise): void
     {
         $this->remise = $remise;
+    }
+    public function setMontant_ht(?float $montant_ht): void
+    {
+        $this->montant_ht = $montant_ht;
     }
     public function setCreated_at(?DateTime $created_at): void
     {

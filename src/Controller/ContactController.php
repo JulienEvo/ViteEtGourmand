@@ -22,7 +22,7 @@ class ContactController extends AbstractController
 
             // Sécurité minimale
             if (!$nom || !$emailExpediteur || !$message) {
-                $this->addFlash('error', 'Tous les champs sont obligatoires');
+                $this->addFlash('danger', 'Tous les champs sont obligatoires');
                 return $this->redirectToRoute('contact');
             }
 

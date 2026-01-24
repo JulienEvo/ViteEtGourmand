@@ -30,9 +30,9 @@
                 <tr>
                     <td style="background-color: {{ item.commande_etat.couleur ?? '' }}">{{ item.commande_etat.libelle }}</td>
                     <td>{{ item.commande.numero }}</td>
-                    <td>{{ item.utilisateur.nom ~ ' ' ~ item.utilisateur.prenom}}</td>
+                    <td>{{ item.utilisateur.nom ~ ' ' ~ item.utilisateur.prenom }}</td>
                     <td>{{ item.menu.libelle }}</td>
-                    <td>{{ item.utilisateur.adresse ~ ' - ' ~ item.utilisateur.commune ~ ' - ' ~ item.utilisateur.code_postal}}</td>
+                    <td>{{ item.utilisateur.adresse ~ ' - ' ~ item.utilisateur.commune ~ ' - ' ~ item.utilisateur.code_postal }}</td>
                     <td>{{ item.commande.created_at|date('d/m/Y à H:i') }}</td>
                     <td>{{ item.commande.date|date('d/m/Y à H:i') }}</td>
                     <td>

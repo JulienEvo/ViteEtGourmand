@@ -15,34 +15,11 @@ class SocieteRepository
         $this->pdo = $pdo;
     }
 
-    /*
-    protected function map(array $row): Societe
-    {
-        return new Societe(
-            (int)$row['id'],
-            $row['libelle'],
-            $row['type'],
-            $row['capital'],
-            $row['rcs'],
-            $row['tva'],
-            $row['telephone'],
-            $row['email'],
-            $row['adresse'],
-            $row['code_postal'],
-            $row['commune'],
-            $row['pays'],
-            $row['actif'],
-            new \DateTime($row['created_at']),
-            $row['updated_at'] ? new \DateTime($row['updated_at']) : null
-        );
-    }
-    */
-
-    public function update(int $id, Societe $societe): bool
+    public function update(Societe $societe): bool
     {
         $sql = "UPDATE societe
                 SET libelle = :libelle,
-                    type = :type,
+                    statut = :statut,
                     capital = :capital,
                     rcs = :rcs,
                     tva = :tva,
@@ -59,7 +36,7 @@ class SocieteRepository
 
         return $stmt->execute([
             ':libelle' => $societe->getLibelle(),
-            ':type' => $societe->getType(),
+            ':statut' => $societe->getStatut(),
             ':capital' => $societe->getCapital(),
             ':rcs' => $societe->getRcs(),
             ':tva' => $societe->getTva(),
@@ -70,7 +47,7 @@ class SocieteRepository
             ':commune' => $societe->getCommune(),
             ':pays' => $societe->getPays(),
             ':actif' => $societe->isActif() ?? 1,
-            ':id' => $id
+            ':id' => $societe->getId()
         ]);
     }
 
@@ -114,7 +91,7 @@ class SocieteRepository
         $societe = new Societe(
             $row['id'],
             $row['libelle'],
-            $row['type'],
+            $row['statut'],
             $row['capital'],
             $row['rcs'],
             $row['tva'],

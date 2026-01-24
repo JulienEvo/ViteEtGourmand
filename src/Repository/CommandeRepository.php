@@ -18,15 +18,17 @@ class CommandeRepository
 
     public function insert(Commande $commande): int|array
     {
-        $sql = "INSERT INTO commande (utilisateur_id, commande_etat_id, numero, date, remise)
-                VALUES (:uid, :etat, :numero, :date, :remise)";
+        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, montant_ht, remise)
+                VALUES (:utilisateur_id, :menu_id, :etat, :numero, :date, :montant_ht, :remise)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
-            'uid' => $commande->getUtilisateur_id(),
+            'utilisateur_id' => $commande->getUtilisateur_id(),
+            'menu_id' => $commande->getMenu_id(),
             'etat' => $commande->getCommande_etat_id(),
             'numero' => $commande->getNumero(),
             'date' => $commande->getDate()?->format('Y-m-d H:i:s'),
+            'montant_ht' => $commande->getMontant_ht(),
             'remise' => $commande->getRemise(),
         ]))
         {
@@ -62,14 +64,23 @@ class CommandeRepository
         }
     }
 
-    public function findAll(): array
+    public function findAll(int $utilisateur_id = 0): array
     {
+        $vars = [];
         $sql = "SELECT *
                 FROM commande
-                ORDER BY commande.date";
+                WHERE 1";
+
+        if ($utilisateur_id > 0)
+        {
+            $sql .= " AND utilisateur_id = :utilisateur_id";
+            $vars['utilisateur_id'] = $utilisateur_id;
+        }
+
+        $sql .= " ORDER BY commande.date";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute($vars);
 
         $tabCommandes = [];
         while ($row = $stmt->fetchObject())
@@ -82,6 +93,7 @@ class CommandeRepository
                 $row->numero,
                 new DateTime($row->date),
                 $row->remise,
+                $row->montant_ht,
                 new DateTime($row->created_at),
             );
         }
@@ -112,6 +124,7 @@ class CommandeRepository
                 $row->numero,
                 new DateTime($row->date),
                 $row->remise,
+                $row->montant_ht,
                 new DateTime($row->created_at)
             );
         }
@@ -134,9 +147,7 @@ class CommandeRepository
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
             $numero = substr($row['numero'], -4);
-            echo "TEST : " . $numero; exit;
-
-
+            $numero++;
 
             $retour = "C".date('ym') . str_pad($numero, 4, '0', STR_PAD_LEFT);;
         }

@@ -1,0 +1,44 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}V&G : Historique des commandes{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">
+        <i class="bi bi-people-fill"></i>&nbsp;Liste des commandes : <span class="fs-3">{{ tabCommande|length }} résultat(s)</span>
+    </h1>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>État</th>
+            <th>Numéro</th>
+            <th>Date</th>
+            <th>Menu</th>
+            <th>Montant</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if tabCommande|length > 0 %}
+            {% for commande in tabCommande %}
+                <tr>
+                    <td>{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
+                    <td>{{ commande.numero }}</td>
+                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ menu_libelle }}</td>           ///////----------> PAreil que tabCommandeEtat[commande.commande_etat_id].libelle
+                    <td>{{ commande.montant_ttc }}</td>
+                    <td>
+                        <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

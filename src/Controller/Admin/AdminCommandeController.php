@@ -3,13 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Commande;
-use App\Repository\CommandeEtatRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\GeneriqueRepository;
 use App\Repository\MenuRepository;
 use App\Repository\UserRepository;
 use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,7 +51,8 @@ class AdminCommandeController extends AbstractController
         UserRepository $userRepository,
         MenuRepository $menuRepository,
         GeneriqueRepository $generiqueRepository,
-        Request $request): Response
+        Request $request
+    ): Response
     {
 
         if ($request->isMethod('POST'))
@@ -70,6 +71,7 @@ class AdminCommandeController extends AbstractController
                 $request->request->get('commande_etat_id'),
                 $numero,
                 new \DateTime($request->request->get('date_livraison')),
+                $request->request->get('montant_ht', 0),
                 $request->request->get('remise', 0),
             );
 
@@ -88,14 +90,14 @@ class AdminCommandeController extends AbstractController
             if (is_int($retour))
             {
                 $id = $retour;
-                $this->addFlash('success', "Commande {$mode} avec succès"); // MODIF : Ne marche pas, ajour dans layout.html.twig
+                $this->addFlash('success', "Commande {$mode} avec succès");
             }
             else
             {
                 $this->addFlash('danger', "Erreur lors de l'enregistrement de la commande : " . $retour['message']);
             }
 
-            return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+            return $this->render('admin_commande_edit', ['id' => $id]);
         }
 
         $commande = $commandeRepository->findById($id);
@@ -114,12 +116,55 @@ class AdminCommandeController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(int $id): Response
+    public function delete(int $id, CommandeRepository $commandeRepository): Response
     {
 
         //...........
 
+        $tabCommande = $commandeRepository->findAll();
 
-        return $this->redirectToRoute('admin_menu_index');
+        return $this->render('admin/commande/index.html.twig', [
+            'tabCommande' => $tabCommande,
+        ]);
     }
+
+    #[Route('/{id}/historique', name: 'historique')]
+    public function historique(
+        int $id,
+        Security $security,
+        CommandeRepository $commandeRepository,
+        GeneriqueRepository $generiqueRepository,
+    ): Response
+    {
+        $user = $security->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $tabCommande = $commandeRepository->findAll($user->getUserId());
+        $tabCommandeEtat = [];
+
+        $tab_commande_etat = $generiqueRepository->findAll('commande_etat');
+        foreach ($tab_commande_etat as $commande_etat)
+        {
+            $tabCommandeEtat[$commande_etat['id']]['libelle'] = $commande_etat['libelle'];
+        }
+
+        return $this->render('admin/commande/historique.html.twig', [
+            'tabCommande' => $tabCommande,
+            'tabCommandeEtat' => $tabCommandeEtat,
+        ]);
+    }
+
+    #[Route('/{id}/visualisation', name: 'visualisation')]
+    public function visualisation(int $id, CommandeRepository $commandeRepository): Response
+    {
+        $commande = $commandeRepository->findById($id);
+
+        return $this->render('admin/commande/visualisation.html.twig', [
+            'commande' => $commande,
+        ]);
+    }
+
 }

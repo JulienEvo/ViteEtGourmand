@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Avis;
 use PDO;
+use DateTime;
 
 class AvisRepository
 {
@@ -17,17 +18,18 @@ class AvisRepository
     public function insert(Avis $avis): bool
     {
         $sql = "INSERT INTO avis
-                    (utilisateur_id, note, commentaire, valide, created_at)
+                    (utilisateur_id, commande_id, note, commentaire, valide, created_at)
                 VALUES
-                    (:uid, :note, :commentaire, :valide, :created)";
+                    (:utilisateur_id, commande_id, :note, :commentaire, :valide, :created)";
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'uid' => $avis->getUtilisateurId(),
+            'utilisateur_id' => $avis->getUtilisateurId(),
+            'commande_id' => $avis->getCommandeId(),
             'note' => $avis->getNote(),
             'commentaire' => $avis->getCommentaire(),
             'valide' => $avis->getValide(),
-            'created' => $avis->getCreatedAt()->format('Y-m-d H:i:s')
+            'created' => new DateTime()
         ]);
     }
 
@@ -44,6 +46,99 @@ class AvisRepository
             'valide' => $avis->getValide(),
             'id' => $avis->getId()
         ]);
+    }
+
+    public function findAll(): array
+    {
+        $sql = "SELECT *
+                FROM avis
+                WHERE 1
+                ORDER BY created_at DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+
+        $tabAvis = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tabAvis[$row['id']] = new Avis(
+                $row['id'],
+                $row['utilisateur_id'],
+                $row['commande_id'],
+                $row['note'],
+                $row['commentaire'],
+                $row['valide']
+            );
+        }
+
+        return $tabAvis;
+    }
+
+    public function findById(int $id): ?Avis
+    {
+        $avis = null;
+
+        $sql = "SELECT *
+                FROM avis
+                WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+
+        if ($stmt->rowCount() > 0)
+        {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $avis = new Avis(
+                $row['id'],
+                $row['utilisateur_id'],
+                $row['commande_id'],
+                $row['note'],
+                $row['commentaire'],
+                $row['valide'],
+                new DateTime($row['created_at'])
+            );
+        }
+
+        return  $avis;
+    }
+
+    public function findByParam(int $utilisateur_id = 0, int $commande_id = 0): array
+    {
+        $sql = "SELECT avis.*
+                FROM avis
+                WHERE 1
+                ORDER BY created_at DESC";
+        $vars = [];
+
+        if ($utilisateur_id > 0)
+        {
+            $sql .= " WHERE utilisateur_id = :utilisateur_id";
+            $vars['utilisateur_id'] = $utilisateur_id;
+        }
+        if ($commande_id > 0)
+        {
+            $sql .= " WHERE commande_id = :commande_id";
+            $vars['commande_id'] = $commande_id;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($vars);
+
+        $tabAvis = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tabAvis[$row['id']] = new Avis(
+                $row['id'],
+                $row['utilisateur_id'],
+                $row['commande_id'],
+                $row['note'],
+                $row['commentaire'],
+                $row['valide'],
+                $row['created_at']
+            );
+        }
+
+        return $tabAvis;
     }
 
     public function getLastAvis(int $limit = 10): array

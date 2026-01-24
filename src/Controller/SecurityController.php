@@ -14,6 +14,7 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Config\Security\FirewallConfig\AccessToken\TokenHandler\Oidc\EncryptionConfig;
 
 class SecurityController extends AbstractController
 {
@@ -27,10 +28,10 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
-    public function login(AuthenticationUtils $authUtils, Request $request): Response
+    public function login(AuthenticationUtils $authUtils, UserRepository $userRepository, Request $request): Response
     {
-        // Si déjà connecté, redirection
         if ($this->getUser()) {
+            $this->addFlash('success', "Bienvenue ".$this->getUser()->getPrenom());
             return $this->redirectToRoute('home');
         }
 
@@ -38,86 +39,29 @@ class SecurityController extends AbstractController
             'last_username' => $authUtils->getLastUsername(),
             'error' => $authUtils->getLastAuthenticationError()
         ]);
-
-        /*
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
-
-        if ($request->isMethod('POST'))
-        {
-            $userData = $this->userRepository->authenticate($email, $password);
-
-            if ($userData) {
-                // Stocke les infos utilisateur en session
-                $session = $request->getSession();
-                $session->set('user', $userData);
-
-                $redirect = str_replace('/', '', $this->getTargetPath($request->getSession(), 'main'));
-
-                if ($redirect == '' || $redirect == 'home')
-                {
-                    $redirect = 'home';
-                } else
-                {
-                    $redirect .= '_index';
-                }
-
-                $this->addFlash('success', 'Connexion réussie');
-                return $this->redirectToRoute($redirect);
-            } else {
-                $this->addFlash('error', 'Email ou mot de passe incorrect');
-            }
-        }
-
-        // Gestion de la redirection
-        if ($redirect = $request->query->get('redirect')) {
-            $this->saveTargetPath($request->getSession(), 'main', $redirect);
-        }
-
-        return $this->render('security/login.html.twig', ['email' => $email]);
-        */
     }
 
     #[Route('/logout', name: 'logout')]
     public function logout(Request $request)
-    {
-        $session = $request->getSession();
-        $session->remove('user');
-
-        return $this->redirectToRoute('login');
-    }
+    {}
 
     #[Route('/register', name: 'register')]
-    public function register(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function register(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
+
         if ($request->isMethod('POST')) {
-
             $token = new CsrfToken('register', $request->request->get('_csrf_token'));
-            if (!$csrfTokenManager->isTokenValid($token)) {
-                throw $this->createAccessDeniedException('CSRF invalide');
-            }
-
             $email = $request->request->get('email');
             $password = $request->request->get('password');
             $confirm = $request->request->get('confirm_password');
 
-            if ($password !== $confirm) {
-                $this->addFlash('error', 'Les mots de passe ne correspondent pas');
-                return $this->redirectToRoute('register');
-            }
-
-            if ($userRepository->isValidPassword($password))
-            {
-                throw $this->createAccessDeniedException('Le mot de passe doit contenir au moins : 10 caractères, 1 minuscule, 1 majuscule, 1 caractère spécial et 1 chiffre');
-            }
-
             $utilisateur = new User(
                 0,
-                json_decode($request->request->get('roles')),
+                [$request->request->get('roles', 'ROLE_USER')],
                 $request->request->get('email'),
-                password_hash($password, PASSWORD_DEFAULT),
-                $request->request->get('nom'),
+                $password,
                 $request->request->get('prenom'),
+                $request->request->get('nom'),
                 $request->request->get('telephone'),
                 $request->request->get('adresse'),
                 $request->request->get('code_postal'),
@@ -126,23 +70,26 @@ class SecurityController extends AbstractController
                 ($request->request->get('poste') ?? '')
             );
 
-            $retValid = $userRepository->isValidUtilisateur($utilisateur, $confirm);
+            if (!$csrfTokenManager->isTokenValid($token)) {
+                $this->addFlash('danger', 'CSRF invalide');
+                return $this->render('security/register.html.twig', ['utilisateur' => $utilisateur]);
+            }
+
+            $retValid = $userRepository->isValidUtilisateur($utilisateur, true, $confirm);
             if ($retValid !== true)
             {
                 $this->addFlash('danger', $retValid);
-                return $this->render('security/register.html.twig', [
-                    'utilisateur' => $utilisateur,
-                ]);
+                return $this->render('security/register.html.twig', ['utilisateur' => $utilisateur]);
             }
 
             if ($userRepository->insert($utilisateur))
             {
                 $this->addFlash('success', 'Compte créé avec succès');
-                return $this->redirectToRoute('login', ['email' => $email]);
+                return $this->render('security/login.html.twig', ['email' => $email]);
             }
             else
             {
-                $this->addFlash('error', 'Échec de la création du compte');
+                $this->addFlash('danger', 'Échec de la création du compte');
             }
         }
 

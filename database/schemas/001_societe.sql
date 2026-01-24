@@ -2,7 +2,7 @@
 CREATE TABLE societe (
     id INT NOT NULL AUTO_INCREMENT,
     libelle VARCHAR(64) NOT NULL,
-    type VARCHAR(32) NOT NULL,
+    statut VARCHAR(32) NOT NULL,
     capital FLOAT NULL,
     rcs VARCHAR(64),
     tva VARCHAR(32),

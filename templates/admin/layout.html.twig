@@ -2,7 +2,7 @@
 <html lang="fr">
     <head> <meta charset="UTF-8">
         <title>
-            {% set user = app.session.get('user') %}
+            {% set user = app.user %}
             {% block title %}Espace de {{ user.prenom }}{% endblock %}
         </title>
 

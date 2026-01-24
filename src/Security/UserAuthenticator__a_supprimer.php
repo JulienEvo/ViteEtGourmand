@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Service\FonctionsService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -13,17 +14,19 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 
-class UserAuthenticator extends AbstractLoginFormAuthenticator
+class UserAuthenticatorAsupprimer extends AbstractLoginFormAuthenticator
 {
     public function __construct(private RouterInterface $router) {}
 
     protected function getLoginUrl(Request $request): string
     {
+        echo "TEST getLoginUrl() !"; exit;
         return $this->router->generate('login');
     }
 
     public function authenticate(Request $request): Passport
     {
+        echo "TEST authenticate() !"; exit;
         $email = $request->request->get('email');
 
         return new Passport(

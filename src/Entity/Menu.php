@@ -7,6 +7,7 @@ class Menu
     private int $id;
     private string $libelle;
     private string $description;
+    private string $conditions;
     private int $min_personne;
     private float $tarif_personne;
     private int $quantite;
@@ -18,6 +19,7 @@ class Menu
         int $id = 0,
         string $libelle = '',
         string $description = '',
+        string $conditions = '',
         int $min_personne = 1,
         float $tarif_personne = 0,
         int $quantite = 0,
@@ -29,6 +31,7 @@ class Menu
         $this->setId($id);
         $this->setLibelle($libelle);
         $this->setDescription($description);
+        $this->setConditions($conditions);
         $this->setmin_personne($min_personne);
         $this->settarif_personne($tarif_personne);
         $this->setQuantite($quantite);
@@ -49,6 +52,10 @@ class Menu
     public function getDescription(): string
     {
         return $this->description;
+    }
+    public function getConditions(): string
+    {
+        return $this->conditions;
     }
     public function getMin_personne(): int
     {
@@ -86,6 +93,10 @@ class Menu
     public function setDescription(string $description): void
     {
         $this->description = $description;
+    }
+    public function setConditions(string $conditions): void
+    {
+        $this->conditions = $conditions;
     }
     public function setMin_personne(int $min_personne): void
     {

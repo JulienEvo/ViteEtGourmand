@@ -60,25 +60,7 @@ class PlatController extends AbstractController
             if (isset($new_image) && !$removeImage)
             {
                 //--- Vérifie l'image ---//
-                $tailleMax = 5 * 1024 * 1024;
-                $extensionsValides = ['image/jpeg', 'image/png',];
-
-                // Provenance du fichier
-                if (!$new_image instanceof UploadedFile) {
-                    $erreur = "Fichier inconnu";
-                }
-                // Téléchargement réussi
-                elseif (!$new_image->isValid()) {
-                    $erreur .= 'Erreur de téléchargement du fichier : '.$new_image->getClientOriginalName();
-                }
-                // Taille Max
-                elseif ($new_image->getSize() > $tailleMax) {
-                    $erreur .= $new_image->getClientOriginalName()." dépasse la taille maximale autorisée (5 Mo) \n";
-                }
-                // Extensions autorisées
-                elseif (!in_array($new_image->getMimeType(), $extensionsValides, true)) {
-                    $erreur .= $new_image->getClientOriginalName()." : type de fichier non autorisé \n";
-                }
+                $erreur = valideImage($new_image);
 
                 if (empty($erreur))
                 {
@@ -102,7 +84,7 @@ class PlatController extends AbstractController
                 else
                 {
                     $this->addFlash('danger', $erreur);
-                    return $this->redirectToRoute('admin_plat_edit', ['id' => $id]);
+                    return $this->render('admin/plat/edit.ht', ['id' => $id]);
                 }
             }
 
@@ -170,5 +152,32 @@ class PlatController extends AbstractController
     public function delete(int $id): Response
     {
         return $this->redirectToRoute('admin_menu_index');
+    }
+
+    private function valideImage(UploadedFile $image): string
+    {
+        $retour = "";
+
+        $tailleMax = 5 * 1024 * 1024;
+        $extensionsValides = ['image/jpeg', 'image/png',];
+
+        // Provenance du fichier
+        if (!$image instanceof UploadedFile) {
+            $retour = "Fichier inconnu";
+        }
+        // Téléchargement réussi
+        elseif (!$image->isValid()) {
+            $retour .= 'Erreur de téléchargement du fichier : '.$image->getClientOriginalName();
+        }
+        // Taille Max
+        elseif ($image->getSize() > $tailleMax) {
+            $retour .= $image->getClientOriginalName()." dépasse la taille maximale autorisée (5 Mo) \n";
+        }
+        // Extensions autorisées
+        elseif (!in_array($image->getMimeType(), $extensionsValides, true)) {
+            $retour .= $image->getClientOriginalName()." : type de fichier non autorisé \n";
+        }
+
+        return $retour;
     }
 }

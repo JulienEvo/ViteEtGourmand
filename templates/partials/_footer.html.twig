@@ -21,14 +21,17 @@
 
                 <ul class="list-unstyled">
                     {% for horaire in query_service.getHoraire(societe.id) %}
-                        {% if horaire.ferme %}
-                            <li>
-                                {{ horaire.jour }} : Fermé
-                            </li>
-                        {% else %}
-                            <li>
-                                {{ horaire.jour }} : {{ horaire.ouverture|default(null)|date('H:i') }} - {{ horaire.fermeture|default(null)|date('H:i') }}
-                            </li>
+                        {% if horaire %}
+                            {% if horaire.ferme %}
+                                <li>
+                                    {{ horaire.jour }} : Fermé
+                                </li>
+                            {% else %}
+                                <li>
+                                    {{ horaire.jour }} : {{ horaire.ouverture|date('H') }}h{{ horaire.ouverture|date('i') }}
+                                                       - {{ horaire.fermeture|date('H') }}h{{ horaire.fermeture|date('i') }}
+                                </li>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </ul>

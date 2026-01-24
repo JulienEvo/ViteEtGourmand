@@ -59,7 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->setUpdatedAt($updatedAt);
     }
 
-    public function getId(): int
+    public function getUserId(): int
     {
         return $this->id;
     }
@@ -81,6 +81,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
+    }
+    public function getId(): string
+    {
+        return $this->id;
     }
     public function getEmail(): string
     {

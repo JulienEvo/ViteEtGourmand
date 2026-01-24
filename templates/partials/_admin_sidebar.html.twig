@@ -20,14 +20,14 @@
                 {% set type = 'utilisateur' %}
             {% endif %}
 
-            <a href="{{ path('admin_utilisateur_edit', {id: user.id, type: type, mode: 'modif'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_profil' ? 'active' : 'text-white' }}">
+            <a href="{{ path('admin_utilisateur_profil') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_profil' ? 'active' : 'text-white' }}">
                 <i class="bi bi-person-square"></i>&emsp;Mon profil
             </a>
         </li>
 
         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
             <li class="nav-item">
-                <a href="{{ path('admin_societe_edit', {id: societe.id}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_societe' ? 'active' : 'text-white' }}">
+                <a href="{{ path('admin_societe_edit', {id: 1}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_societe' ? 'active' : 'text-white' }}">
                     <i class="bi bi-info-square-fill"></i>&emsp;Société
                 </a>
             </li>
@@ -71,6 +71,15 @@
                 <a href="{{ path('admin_commande_index') }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_commande' ? 'active' : 'text-white' }}">
                     <i class="bi bi-bag-fill"></i>&emsp;Commandes
+                </a>
+            </li>
+        {% endif %}
+
+        {% if not is_granted('ROLE_ADMIN') and not is_granted('ROLE_EMPLOYE') %}
+            <li class="nav-item">
+                <a href="{{ path('admin_commande_historique', {id: 0}) }}"
+                   class="nav-link {{ app.request.get('_route') starts with 'admin_commande_historique' ? 'active' : 'text-white' }}">
+                    <i class="bi bi-bag-fill"></i>&emsp;Historique
                 </a>
             </li>
         {% endif %}

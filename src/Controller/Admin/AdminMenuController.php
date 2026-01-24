@@ -60,12 +60,13 @@ class AdminMenuController extends AbstractController
                         $id,
                         trim($request->request->get('titre')),
                         trim($request->request->get('description')),
+                        trim($request->request->get('conditions')),
                         trim($request->request->get('min_personne')),
                         trim($request->request->get('tarif_personne')),
                         trim($request->request->get('quantite')),
                         trim($request->request->get('actif')),
-                        $menu_theme,
-                        $menu_regime,
+                        implode($menu_theme),
+                        implode($menu_regime),
                     );
 
                     // Met à jour le menu
@@ -160,8 +161,14 @@ class AdminMenuController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(int $id): Response
+    public function delete(int $id, MenuRepository $menuRepository): Response
     {
-        return $this->redirectToRoute('admin_menu_index');
+        // A FAIRE !!!
+
+        $tabMenu = $menuRepository->findAll();
+
+        return $this->render('admin/menu/index.html.twig', [
+            'tabMenu' => $tabMenu,
+        ]);
     }
 }

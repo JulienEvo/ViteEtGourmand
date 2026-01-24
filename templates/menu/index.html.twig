@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% set user = app.session.get('user') %}
+    {% set user = app.user %}
 
     <section class="hero-section mb-3">
         <div class="hero-content">

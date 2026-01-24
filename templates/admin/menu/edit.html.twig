@@ -25,8 +25,8 @@
             <div class="card-body">
                 <div class="row col-12">
                     <div class="mb-3 col-12 col-lg-3">
-                        <label for="titre" class="form-label">Titre :</label>
-                        <input type="text" class="form-control" name="titre" id="titre" value="{{ menu.libelle ?? '' }}" required>
+                        <label for="libelle" class="form-label">Titre :</label>
+                        <input type="text" class="form-control" name="libelle" id="libelle" value="{{ menu.libelle ?? '' }}" required>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">
@@ -80,6 +80,11 @@
                             <span>Non :&nbsp;</span>
                             <input type="radio" name="actif" id="actif_0" value="0" {% if (menu.actif != 1) %} {{ 'checked' }} {% endif %}>
                         </div>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-12">
+                        <label for="conditions" class="form-label">Conditions :</label>
+                        <textarea class="form-control" rows="5" name="conditions" id="conditions">{{ menu.conditions ?? '' }}</textarea>
                     </div>
 
                 </div>

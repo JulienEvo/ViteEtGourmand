@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Service\FonctionsService;
 use PDO;
 use DateTime;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserRepository
 {
@@ -27,7 +28,7 @@ class UserRepository
         if ($stmt->execute([
             'roles' => json_encode($user->getRoles()),
             'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
+            'password' => password_hash($user->getPassword(), PASSWORD_DEFAULT),
             'prenom' => $user->getPrenom(),
             'nom' => $user->getNom(),
             'telephone' => $user->getTelephone(),
@@ -46,7 +47,7 @@ class UserRepository
         }
     }
 
-    public function update(User $user, bool $save_pass): bool|array
+    public function update(UserInterface $user, bool $save_pass): bool|array
 
     {
         $password = "";
@@ -59,8 +60,6 @@ class UserRepository
                 SET roles=:roles, email=:email {$password} , prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
                     code_postal=:code_postal, commune=:commune, pays=:pays, poste=:poste, actif=:actif, updated_at=:updated
                 WHERE id = :id";
-
-        $stmt = $this->pdo->prepare($sql);
 
         $vars = [
             ':roles' => json_encode($user->getRoles()),
@@ -75,13 +74,14 @@ class UserRepository
             ':poste' => $user->getPoste(),
             ':actif' => $user->getActif(),
             ':updated' => date('Y-m-d'),
-            ':id' => $user->getId(),
+            ':id' => $user->getUserId(),
         ];
         if ($save_pass)
         {
-            $vars['password'] = $user->getPassword();
+            $vars['password'] = password_hash($user->getPassword(), PASSWORD_DEFAULT);
         }
 
+        $stmt = $this->pdo->prepare($sql);
         if ($stmt->execute($vars))
         {
             return true;
@@ -109,8 +109,27 @@ class UserRepository
 
     public function findAll(string $role = ''): array
     {
+        if ($role == '')
+        {
+            $role = "ROLE_USER";
+        }
+
+        switch ($role)
+        {
+            default:
+                $where_sql = " roles NOT LIKE '%ROLE_ADMIN%' AND roles NOT LIKE '%ROLE_EMPLOYE%'";
+                break;
+            case 'ROLE_ADMIN':
+                $where_sql = "  roles NOT LIKE '%ROLE_EMPLOYE%' OR roles LIKE 'ROLE_USER'";
+                break;
+            case 'ROLE_EMPLOYE':
+                $where_sql = "  roles NOT LIKE '%ROLE_ADMIN%' OR roles LIKE 'ROLE_USER'";
+                break;
+        }
+
         $sql = "SELECT *
                 FROM utilisateur
+                WHERE {$where_sql}
                 ORDER BY nom, prenom";
 
         $stmt = $this->pdo->prepare($sql);
@@ -121,7 +140,25 @@ class UserRepository
         {
             if (in_array($role, json_decode($row['roles'])))
             {
-                $tabUtilisateur[$row['id']] = $row;
+                $utilisateur = new User(
+                    (int)$row['id'],
+                    json_decode($row['roles']),
+                    $row['email'],
+                    $row['password'],
+                    $row['prenom'],
+                    $row['nom'],
+                    $row['telephone'],
+                    $row['adresse'],
+                    $row['code_postal'],
+                    $row['commune'],
+                    $row['pays'],
+                    $row['poste'],
+                    $row['actif'],
+                    new DateTime($row['created_at']),
+                    new DateTime($row['updated_at']),
+                );
+
+                $tabUtilisateur[$row['id']] = $utilisateur;
             }
         }
 
@@ -232,29 +269,50 @@ class UserRepository
         return preg_match($regex, $password) === 1;
     }
 
-    public function isValidUtilisateur(User $utilisateur, string $confirmPass, bool $checkValidPass = true): bool|string
+    public function isValidUtilisateur(UserInterface $utilisateur, bool $isInsert, bool $checkValidPass = true, string $confirmPass = ""): bool|string
     {
-        // Vérifie s'il existe déjà un compte avec cet email
-        if ($this->findByEmail($utilisateur->getEmail()))
+        if ($isInsert)
         {
-            return "Un compte existe déjà avec cet e-mail";
+            // Vérifie s'il existe déjà un compte avec cet email
+            if ($this->findByEmail($utilisateur->getEmail()))
+            {
+                return "Un compte existe déjà avec cet e-mail";
+            }
         }
 
         // Vérifie la confirmation du mot de passe
         if ($checkValidPass)
         {
-            if ($this->isValidPassword($utilisateur->getPassword()))
+            if (!$this->isValidPassword($utilisateur->getPassword()))
             {
                 return "Le mot de passe doit contenir au moins : 10 caractères, 1 minuscule, 1 majuscule, 1 caractère spécial et 1 chiffre";
             }
 
-            if ($utilisateur->getPassword() != $confirmPass)
+            if ($confirmPass != $utilisateur->getPassword())
             {
                 return "Les mots de passe ne correspondent pas";
             }
         }
 
         return true;
+    }
+
+    public function getRoleByType(string $type)
+    {
+        switch ($type)
+        {
+            case 'admin':
+                $role = 'ROLE_ADMIN';
+                break;
+            case 'employe':
+                $role = 'ROLE_EMPLOYE';
+                break;
+            default:
+                $role = 'ROLE_USER';
+                break;
+        }
+
+        return $role;
     }
 
 }

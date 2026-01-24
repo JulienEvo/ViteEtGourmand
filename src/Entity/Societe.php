@@ -8,7 +8,7 @@ class Societe
 {
     private int $id;
     private string $libelle;
-    private string $type;
+    private string $statut;
     private ?float $capital;
     private ?string $rcs;
     private ?string $tva;
@@ -22,13 +22,13 @@ class Societe
     private DateTime $createdAt;
     private ?DateTime $updatedAt;
 
-    public function __construct(int $id, string $libelle, string $type, ?float $capital, ?string $rcs, ?string $tva,
+    public function __construct(int $id, string $libelle, string $statut, ?float $capital, ?string $rcs, ?string $tva,
                                 string $telephone, string $email, string $adresse, string $code_postal, string $commune,
                                 string $pays, bool $actif, DateTime $createdAt, ?DateTime $updatedAt = null)
     {
         $this->id = $id;
         $this->libelle = $libelle;
-        $this->type = $type;
+        $this->statut = $statut;
         $this->capital = $capital;
         $this->rcs = $rcs;
         $this->tva = $tva;
@@ -53,9 +53,9 @@ class Societe
         return $this->libelle;
     }
 
-    public function getType(): string
+    public function getStatut(): string
     {
-        return $this->type;
+        return $this->statut;
     }
 
     public function getCapital(): ?float
@@ -123,9 +123,9 @@ class Societe
         $this->libelle = $libelle;
     }
 
-    public function setType(string $type): void
+    public function setStatut(string $statut): void
     {
-        $this->type = $type;
+        $this->statut = $statut;
     }
 
     public function setCapital(?float $capital): void

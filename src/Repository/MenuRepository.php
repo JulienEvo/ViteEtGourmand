@@ -27,14 +27,15 @@ class MenuRepository
 
     public function insert(array $menu): bool
     {
-        $sql = "INSERT INTO menu (libelle, description, theme, min_personne, tarif_personne, regime, quantite, actif)
-                VALUES (:libelle, :description, :theme, :min_personne, :tarif_personne, :regime, :quantite, :actif)";
+        $sql = "INSERT INTO menu (libelle, description, conditions, theme, min_personne, tarif_personne, regime, quantite, actif)
+                VALUES (:libelle, :description, :conditions, :theme, :min_personne, :tarif_personne, :regime, :quantite, :actif)";
 
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
             ':libelle' => $menu['libelle'],
             ':description' => $menu['description'],
+            ':conditions' => $menu['conditions'],
             ':theme' => $menu['theme'],
             ':min_personne' => $menu['min_personne'],
             ':tarif_personne' => $menu['tarif_personne'],
@@ -50,6 +51,7 @@ class MenuRepository
         $sql = "UPDATE menu
                 SET libelle = :libelle,
                     description = :description,
+                    conditions = :conditions,
                     min_personne = :min_personne,
                     tarif_personne = :tarif_personne,
                     quantite = :quantite,
@@ -61,6 +63,7 @@ class MenuRepository
         return $stmt->execute([
             ':libelle' => $menu->getLibelle(),
             ':description' => $menu->getDescription(),
+            ':conditions' => $menu->getConditions(),
             ':min_personne' => $menu->getMin_personne(),
             ':tarif_personne' => $menu->getTarif_personne(),
             ':quantite' => $menu->getQuantite(),
@@ -116,6 +119,7 @@ class MenuRepository
                 $row['id'],
                 $row['libelle'],
                 $row['description'],
+                $row['conditions'],
                 $row['min_personne'],
                 $row['tarif_personne'],
                 $row['quantite'],
@@ -149,12 +153,13 @@ class MenuRepository
                 $row['id'],
                 $row['libelle'],
                 $row['description'],
+                $row['conditions'],
                 $row['min_personne'],
                 $row['tarif_personne'],
                 $row['quantite'],
                 $row['actif'],
-                $themes,
-                $regimes
+                implode($themes),
+                implode($regimes)
             );
         }
 

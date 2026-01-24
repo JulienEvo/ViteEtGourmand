@@ -29,7 +29,7 @@
 
                         <form method="get" action="{{ path('commande_ajout') }}">
                             <input type="hidden" name="menu_id" id="menu_id" value="{{ menu.id }}">
-                            <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ app.session.get('user').id ?? 0 }}">
+                            <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ app.user.id ?? 0 }}">
 
                             <table class="w-100 text-center">
                                 <tr>
@@ -39,7 +39,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <input type="number" name="quantity" min="0" max="{{ menu.quantite }}" value="1" class="form-control">
+                                        <input type="number" name="quantite" min="1" max="{{ menu.quantite }}" value="1" class="form-control">
                                     </td>
                                     <td>
                                         <button type="submit" class="btn btn-primary" title="Commander">

@@ -3,7 +3,6 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    {% set user = app.session.get('user') %}
 
     <section class="hero-section mb-3">
         <div class="hero-content">
@@ -21,7 +20,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body p-4">
 
-                        {% if error %}
+                        {% if error ?? false %}
                             <div class="alert alert-danger text-center">
                                 {{ error.message }}
                                 <br>
