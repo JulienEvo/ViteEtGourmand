@@ -4,78 +4,125 @@
 
 {% block body %}
 
-<h1>Modifier les informations de la société</h1>
+    <h1>Modifier les informations de la société</h1>
 
-<form method="post" id="form_societe" action="{{ path('admin_societe_edit', {id: societe.id ?? 0}) }}">
-    <div class="card mb-3">
-        <div class="card-header">
-            <h4>Informations générales</h4>
-        </div>
-        <div class="card-body">
-            <div class="row col-12">
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="libelle" class="form-label">Nom :</label>
-                    <input type="text" class="form-control" name="libelle" id="libelle" value="{{ societe.libelle ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="statut" class="form-label">Statut :</label>
-                    <input type="text" class="form-control" name="statut" id="statut" value="{{ societe.statut ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="capital" class="form-label">Capital :</label>
-                    <input type="number" class="form-control" step="0.01" min="0" name="capital" id="capital" value="{{ societe.capital ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="rcs" class="form-label">RCS :</label>
-                    <input type="text" class="form-control" name="rcs" id="rcs" value="{{ societe.rcs ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="tva" class="form-label">TVA :</label>
-                    <input type="text" class="form-control" name="tva" id="tva" value="{{ societe.tva ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="telephone" class="form-label">Téléphone :</label>
-                    <input type="text" class="form-control" name="telephone" id="telephone" value="{{ societe.telephone|formatTelFr }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="email" class="form-label">E-mail :</label>
-                    <input type="text" class="form-control" name="email" id="email" value="{{ societe.email ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="adresse" class="form-label">Adresse :</label>
-                    <input type="text" class="form-control" name="adresse" id="adresse" value="{{ societe.adresse ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="code_postal" class="form-label">Code postal :</label>
-                    <input type="text" class="form-control" name="code_postal" id="code_postal" value="{{ societe.code_postal ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="commune" class="form-label">Commune :</label>
-                    <input type="text" class="form-control" name="commune" id="commune" value="{{ societe.commune ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="pays" class="form-label">Pays :</label>
-                    <input type="text" class="form-control" name="pays" id="pays" value="{{ societe.pays ?? '' }}" required>
-                </div>
-                <div class="mb-3 col-12 col-lg-3">
-                    <label for="actif_1" class="form-label">Actif :</label>
-                    <div>
-                        <span>Oui :&nbsp;</span>
-                        <input type="radio" name="actif" id="actif_1" value="1" {% if (societe.actif == 1) %} {{ 'checked' }} {% endif %}>
+    <form method="post" id="form_societe" action="{{ path('admin_societe_edit', {id: societe.id ?? 0}) }}">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Informations générales</h4>
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="libelle" class="form-label">Nom :</label>
+                        <input type="text" class="form-control" name="libelle" id="libelle" value="{{ societe.libelle ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="statut" class="form-label">Statut :</label>
+                        <input type="text" class="form-control" name="statut" id="statut" value="{{ societe.statut ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="capital" class="form-label">Capital :</label>
+                        <input type="number" class="form-control" step="0.01" min="0" name="capital" id="capital" value="{{ societe.capital ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="rcs" class="form-label">RCS :</label>
+                        <input type="text" class="form-control" name="rcs" id="rcs" value="{{ societe.rcs ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="tva" class="form-label">TVA :</label>
+                        <input type="text" class="form-control" name="tva" id="tva" value="{{ societe.tva ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="telephone" class="form-label">Téléphone :</label>
+                        <input type="text" class="form-control" name="telephone" id="telephone" value="{{ societe.telephone|formatTelFr }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="email" class="form-label">E-mail :</label>
+                        <input type="text" class="form-control" name="email" id="email" value="{{ societe.email ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="adresse" class="form-label">Adresse :</label>
+                        <input type="text" class="form-control" name="adresse" id="adresse" value="{{ societe.adresse ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="code_postal" class="form-label">Code postal :</label>
+                        <input type="text" class="form-control" name="code_postal" id="code_postal" value="{{ societe.code_postal ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="commune" class="form-label">Commune :</label>
+                        <input type="text" class="form-control" name="commune" id="commune" value="{{ societe.commune ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="pays" class="form-label">Pays :</label>
+                        <input type="text" class="form-control" name="pays" id="pays" value="{{ societe.pays ?? '' }}" required>
+                    </div>
+                    <div class="mb-3 col-12 col-lg-3">
+                        <label for="actif_1" class="form-label">Actif :</label>
+                        <div>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_1" value="1" {% if (societe.actif == 1) %} {{ 'checked' }} {% endif %}>
 
-                        <span>&nbsp;Non :&nbsp;</span>
-                        <input type="radio" name="actif" id="actif_0" value="0" {% if (societe.actif != 1) %} {{ 'checked' }} {% endif %}>
+                            <span>&nbsp;Non :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_0" value="0" {% if (societe.actif != 1) %} {{ 'checked' }} {% endif %}>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
-        </button>
-    </div>
-</form>
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Horaires d'ouverture</h4>
+            </div>
+            <div class="card-body">
+                {% for horaire in tabHoraire %}
+                    <div class="row col-12">
+                        <div class="mb-3 col-12 col-lg-3">
+                            <label for="horaire_jour_{{ horaire.id }}" class="form-label">Jour :</label>
+                            <input type="text" class="form-control" name="horaire_jour_{{ horaire.id }}" id="horaire_jour_{{ horaire.id }}" value="{{ horaire.jour }}" disabled>
+                        </div>
+                        <div class="mb-3 col-12 col-lg-3">
+                            <label for="horaire_ouverture_{{ horaire.id }}" class="form-label">Horaire ouverture :</label>
+                            <input type="time" class="form-control" name="horaire_ouverture_{{ horaire.id }}" id="horaire_ouverture_{{ horaire.id }}" {% if horaire.ferme %}value="" disabled{% else %}value="{{ horaire.ouverture.date|date('H:i') }}" required{% endif %}>
+                        </div>
+                        <div class="mb-3 col-12 col-lg-3">
+                            <label for="horaire_fermeture_{{ horaire.id }}" class="form-label">Horaire fermeture :</label>
+                            <input type="time" class="form-control" name="horaire_fermeture_{{ horaire.id }}" id="horaire_fermeture_{{ horaire.id }}" {% if horaire.ferme %}value="" disabled{% else %}value="{{ horaire.fermeture|date('H:i') }}" required{% endif %}>
+                        </div>
+                        <div class="mb-3 col-12 col-lg-3">
+                            <label for="horaire_ferme_{{ horaire.id }}" class="form-label">fermé :</label>
+                            <input type="checkbox" class="form-check" name="horaire_ferme_{{ horaire.id }}" id="horaire_ferme_{{ horaire.id }}" onchange="setHoraire({{ horaire.id }}, this.checked)" {{ horaire.ferme ? 'checked':'' }}>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
+        </div>
+    </form>
+
+    <script>
+        function setHoraire(id, checked)
+        {
+            const ouverture = document.getElementById("horaire_ouverture_" + id);
+            const fermeture = document.getElementById("horaire_fermeture_" + id);
+
+            if (checked) {
+                ouverture.disabled = true;
+                fermeture.disabled = true;
+                ouverture.required = false;
+                fermeture.required = false;
+            } else {
+                ouverture.disabled = false;
+                fermeture.disabled = false;
+                ouverture.required = true;
+                fermeture.required = true;
+            }        }
+    </script>
 
 {% endblock %}

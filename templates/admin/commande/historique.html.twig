@@ -25,10 +25,10 @@
                     <td>{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
                     <td>{{ commande.numero }}</td>
                     <td>{{ commande.date|date('d/m/Y') }}</td>
-                    <td>{{ menu_libelle }}</td>           ///////----------> PAreil que tabCommandeEtat[commande.commande_etat_id].libelle
-                    <td>{{ commande.montant_ttc }}</td>
+                    <td>{{ tabMenu[commande.menu_id].libelle }}</td>
+                    <td>{{ commande.montant_ht *    1.1 }} €</td>
                     <td>
-                        <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning">
+                        <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning" title="Voir la commande">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                     </td>

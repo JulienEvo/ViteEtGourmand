@@ -82,7 +82,7 @@ class MenuController extends AbstractController
     }
 
     #[Route('/menus/filter', name: 'filter_ajax')]
-    public function filter(Request $request, MenuRepository $menuRepository, GeneriqueRepository $generiqueRepository, PlatRepository $platRepository): Response
+    public function filter(Request $request, MenuRepository $menuRepository, GeneriqueRepository $generiqueRepository): Response
     {
         $filters = [
             'term' => $request->query->get('term'),
@@ -92,7 +92,7 @@ class MenuController extends AbstractController
             'disponible' => $request->query->getBoolean('disponible'),
         ];
 
-        $menus = $menuRepository->findByFilters($filters, $platRepository);
+        $menus = $menuRepository->findByFilters($filters);
 
         $themes = $generiqueRepository->findAll('theme');
 

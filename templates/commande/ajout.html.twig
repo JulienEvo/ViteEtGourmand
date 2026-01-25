@@ -25,7 +25,7 @@
         <div class="col-12 col-md-11">
 
             <form method="post" id="form_commande" action="{{ path('commande_validation', {commande_id: comande_id ?? 0}) }}">
-                <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ utilisateur.id }}">
+                <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ user.getUserId() }}">
 
                 <div class="card mb-3">
                     <div class="card-header">
@@ -60,7 +60,7 @@
                         <div class="row col-12">
                             <div class="col-12 col-lg-2">
                                 <label for="menu_id" class="form-label">Menu :</label>
-                                <select class="form-select" name="menu_id" id="menu_id">
+                                <select class="form-select" name="menu_id" id="menu_id" onchange="loadMenu(this.value)">
                                     <option value="">Choix</option>
                                     {% for item in tabMenu %}
                                         <option value="{{ item.id }}" {% if (item.id == (menu_commande.id ?? 0)) %}selected{% endif %}>
@@ -69,42 +69,18 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-12 col-lg-1">
+                            <div class="col-12 col-lg-2">
                                 <label for="quantite" class="form-label">Quantité :</label>
-                                <input type="number" class="form-control" step="1" min="1" max="{{ menu.quantite }}" name="quantite" value="{{ quantite }}">
+                                <input type="number" class="form-control" step="1" min="1" max="{{ menu.quantite ?? 5 }}" name="quantite" id="quantite" value="{{ quantite ?? 1 }}">
                             </div>
                         </div>
                         <div class="row col-12 mt-3">
                             <label for="conditions" class="form-label">Conditions :</label>
-                            <p class="text-danger fw-bold">
-                                {{ menu.conditions }}
-                            </p>
+                            <textarea class="form-control" rows="5" name="conditions" id="conditions" required>{{ menu.conditions ?? '' }}</textarea>
                         </div>
 
-                        <div class="mt-3">
-                            <h5>Composition du menu</h5>
-
-                            {% for plat in plats_menu %}
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        <table class="w-100">
-                                            <tbody>
-                                            <tr>
-                                                <td style="width: 20%">
-                                                    <img src="{{ asset(plat.image) }}" class="w-100">
-                                                </td>
-                                                <td class="text-center" colspan="2">
-                                                    <h3>{{ plat_types[plat.type_id].libelle|capitalize }}</h3>
-                                                </td>
-                                                <td class="text-center" colspan="2">
-                                                    <h4>{{ plat.libelle|capitalize }}</h4>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            {% endfor %}
+                        <div class="mt-3" id="composition_menu">
+                            {% include 'commande/_composition_menu.html.twig' with { plats_menu: plats_menu } %}
                         </div>
 
                     </div>
@@ -160,6 +136,24 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/image.js') }}"></script>
+    <script>
+        function loadMenu(menu_id)
+        {
+            fetch('/commande/loadMenu/' + menu_id, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('quantite').setAttribute('max', data.quantite);
+                    if (document.getElementById('quantite').value > data.quantite)
+                    {
+                        document.getElementById('quantite').value = data.quantite;
+                    }
+                    document.getElementById('conditions').innerHTML = data.conditions;
+                    document.getElementById('composition_menu').innerHTML = data.composition_menu;
+                });
+
+        }
+    </script>
 {% endblock %}
 

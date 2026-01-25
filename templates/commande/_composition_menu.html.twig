@@ -1,0 +1,23 @@
+<h5>Composition du menu</h5>
+
+{% for plat in plats_menu %}
+    <div class="card mt-3">
+        <div class="card-body">
+            <table class="w-100">
+                <tbody>
+                <tr>
+                    <td style="width: 20%">
+                        <img src="{{ asset(plat.image) }}" class="w-100">
+                    </td>
+                    <td class="text-center" colspan="2">
+                        <h3>{{ plat_types[plat.type_id].libelle|capitalize }}</h3>
+                    </td>
+                    <td class="text-center" colspan="2">
+                        <h4>{{ plat.libelle|capitalize }}</h4>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endfor %}

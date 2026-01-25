@@ -7,29 +7,29 @@ use DateTime;
 class Horaire
 {
     private int $id;
-    private int $societeId;
+    private int $societe_id;
     private string $jour;
     private ?DateTime $ouverture;
     private ?DateTime $fermeture;
     private bool $ferme;
 
-    public function __construct(int $id, int $societeId, string $jour, ?DateTime $ouverture, ?DateTime $fermeture, bool $ferme)
+    public function __construct(int $id, int $societe_id, string $jour, ?DateTime $ouverture, ?DateTime $fermeture, bool $ferme)
     {
-        $this->id = $id;
-        $this->societeId = $societeId;
-        $this->jour = $jour;
-        $this->ouverture = $ouverture;
-        $this->fermeture = $fermeture;
-        $this->ferme = $ferme;
+        $this->setId($id);
+        $this->setSociete_id($societe_id);
+        $this->setJour($jour);
+        $this->setOuverture($ouverture);
+        $this->setFermeture($fermeture);
+        $this->setFerme($ferme);
     }
 
     public function getId(): int
     {
         return $this->id;
     }
-    public function getSocieteId(): int
+    public function getSociete_id(): int
     {
-        return $this->societeId;
+        return $this->societe_id;
     }
     public function getJour(): string
     {
@@ -48,6 +48,18 @@ class Horaire
         return $this->ferme;
     }
 
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+    public function setSociete_id(int $societe_id): void
+    {
+        $this->societe_id = $societe_id;
+    }
+    public function setJour(string $jour): void
+    {
+        $this->jour = $jour;
+    }
     public function setOuverture(?DateTime $ouverture): void
     {
         $this->ouverture = $ouverture;

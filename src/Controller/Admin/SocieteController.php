@@ -2,7 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Repository\HoraireRepository;
 use App\Repository\SocieteRepository;
+use App\Service\FonctionsService;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,9 +21,10 @@ class SocieteController extends AbstractController
     }
 
     #[Route('/edit', name: 'edit')]
-    public function edit(SocieteRepository $societeRepository, Request $request): Response
+    public function edit(SocieteRepository $societeRepository, HoraireRepository $horaireRepository, Request $request): Response
     {
         $societe = $societeRepository->findById(1);
+        $tabHoraire = $horaireRepository->findBySociete(1);
 
         if ($request->isMethod('POST'))
         {
@@ -38,6 +42,28 @@ class SocieteController extends AbstractController
             $societe->setPays(trim($request->request->get('pays')));
             $societe->setActif($request->request->get('actif') ?? true);
 
+            // HORAIRES
+            foreach ($tabHoraire as $horaire_id => $horaire)
+            {
+                $ferme = $request->request->get('horaire_ferme_'.$horaire_id, false);
+
+                if ($ferme)
+                {
+                    $horaire->setOuverture(null);
+                    $horaire->setFermeture(null);
+                    $horaire->setFerme(true);
+                    $horaireRepository->update($horaire);
+                }
+                else
+                {
+                    $horaire->setOuverture(new DateTime($request->request->get('horaire_ouverture_'.$horaire_id)));
+                    $horaire->setFermeture(new DateTime($request->request->get('horaire_fermeture_'.$horaire_id)));
+                    $horaire->setFerme(false);
+                    $horaireRepository->update($horaire);
+                }
+            }
+
+
             if ($societeRepository->update($societe))
             {
                 $this->addFlash('success', "Société modifiée avec succès");
@@ -50,6 +76,7 @@ class SocieteController extends AbstractController
 
         return $this->render('admin/societe/edit.html.twig', [
             'societe' => $societe,
+            'tabHoraire' => $tabHoraire,
         ]);
     }
 }

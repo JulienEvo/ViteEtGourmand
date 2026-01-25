@@ -30,9 +30,11 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
     public function login(AuthenticationUtils $authUtils, UserRepository $userRepository, Request $request): Response
     {
+        $redirect = $request->query->get('redirect', 'home');
+
         if ($this->getUser()) {
-            $this->addFlash('success', "Bienvenue ".$this->getUser()->getPrenom());
-            return $this->redirectToRoute('home');
+            $this->addFlash('success', "Bienvenue " . $this->getUser()->getPrenom());
+            return $this->redirectToRoute($redirect);
         }
 
         return $this->render('security/login.html.twig', [

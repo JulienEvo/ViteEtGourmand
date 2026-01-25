@@ -13,6 +13,8 @@ use App\Repository\UserRepository;
 use App\Service\FonctionsService;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -25,25 +27,23 @@ class CommandeController extends AbstractController
 {
     #[Route('/ajout', name: 'ajout')]
     public function ajout(
-        MenuRepository     $menuRepository,
-        UserRepository     $userRepository,
-        PlatRepository     $platRepository,
+        MenuRepository $menuRepository,
+        UserRepository $userRepository,
+        PlatRepository $platRepository,
         PlatTypeRepository $platTypeRepository,
-        Request            $request
+        Request $request,
+        Security $security
     ): Response
     {
 
         $menu_id = $request->query->get('menu_id', 0);
         $quantite = $request->query->get('quantite', 0);
-        $utilisateur_id = $request->query->get('utilisateur_id', 0);
-
-        // Récupère l'utilisateur connecté
-        $utilisateur = $userRepository->findById($utilisateur_id);
+        $utilisateur = $security->getUser();
 
         // Pas d'utilisateur connecté, redirige vers la page de connexion
         if (!$utilisateur) {
-            return $this->render('security/login.html.twig', [
-                'redirect' => 'commande',
+            return $this->redirectToRoute('login', [
+                'redirect' => 'commande_ajout',
                 'objet_id' => $menu_id,
             ]);
         }
@@ -196,9 +196,43 @@ class CommandeController extends AbstractController
 
         $mailer->send($email);
 
-        return $this->render('historique/edit.html.twig', [
+        return $this->redirectToRoute('commande_historique', [
             'id' => $commande_id,
         ]);
+    }
+
+    #[Route('/historique/{id}', name: 'historique')]
+    public function historique(int $id, CommandeRepository $commandeRepository, GeneriqueRepository $generiqueRepository, MenuRepository $menuRepository, Security $security): Response
+    {
+        $tabCommande = $commandeRepository->findAll($security->getUser()->getId());
+        $tabCommandeEtat = $generiqueRepository->findAll('commande_etat');
+        $tabMenu = $menuRepository->findAll();
+
+        return $this->render('admin/commande/historique.html.twig', [
+            'tabCommande' => $tabCommande,
+            'tabCommandeEtat' => $tabCommandeEtat,
+            'tabMenu' => $tabMenu,
+        ]);
+    }
+
+        #[Route('/loadMenu/{id}', name: 'load_menu_ajax', methods: ['GET'])]
+    public function loadMenu(int $id, MenuRepository $menuRepository, PlatRepository $platRepository, PlatTypeRepository $platTypeRepository): JsonResponse
+    {
+        $menu = $menuRepository->findById($id);
+
+        if (!$menu)
+        {
+            return new JsonResponse(['error' => 'Menu introuvable'], Response::HTTP_NOT_FOUND);
+        }
+
+        $plats_menu = $platRepository->findByMenuId($menu->getId());
+        $plat_types = $platTypeRepository->findAll();
+
+        return new JsonResponse([
+            'quantite'   => $menu->getQuantite(),
+            'conditions' => $menu->getConditions(),
+            'composition_menu' => $this->renderView('commande/_composition_menu.html.twig', ['plats_menu' => $plats_menu, 'plat_types' => $plat_types]),
+         ]);
     }
 
 }

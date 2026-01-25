@@ -38,7 +38,7 @@ class HoraireRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'societe_id' => $horaire->getSocieteId(),
+            'societe_id' => $horaire->getSociete_id(),
             'jour' => $horaire->getJour(),
             'ouverture' => $horaire->getOuverture()?->format('H:i:s'),
             'fermeture' => $horaire->getFermeture()?->format('H:i:s'),
@@ -56,7 +56,20 @@ class HoraireRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':societe_id' => $societe_id]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $tabHoraire = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tabHoraire[$row['id']] = new Horaire(
+                $row['id'],
+                $row['societe_id'],
+                $row['jour'],
+                new DateTime($row['ouverture']),
+                new DateTime($row['fermeture']),
+                $row['ferme'],
+            );
+        }
+
+        return $tabHoraire;
     }
 
 }
