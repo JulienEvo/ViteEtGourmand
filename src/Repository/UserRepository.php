@@ -109,22 +109,19 @@ class UserRepository
 
     public function findAll(string $role = ''): array
     {
-        if ($role == '')
-        {
-            $role = "ROLE_USER";
-        }
-
         switch ($role)
         {
-            default:
-                $where_sql = " roles NOT LIKE '%ROLE_ADMIN%' AND roles NOT LIKE '%ROLE_EMPLOYE%'";
+            case 'ROLE_USER':
+                $where_sql = " roles NOT LIKE '%ROLE_ADMIN%' AND roles NOT LIKE '%ROLE_EMPLOYE%' ";
                 break;
             case 'ROLE_ADMIN':
-                $where_sql = "  roles NOT LIKE '%ROLE_EMPLOYE%' OR roles LIKE 'ROLE_USER'";
+                $where_sql = " roles NOT LIKE '%ROLE_EMPLOYE%' OR roles LIKE 'ROLE_USER' ";
                 break;
             case 'ROLE_EMPLOYE':
-                $where_sql = "  roles NOT LIKE '%ROLE_ADMIN%' OR roles LIKE 'ROLE_USER'";
+                $where_sql = " roles NOT LIKE '%ROLE_ADMIN%' OR roles LIKE 'ROLE_USER' ";
                 break;
+            default:
+                $where_sql = " 1 ";
         }
 
         $sql = "SELECT *
@@ -138,7 +135,7 @@ class UserRepository
         $tabUtilisateur = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            if (in_array($role, json_decode($row['roles'])))
+            if ($role == "" || in_array($role, json_decode($row['roles'])))
             {
                 $utilisateur = new User(
                     (int)$row['id'],

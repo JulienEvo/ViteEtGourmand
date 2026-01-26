@@ -1,7 +1,8 @@
 #--- PLAT ---#
 CREATE TABLE plat (
     id INT NOT NULL AUTO_INCREMENT,
-    titre VARCHAR(64) NOT NULL,
+    libelle VARCHAR(64) NOT NULL,
+    description TEXT NULL,
     type_id INT NOT NULL,
     image VARCHAR(255) NOT NULL,
     actif BOOLEAN NOT NULL DEFAULT TRUE,

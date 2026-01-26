@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Service\FonctionsService;
 use PDO;
 class PlatAllergeneRepository
 {
@@ -12,9 +13,14 @@ class PlatAllergeneRepository
         $this->pdo = $pdo;
     }
 
-    public function insert(int $plat_id, array $tab_allergenes): bool
+    public function insert(int $plat_id, array $tab_allergenes): bool|array
     {
-        $this->delete($plat_id);
+        $retour = $this->delete($plat_id);
+
+        if (is_array($retour))
+        {
+            return $retour;
+        }
 
         foreach ($tab_allergenes as $allergene_id)
         {
@@ -36,19 +42,26 @@ class PlatAllergeneRepository
         return true;
     }
 
-    public function delete(int $plat_id): bool
+    public function delete(int $plat_id): bool|array
     {
         $sql = "DELETE FROM plat_allergene WHERE plat_id = :plat_id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute(['plat_id' => $plat_id]);
+        if ($stmt->execute(['plat_id' => $plat_id]))
+        {
+            return true;
+        }
+        else
+        {
+            return $stmt->errorInfo();
+        }
     }
 
     public function findAllIdByPlatId($plat_id): array
     {
         $retour = [];
 
-        $sql = "SELECT allergene_id
+        $sql = "SELECT *
                 FROM plat_allergene
                 WHERE plat_id = :plat_id";
 

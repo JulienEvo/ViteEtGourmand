@@ -12,7 +12,8 @@ class Commande
     private int $commande_etat_id;
     private ?string $numero;
     private ?DateTime $date;
-    private ?float $montant_ht;
+    private int $quantite;
+    private ?float $total_ttc;
     private ?float $remise;
     private ?DateTime $created_at;
 
@@ -23,20 +24,22 @@ class Commande
         int $commande_etat_id = 1,
         ?string $numero = null,
         ?DateTime $date = null,
-        ?float $montant_ht = null,
+        ?float $quantite = 0,
+        ?float $total_ttc = null,
         ?float $remise = null,
         ?DateTime $created_at = new DateTime(),
     )
     {
-        $this->id = $id;
-        $this->utilisateur_id = $utilisateur_id;
-        $this->menu_id = $menu_id;
-        $this->commande_etat_id = $commande_etat_id;
-        $this->numero = $numero;
-        $this->date = $date;
-        $this->montant_ht = $montant_ht;
-        $this->remise = $remise;
-        $this->created_at = $created_at;
+        $this->setId($id);
+        $this->setUtilisateur_id($utilisateur_id);
+        $this->setMenu_id($menu_id);
+        $this->setCommande_etat_id($commande_etat_id);
+        $this->setNumero($numero);
+        $this->setDate($date);
+        $this->setQuantite($quantite);
+        $this->setTotal_ttc($total_ttc);
+        $this->setRemise($remise);
+        $this->setCreated_at($created_at);
     }
 
     public function getId(): int
@@ -67,9 +70,13 @@ class Commande
     {
         return $this->remise;
     }
-    public function getMontant_ht(): ?float
+    public function getQuantite(): int
     {
-        return $this->montant_ht;
+        return $this->quantite_disponible;
+    }
+    public function getTotal_ttc(): ?float
+    {
+        return $this->total_ttc;
     }
     public function getCreated_at(): ?DateTime
     {
@@ -104,9 +111,13 @@ class Commande
     {
         $this->remise = $remise;
     }
-    public function setMontant_ht(?float $montant_ht): void
+    public function setQuantite(int $quantite): void
     {
-        $this->montant_ht = $montant_ht;
+        $this->quantite_disponible = $quantite;
+    }
+    public function setTotal_ttc(?float $total_ttc): void
+    {
+        $this->total_ttc = $total_ttc;
     }
     public function setCreated_at(?DateTime $created_at): void
     {

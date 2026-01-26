@@ -2,11 +2,11 @@
 CREATE TABLE menu (
     id INT NOT NULL AUTO_INCREMENT,
     libelle VARCHAR(32) NOT NULL,
-    description TEXT NOT NULL,
-    conditions TEXT NOT NULL,
-    min_personne SMALLINT NOT NULL,
-    tarif_personne DOUBLE NOT NULL,
-    quantite SMALLINT NOT NULL,
+    description TEXT NULL,
+    conditions TEXT NULL,
+    quantite_min SMALLINT NOT NULL DEFAULT 1,
+    tarif_unitaire DOUBLE NOT NULL,
+    quantite_disponible SMALLINT NOT NULL DEFAULT 0,
     actif BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id)
 )

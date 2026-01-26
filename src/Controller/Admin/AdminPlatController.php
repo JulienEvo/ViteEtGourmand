@@ -15,15 +15,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/plats', name: 'admin_plat_')]
-class PlatController extends AbstractController
+#[Route('/admin/plat', name: 'admin_plat_')]
+class AdminPlatController extends AbstractController
 {
 
     #[Route('/', name: 'index', )]
     public function index(Request $request, PlatRepository $platRepository): Response
     {
         $menu_id = $request->query->get('menu_id', 0);
-        $comeFrom = $request->query->get('comeFrom', '');
+        $comeFrom = $request->query->get('comeFrom', 'zzz');
 
         $tabPlat = $platRepository->findAll();
 
@@ -60,19 +60,18 @@ class PlatController extends AbstractController
             if (isset($new_image) && !$removeImage)
             {
                 //--- Vérifie l'image ---//
-                $erreur = valideImage($new_image);
+                $erreur = $this->valideImage($new_image);
 
                 if (empty($erreur))
                 {
                     // Supprime l'image précédante
-                    $old_plat = $platRepository->findById($id);
                     if (file_exists($old_plat->getImage())) {
                         unlink($old_plat->getImage());
                     }
 
-                    // Enregistre le fichier dans le dossier /images/plats/{$id}/
+                    // Enregistre le fichier dans le dossier /images/plats/{plat_id}
                     $fichier = uniqid().'.'.$new_image->guessExtension();
-                    $dossier = './images/plats/'.$id.'/';
+                    $dossier = './images/plats/';
                     $image = $dossier.$fichier;
 
                     if (!is_dir($dossier))
@@ -84,7 +83,7 @@ class PlatController extends AbstractController
                 else
                 {
                     $this->addFlash('danger', $erreur);
-                    return $this->render('admin/plat/edit.ht', ['id' => $id]);
+                    return $this->redirectToRoute('admin_plat_edit', ['id' => $id]);
                 }
             }
 
@@ -97,31 +96,45 @@ class PlatController extends AbstractController
                 $image = '';
             }
 
+            // PLAT
             $plat = new Plat(
                 $id,
                 trim($request->request->get('libelle')),
                 $request->request->get('type_id'),
                 $image,
                 $request->request->get('actif'),
-                $plat_allergenes,
             );
 
-            // Met à jour les allergènes du plat
-            if (!$platAllergeneRepository->insert($id, $plat_allergenes))
+            // Met à jour le plat
+            if ($id == 0)
             {
-                $erreurs .= "Erreur lors de la mise à jour des allergènes du plat \n";
+                $retour = $platRepository->insert($plat);
+                $mode = "ajouté";
+            }
+            else
+            {
+                $retour = $platRepository->update($plat);
+                $mode = "modifié";
             }
 
-
-            // Met à jour le plat
-            if (!$platRepository->update($plat))
+            if (is_int($retour))
             {
-                $erreurs .= "Erreur lors de la mise à jour du plat \n";
+                $id = $retour;
+
+                // Met à jour les allergènes du plat
+                if (!$platAllergeneRepository->insert($id, $plat_allergenes))
+                {
+                    $erreurs .= "Erreur lors de la mise à jour des allergènes du plat";
+                }
+            }
+            else
+            {
+                $erreurs = "Erreur lors de l'enregistrement du plat : " . $retour['message'];
             }
 
             if ($erreurs == "")
             {
-                $this->addFlash('success', 'Plat modifié avec succès');
+                $this->addFlash('success', "Plat {$mode} avec succès");
             }
         else
             {
@@ -134,9 +147,8 @@ class PlatController extends AbstractController
         // Récupère le Plat par son ID
         $plat = $platRepository->findById($id);
 
-        // Récupère les types de plat
         $tab_plat_type = $platTypeRepository->findAll();
-
+        $tab_plat_allergene = $platAllergeneRepository->findAllIdByPlatId($id);
         $tab_allergenes = $generiqueRepository->findAll('allergene');
 
         // Affiche le plat
@@ -144,14 +156,35 @@ class PlatController extends AbstractController
             'id' => $id,
             'plat' => $plat,
             'tab_plat_type' => $tab_plat_type,
+            'tab_plat_allergene' => $tab_plat_allergene,
             'tab_allergenes' => $tab_allergenes,
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(int $id): Response
+    #[Route('/{id}/delete', name: 'delete')]
+    public function delete(int $id, PlatRepository $platRepository, Request $request): Response
     {
-        return $this->redirectToRoute('admin_menu_index');
+        $comeFrom = $request->query->get('comeFrom');
+
+        $plat = $platRepository->findById($id);
+
+        $ret = $platRepository->delete($id);
+
+        if ($ret)
+        {
+            // Supprimer l'image
+            if (file_exists($plat->getImage())) {
+                unlink($plat->getImage());
+            }
+
+            $this->addFlash('success', 'Plat supprimé avec succès');
+        }
+        else
+        {
+            $this->addFlash('danger', "Une erreur est survenue lors de la suppression du plat : " . $ret);
+        }
+
+        return $this->redirectToRoute('admin_plat_index', ['comeFrom' => $comeFrom]);
     }
 
     private function valideImage(UploadedFile $image): string
@@ -159,7 +192,7 @@ class PlatController extends AbstractController
         $retour = "";
 
         $tailleMax = 5 * 1024 * 1024;
-        $extensionsValides = ['image/jpeg', 'image/png',];
+        $extensionsValides = ['image/jpeg', 'image/png', 'image/webp'];
 
         // Provenance du fichier
         if (!$image instanceof UploadedFile) {

@@ -19,8 +19,8 @@
             <th>thèmes</th>
             <th>Regimes</th>
             <th>Min personne</th>
-            <th>Tarif / Personne</th>
-            <th>Quantité</th>
+            <th>Tarif unitaire</th>
+            <th>Quantité disponible</th>
             <th>Actif</th>
             <th>Actions</th>
         </tr>
@@ -33,15 +33,15 @@
                     <td>{{ menu.description }}</td>
                     <td>{{ menu.themes }}</td>
                     <td>{{ menu.regimes }}</td>
-                    <td>{{ menu.min_personne }}</td>
-                    <td>{{ menu.tarif_personne }}</td>
-                    <td>{{ menu.quantite }}</td>
+                    <td>{{ menu.quantite_min }}</td>
+                    <td>{{ menu.tarif_unitaire }} €</td>
+                    <td>{{ menu.quantite_disponible }}</td>
                     <td>{{ (menu.actif) ? 'Oui':'Non' }}</td>
                     <td>
                         <a href="{{ path('admin_menu_edit', {id: menu.id}) }}" class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a href="{{ path('admin_menu_delete', {id: menu.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
+                        <a href="{{ path('admin_menu_delete', {id: menu.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le menu ?')">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>

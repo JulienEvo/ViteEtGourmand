@@ -18,35 +18,35 @@ INSERT INTO allergene (libelle, description) VALUES ('Céréales', '');
 
 
 /*** PLAT ***/
-INSERT INTO plat (titre, type_id, image, actif) VALUES ('Mini quiches lorraines', 1, 'images/plat/1/Image-1.jpg', 1);
-INSERT INTO plat (titre, type_id, image, actif) VALUES ('Gougères au fromage', 1, 'images/plat/1/image-2.jgp', 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Verrines avocat saumon', 1, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Toasts de tapenade', 1, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Brochettes tomate mozzarella', 1, 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Mini quiches lorraines', '', 1, 'images/plats/Image-1.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Salade tomates Mozzarella', '', 1, 'images/plats/Salade_baies_herbes_tomates_cerises_boules_mozarella..jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Verrines avocat saumon', '', 1, 'images/plats/Verrines_avocat_saumon.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Toasts de tapenade', '', 1, 'images/plats/Toasts_tapenade_verte_tomates_sechees.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Brochettes tomate mozzarella', '', 1, 'images/plats/Brochettes_tomate_mozzarella.jpg', 1);
 
-INSERT INTO plat (titre, type_id, actif) VALUES ('Salade de chèvre chaud', 2, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Carpaccio de saumon citronné', 2, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Velouté de potimarron', 2, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Tartare de tomates et mozzarella', 2, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Feuilleté aux champignons', 2, 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Salade de chèvre chaud', '', 2, 'images/plats/Salade_chevre_chaud.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Carpaccio de saumon citronné', '', 2, 'images/plats/Carpaccio_saumon_citronne.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Velouté de potimarron', '', 2, 'images/plats/Veloute_potimarron.png', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Tartare de tomates et mozzarella', '', 2, 'images/plats/Tartare_tomates_mozzarella.jpeg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Feuilleté aux champignons', 'Feuilletés de champignons sauvages crémeux déglacés au vin blanc', 2, 'images/plats/Feuillete_champignons.jpg', 1);
 
-INSERT INTO plat (titre, type_id, actif) VALUES ('Lasagnes à la bolognaise', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Risotto aux champignons', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Pavé de cabillaud, beurre blanc', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Burger maison', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Curry de légumes', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Lasagnes aux légumes', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Tofu mariné sauce soja', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Risotto aux asperges', 4, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Wok de légumes sautés', 4, 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Lasagnes à la bolognaise', '', 4, 'images/plats/Lasagnes_bolognaise.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Risotto aux champignons', '', 4, 'images/plats/Risotto_champignons.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Filet de Cabillaud à la Pêche et Romarin, beurre blanc', '', 4, 'images/plats/Filet_Cabillaud_Peche_Romarin.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Burger gourmet', '', 4, 'images/plats/Burger_gourmet.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Curry de légumes', '', 4, 'images/plats/Curry_légumes.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Lasagnes aux légumes', '', 4, 'images/plats/Lasagnes_légumes.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Tofu croustillant sauce coco, arachides et érable', '', 4, 'images/plats/Tofu_croustillant_sauce_coco_arachides_érable.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Risotto aux asperges', '', 4, 'images/plats/Risotto_asperges.jpg', 1);
+    INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Wok de légumes sautés', '', 4, 'images/plats/Wok_legumes_sautes.jpg', 1);
 
-INSERT INTO plat (titre, type_id, actif) VALUES ('Tiramisu', 5, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Mousse au chocolat', 5, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Crème brûlée', 5, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Fondant au chocolat', 5, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Panna cotta fruits rouges', 5, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Cheesecake', 5, 1);
-INSERT INTO plat (titre, type_id, actif) VALUES ('Tarte aux pommes', 5, 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Tiramisu', '', 5, 'images/plats/Tiramisu.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Mousse au chocolat', '', 5, 'images/plats/Mousse_chocolat.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Crème brûlée', '', 5, 'images/plats/Creme_brulee.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Fondant au chocolat', '', 5, 'images/plats/Fondant_chocolat.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Panna cotta fruits rouges', '', 5, 'images/plats/Panna_cotta_fruits_rouges.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Mini cheesecakes passion & agrumes', '', 5, 'images/plats/Mini_cheesecakes_passion_agrumes.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Tarte aux pommes', '', 5, 'images/plats/Tarte_pommes.jpg', 1);
 
 
 /*** PLAT_ALLERGENE ***/

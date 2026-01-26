@@ -8,9 +8,9 @@ class Menu
     private string $libelle;
     private string $description;
     private string $conditions;
-    private int $min_personne;
-    private float $tarif_personne;
-    private int $quantite;
+    private int $quantite_min;
+    private float $tarif_unitaire;
+    private int $quantite_disponible;
     private string $themes;
     private string $regimes;
     private bool $actif;
@@ -20,8 +20,8 @@ class Menu
         string $libelle = '',
         string $description = '',
         string $conditions = '',
-        int $min_personne = 1,
-        float $tarif_personne = 0,
+        int $quantite_min = 1,
+        float $tarif_unitaire = 0,
         int $quantite = 0,
         bool $actif = true,
         string $themes = '',
@@ -32,9 +32,9 @@ class Menu
         $this->setLibelle($libelle);
         $this->setDescription($description);
         $this->setConditions($conditions);
-        $this->setmin_personne($min_personne);
-        $this->settarif_personne($tarif_personne);
-        $this->setQuantite($quantite);
+        $this->setquantite_min($quantite_min);
+        $this->settarif_unitaire($tarif_unitaire);
+        $this->setQuantite_disponible($quantite);
         $this->setActif($actif);
 
         $this->setThemes($themes);
@@ -57,17 +57,17 @@ class Menu
     {
         return $this->conditions;
     }
-    public function getMin_personne(): int
+    public function getQuantite_min(): int
     {
-        return $this->min_personne;
+        return $this->quantite_min;
     }
-    public function getTarif_personne(): float
+    public function getTarif_unitaire(): float
     {
-        return $this->tarif_personne;
+        return $this->tarif_unitaire;
     }
-    public function getQuantite(): int
+    public function getQuantite_disponible(): int
     {
-        return $this->quantite;
+        return $this->quantite_disponible;
     }
     public function getThemes(): string
     {
@@ -98,17 +98,17 @@ class Menu
     {
         $this->conditions = $conditions;
     }
-    public function setMin_personne(int $min_personne): void
+    public function setQuantite_min(int $quantite_min): void
     {
-        $this->min_personne = $min_personne;
+        $this->quantite_min = $quantite_min;
     }
-    public function setTarif_personne(float $tarif_personne): void
+    public function setTarif_unitaire(float $tarif_unitaire): void
     {
-        $this->tarif_personne = $tarif_personne;
+        $this->tarif_unitaire = $tarif_unitaire;
     }
-    public function setQuantite(int $quantite): void
+    public function setQuantite_disponible(int $quantite_disponible): void
     {
-        $this->quantite = $quantite;
+        $this->quantite_disponible = $quantite_disponible;
     }
     public function setThemes(string $tab_theme): void
     {

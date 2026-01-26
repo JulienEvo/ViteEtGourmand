@@ -12,7 +12,6 @@
         </div>
         <div class="card-body">
             <div class="row col-12">
-
                 <div class="mb-3 col-12 col-lg-2">
                     <label for="menu_id" class="form-label">Menu :</label>
                     <p>{{ menu.libelle }}</p>
@@ -20,19 +19,41 @@
 
                 <div class="mb-3 col-12 col-lg-2">
                     <label for="commande_etat_id" class="form-label">État :</label>
-                    <p>{{ etat_libelle }}</p>
+                    <p style="background-color: {{ tabCommande_etat[commande.commande_etat_id].couleur }}">{{ tabCommande_etat[commande.commande_etat_id].libelle }}</p>
                 </div>
-
+                <div class="mb-3 col-12 col-lg-2">
+                    <label for="date_livraison" class="form-label">Date de commande :</label>
+                    <p>{{ commande.created_at|date('d/m/Y') }}</p>
+                </div>
                 <div class="mb-3 col-12 col-lg-2">
                     <label for="date_livraison" class="form-label">Date de livraison :</label>
-                    <p>{{ commande.date|date('Y-m-d') }}</p>
+                    <p>{{ commande.date|date('d/m/Y') }}</p>
                 </div>
+                <div class="mb-3 col-12 col-lg-3">
+                    <label for="date_livraison" class="form-label">Adresse de livraison :</label>
+                    <p>{{ app.getUser().adresse }}<br>{{ app.getUser().code_postal ~ ' - ' ~ app.getUser().commune }}</p>
+                </div>
+            </div>
 
+            <div class="row col-12">
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="remise" class="form-label">Montant TTC :</label>
-                    <p>{{ commande_montant_ttc }}</p>
+                    <label for="remise" class="form-label">Prix unitaire :</label>
+                    <p>{{ menu.tarif_unitaire|number_format(2, '.', ' ') }} €</p>
                 </div>
-
+                <div class="mb-3 col-12 col-lg-2">
+                    <label for="remise" class="form-label">Quantité :</label>
+                    <p>{{ commande.quantite }}</p>
+                </div>
+                {% if commande.remise > 0 %}
+                    <div class="mb-3 col-12 col-lg-2">
+                        <label for="remise" class="form-label">Remise :</label>
+                        <p>{{ commande.remise }} %</p>
+                    </div>
+                {% endif %}
+                <div class="mb-3 col-12 col-lg-2">
+                    <label for="remise" class="form-label">Total TTC :</label>
+                    <p>{{ commande.total_ttc|number_format(2, '.', ' ') }} €</p>
+                </div>
             </div>
         </div>
     </div>

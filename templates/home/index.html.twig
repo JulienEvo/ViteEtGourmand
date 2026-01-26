@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% set societe = query_service.getSociete(1) %}
-
 {% block title %}
+
+    {% set societe = query_service.getSociete(1) %}
+
     {% if societe %}
         {{ societe.libelle }}
     {% else %}

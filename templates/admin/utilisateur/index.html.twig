@@ -54,7 +54,7 @@
                         <a href="{{ path('admin_utilisateur_edit', {id: utilisateur.getUserId(), mode: 'modif', type: type}) }}" class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <a href="{{ path('admin_utilisateur_delete', {id: utilisateur.getUserId()}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ?')">
+                        <a href="{{ path('admin_utilisateur_delete', {id: utilisateur.getUserId(), type: type}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')">
                             <i class="bi bi-trash3-fill"></i>
                         </a>
                     </td>

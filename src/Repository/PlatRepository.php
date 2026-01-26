@@ -8,51 +8,70 @@ use PDO;
 class PlatRepository
 {
     protected PDO $pdo;
-    private PlatAllergeneRepository $platAllergeneRepository;
 
-    public function __construct(PDO $pdo, PlatAllergeneRepository $platAllergeneRepository)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->platAllergeneRepository = $platAllergeneRepository;
     }
 
-    public function insert(Plat $plat): bool
+    public function insert(Plat $plat): int|array
     {
         $sql = "INSERT INTO plat (libelle, type_id, image, actif)
                 VALUES (:libelle, :type_id, :image, :actif)";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([
+        if ($stmt->execute([
             'libelle' => $plat->getLibelle(),
             'type_id' => $plat->getType_id(),
             'image' => $plat->getImage(),
             'actif' => 1
-        ]);
+        ]))
+        {
+            return $this->pdo->lastInsertId();
+        }
+        else
+        {
+            return $this->pdo->errorInfo();
+        }
     }
 
-    public function update(Plat $plat): bool
+    public function update(Plat $plat): int|array
     {
         $sql = "UPDATE plat
                 SET libelle=:libelle, type_id=:type_id, image=:image, actif=:actif
                 WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([
+        if ($stmt->execute([
             'libelle' => $plat->getLibelle(),
             'type_id' => $plat->getType_id(),
             'image' => $plat->getImage(),
             'actif' => $plat->isActif(),
             'id' => $plat->getId()
-        ]);
+        ]))
+        {
+            return $plat->getId();
+        }
+        else
+        {
+            return $this->pdo->errorInfo();
+        }
     }
 
-    public function delete(int $plat_id): bool
+    public function delete(int $plat_id): bool|array
     {
         $sql = "DELETE FROM plat
                 WHERE id = :plat_id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([':plat_id' => $plat_id]);
+        if ($stmt->execute([':plat_id' => $plat_id]))
+        {
+            return true;
+        }
+        else
+        {
+            return $stmt->errorInfo();
+        }
     }
 
     public function findAll(): array
@@ -60,7 +79,7 @@ class PlatRepository
         $sql = "SELECT plat.*, plat_type.libelle AS type_libelle
                 FROM plat
                 INNER JOIN plat_type ON plat_type.id = plat.type_id
-                ";
+                ORDER BY type_id, libelle";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -70,6 +89,8 @@ class PlatRepository
 
     public function findById(int $id): Plat
     {
+        $plat = new Plat();
+
         $sql = "SELECT *
                 FROM plat
                 WHERE id = :id";
@@ -77,18 +98,18 @@ class PlatRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($stmt->rowCount() > 0)
+        {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $allergenes  = $this->platAllergeneRepository->findAllIdByPlatId($id);
+            $plat->setId($row['id']);
+            $plat->setLibelle($row['libelle']);
+            $plat->setType_id($row['type_id']);
+            $plat->setImage($row['image']);
+            $plat->setActif($row['actif']);
+        }
 
-        return new Plat(
-            $row['id'],
-            $row['libelle'],
-            $row['type_id'],
-            $row['image'],
-            $row['actif'],
-            $allergenes,
-        );
+        return $plat;
     }
 
     public function findByMenuId(int $menu_id): array
@@ -109,6 +130,7 @@ class PlatRepository
             $plat = array (
                 'id' => $row['id'],
                 'libelle' => $row['libelle'],
+                'description' => $row['description'],
                 'type_id' => $row['type_id'],
                 'image' => $row['image'],
                 'actif' => $row['actif'],

@@ -8,6 +8,8 @@
     <h1>Modifier vos informations personnelles</h1>
 
     <form method="post" id="form_profile" action="{{ path('admin_utilisateur_profil') }}">
+        <input type="hidden" name="comeFrom" id="comeFrom" value="{{ comeFrom ?? '' }}">
+
         <div class="card mb-3">
             <div class="card-header">
                 <h4>Informations de connexion</h4>
@@ -16,7 +18,7 @@
                 <div class="row col-12">
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="email" class="form-label">E-mail :</label>
-                        <input type="text" class="form-control" name="email" id="email" value="{{ user.email ?? '' }}" disabled>
+                        <input type="text" class="form-control" name="email" id="email" value="{{ utilisateur.email ?? '' }}" disabled>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="password" class="form-label">Mot de passe</label>
@@ -38,37 +40,37 @@
                 <div class="row col-12">
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="nom" class="form-label">Nom :</label>
-                        <input type="text" class="form-control" name="nom" id="nom" value="{{ user.nom ?? '' }}" required>
+                        <input type="text" class="form-control" name="nom" id="nom" value="{{ utilisateur.nom ?? '' }}" required>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="prenom" class="form-label">Prénom :</label>
-                        <input type="text" class="form-control" name="prenom" id="prenom" value="{{ user.prenom ?? '' }}" required>
+                        <input type="text" class="form-control" name="prenom" id="prenom" value="{{ utilisateur.prenom ?? '' }}" required>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="telephone" class="form-label">Téléphone :</label>
-                        <input type="text" class="form-control" name="telephone" id="telephone" value="{{ user.telephone|formatTelFr }}" required>
+                        <input type="text" class="form-control" name="telephone" id="telephone" value="{{ utilisateur.telephone|formatTelFr }}" required>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
                             <label for="poste" class="form-label">Poste :</label>
-                            <input type="text" class="form-control" name="poste" id="poste" value="{{ user.poste }}">
+                            <input type="text" class="form-control" name="poste" id="poste" value="{{ utilisateur.poste }}">
                         {% endif %}
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="adresse" class="form-label">Adresse :</label>
-                        <input type="text" class="form-control" name="adresse" id="adresse" value="{{ user.adresse ?? '' }}" required>
+                        <input type="text" class="form-control" name="adresse" id="adresse" value="{{ utilisateur.adresse ?? '' }}" required>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="code_postal" class="form-label">Code postal :</label>
-                        <input type="text" class="form-control" name="code_postal" id="code_postal" value="{{ user.code_postal ?? '' }}" required>
+                        <input type="text" class="form-control" name="code_postal" id="code_postal" value="{{ utilisateur.code_postal ?? '' }}" required>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="commune" class="form-label">Commune :</label>
-                        <input type="text" class="form-control" name="commune" id="commune" value="{{ user.commune ?? '' }}" required>
+                        <input type="text" class="form-control" name="commune" id="commune" value="{{ utilisateur.commune ?? '' }}" required>
                     </div>
                     <div class="mb-3 col-12 col-lg-3">
                         <label for="pays" class="form-label">Pays :</label>
-                        <input type="text" class="form-control" name="pays" id="pays" value="{{ user.pays ?? '' }}" required>
+                        <input type="text" class="form-control" name="pays" id="pays" value="{{ utilisateur.pays ?? '' }}" required>
                     </div>
                 </div>
             </div>

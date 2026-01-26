@@ -1,23 +1,26 @@
 <h5>Composition du menu</h5>
 
-{% for plat in plats_menu %}
-    <div class="card mt-3">
-        <div class="card-body">
-            <table class="w-100">
-                <tbody>
-                <tr>
-                    <td style="width: 20%">
-                        <img src="{{ asset(plat.image) }}" class="w-100">
-                    </td>
-                    <td class="text-center" colspan="2">
-                        <h3>{{ plat_types[plat.type_id].libelle|capitalize }}</h3>
-                    </td>
-                    <td class="text-center" colspan="2">
-                        <h4>{{ plat.libelle|capitalize }}</h4>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="card-body">
+    <div class="row g-3">
+        {% for plat in plats_menu %}
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h4>{{ plat.plat_type_libelle|upper }}</h4>
+
+                        <div class="image-container mt-2 mb-2">
+                            {% if (plat.image != '') %}
+                                <img src="{{ asset(plat.image) }}" class="img-fluid rounded" alt=" image de {{ plat.libelle ?? '' }}">
+                            {% else %}
+                                <img src="/images/no_image.jpg" class="img-fluid rounded" alt=" image de {{ plat.libelle ?? '' }}">
+                            {% endif %}
+                        </div>
+
+                        <h5 class="mb-3">{{ plat.libelle }}</h5>
+                        <p>{{ plat.description }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
-{% endfor %}
+</div>

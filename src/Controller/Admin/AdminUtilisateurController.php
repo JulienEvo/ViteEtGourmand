@@ -22,8 +22,6 @@ class AdminUtilisateurController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(UserRepository $userRepository, Request $request): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $type = $request->query->get('type', '');
         $role = $userRepository->getRoleByType($type);
 
@@ -178,19 +176,16 @@ class AdminUtilisateurController extends AbstractController
 
         if ($ret)
             {
-                $this->addFlash('success', 'Employé supprimé avec succès');
+                $this->addFlash('success', 'Utilisateur supprimé avec succès');
             }
         else
             {
-                $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement : '.$ret);
+                $this->addFlash('danger', "Une erreur est survenue lors de la suppression de l'utilisateur : " . $ret);
             }
 
         $type = $request->query->get('type', '');
-        $role = $userRepository->getRoleByType($type);
-        $tabUtilisateur = $userRepository->findAll($role);
 
-        return $this->render('admin/utilisateur/index.html.twig', [
-            'tabUtilisateur' => $tabUtilisateur,
+        return $this->redirectToRoute('admin_utilisateur_index.html.twig', [
             'type' => $type
         ]);
     }
@@ -198,7 +193,8 @@ class AdminUtilisateurController extends AbstractController
     #[Route('/profil', name: 'profil')]
     public function profil(Security $security, UserRepository $userRepository, Request $request): Response
     {
-        $save_pass = false;
+        $comeFrom = $request->query->get('comeFrom', '');
+
         $utilisateur = $userRepository->findByEmail($security->getUser()->getUserIdentifier());
 
         if ($request->isMethod('POST'))
@@ -206,14 +202,14 @@ class AdminUtilisateurController extends AbstractController
             // Récupère les données du formulaire
             $utilisateur->setNom(trim($request->request->get('nom')));
             $utilisateur->setPrenom(trim($request->request->get('prenom')));
-            $utilisateur->setTelephone($request->request->get('telephone'));
+            $utilisateur->setTelephone(trim($request->request->get('telephone')));
             $utilisateur->setAdresse(trim($request->request->get('adresse')));
             $utilisateur->setCode_postal(trim($request->request->get('code_postal')));
             $utilisateur->setCommune(trim($request->request->get('commune')));
             $utilisateur->setPays(trim($request->request->get('pays')));
             $utilisateur->setPoste(trim($request->request->get('poste')));
             $utilisateur->setActif($request->request->get('actif') ?? true);
-            $utilisateur->setPassword(trim($request->request->get('confirm')));
+            $utilisateur->setPassword(trim($request->request->get('password')));
             $confirm = trim($request->request->get('confirm'));
 
             $save_pass = ($utilisateur->getPassword() != "");
@@ -232,7 +228,19 @@ class AdminUtilisateurController extends AbstractController
 
             if ($userRepository->update($utilisateur, $save_pass))
             {
+                if ($save_pass)
+                {
+                    $this->addFlash('success', "Veuillez vous reconnecter");
+                    return $this->redirectToRoute('login');
+                }
+
                 $this->addFlash('success', "Profil modifié avec succès");
+
+                $comeFrom = $request->request->get('comeFrom', '');
+                if ($comeFrom != '')
+                {
+                    return $this->redirectToRoute($comeFrom);
+                }
             }
             else
             {
@@ -240,14 +248,9 @@ class AdminUtilisateurController extends AbstractController
             }
         }
 
-        if ($save_pass)
-        {
-            $this->addFlash('success', "Veuillez vous reconnecter");
-            return $this->redirectToRoute('login');
-        }
-
         return $this->render('admin/utilisateur/profil.html.twig', [
             'utilisateur' => $utilisateur,
+            'comeFrom' => $comeFrom,
         ]);
     }
 

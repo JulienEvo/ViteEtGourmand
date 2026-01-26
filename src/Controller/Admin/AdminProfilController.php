@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/profil', name: 'admin_profil_')]
-class ProfilController extends AbstractController
+class AdminProfilController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(): Response

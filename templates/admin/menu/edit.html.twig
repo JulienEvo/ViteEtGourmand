@@ -30,18 +30,18 @@
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">
-                        <label for="min_personne" class="form-label">Nombre minimum de personne :</label>
-                        <input type="number" step="1" min="1" class="form-control" name="min_personne" id="min_personne" value="{{ menu.min_personne ?? 1 }}" required>
+                        <label for="quantite_min" class="form-label">Nombre minimum de personne :</label>
+                        <input type="number" step="1" min="1" class="form-control" name="quantite_min" id="quantite_min" value="{{ menu.quantite_min ?? 1 }}" required>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">
-                        <label for="tarif_personne" class="form-label">Tarif par personne :</label>
-                        <input type="number" step="00.1" min="0" class="form-control" name="tarif_personne" id="tarif_personne" value="{{ menu.tarif_personne ?? '0' }}" required>
+                        <label for="tarif_unitaire" class="form-label">Tarif par personne :</label>
+                        <input type="number" step="00.1" min="0" class="form-control" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire ?? '0' }}" required>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">
-                        <label for="quantite" class="form-label">Quantité restante :</label>
-                        <input type="number" step="1" min="0" class="form-control" name="quantite" id="quantite" value="{{ menu.quantite ?? '0' }}" required>
+                        <label for="quantite" class="form-label">Quantité disponible :</label>
+                        <input type="number" step="1" min="0" class="form-control" name="quantite" id="quantite" value="{{ menu.quantite_disponible ?? '0' }}" required>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-3">

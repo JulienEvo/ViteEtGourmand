@@ -61,9 +61,9 @@ class AdminMenuController extends AbstractController
                         trim($request->request->get('titre')),
                         trim($request->request->get('description')),
                         trim($request->request->get('conditions')),
-                        trim($request->request->get('min_personne')),
-                        trim($request->request->get('tarif_personne')),
-                        trim($request->request->get('quantite')),
+                        trim($request->request->get('quantite_min')),
+                        trim($request->request->get('tarif_unitaire')),
+                        trim($request->request->get('quantite_disponible')),
                         trim($request->request->get('actif')),
                         implode($menu_theme),
                         implode($menu_regime),
@@ -160,15 +160,20 @@ class AdminMenuController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete')]
     public function delete(int $id, MenuRepository $menuRepository): Response
     {
-        // A FAIRE !!!
+        $ret = $menuRepository->delete($id);
 
-        $tabMenu = $menuRepository->findAll();
+        if ($ret)
+        {
+            $this->addFlash('success', 'Menu supprimé avec succès');
+        }
+        else
+        {
+            $this->addFlash('danger', 'Une erreur est survenue lors de la suppression du menu : '.$ret);
+        }
 
-        return $this->render('admin/menu/index.html.twig', [
-            'tabMenu' => $tabMenu,
-        ]);
+        return $this->redirectToRoute('admin_menu_index');
     }
 }

@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1 class="mb-4">
-        <i class="bi bi-people-fill"></i>&nbsp;Liste des commandes : <span class="fs-3">{{ tabCommande|length }} résultat(s)</span>
+        <i class="bi bi-people-fill"></i>&nbsp;Historique des commandes : <span class="fs-3">{{ tabCommande|length }} résultat(s)</span>
     </h1>
 
     <table class="table table-striped">
@@ -12,8 +12,9 @@
         <tr>
             <th>État</th>
             <th>Numéro</th>
-            <th>Date</th>
+            <th>Date de livraison</th>
             <th>Menu</th>
+            <th>Quantité</th>
             <th>Montant</th>
             <th>Actions</th>
         </tr>
@@ -22,11 +23,12 @@
         {% if tabCommande|length > 0 %}
             {% for commande in tabCommande %}
                 <tr>
-                    <td>{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
+                    <td style="width: 20%; background-color: {{ tabCommandeEtat[commande.commande_etat_id].couleur }}">{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
                     <td>{{ commande.numero }}</td>
                     <td>{{ commande.date|date('d/m/Y') }}</td>
                     <td>{{ tabMenu[commande.menu_id].libelle }}</td>
-                    <td>{{ commande.montant_ht *    1.1 }} €</td>
+                    <td>{{ commande.quantite }}</td>
+                    <td>{{ commande.total_ttc }} €</td>
                     <td>
                         <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning" title="Voir la commande">
                             <i class="bi bi-pencil-square"></i>

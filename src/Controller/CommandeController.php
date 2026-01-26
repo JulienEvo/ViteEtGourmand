@@ -28,14 +28,12 @@ class CommandeController extends AbstractController
     #[Route('/ajout', name: 'ajout')]
     public function ajout(
         MenuRepository $menuRepository,
-        UserRepository $userRepository,
         PlatRepository $platRepository,
         PlatTypeRepository $platTypeRepository,
         Request $request,
         Security $security
     ): Response
     {
-
         $menu_id = $request->query->get('menu_id', 0);
         $quantite = $request->query->get('quantite', 0);
         $utilisateur = $security->getUser();
@@ -48,9 +46,10 @@ class CommandeController extends AbstractController
             ]);
         }
 
-        $menus = $menuRepository->findAll(true);
         $menu_commande = $menuRepository->findById($menu_id);
         $plats_menu = $platRepository->findByMenuId($menu_id);
+
+        $menus = $menuRepository->findAll(true);
         $plat_types = $platTypeRepository->findAll();
 
         return $this->render('commande/ajout.html.twig', [
@@ -80,55 +79,77 @@ class CommandeController extends AbstractController
 
         // Récupère les données du formulaire
         $utilisateur_id = $request->request->get('utilisateur_id');
-        $menu_id = $request->request->get('menu_id');
-        $quantite = $request->request->get('quantite');
+
         $commande_date = $request->request->get('commande_date');
         $commande_heure = $request->request->get('commande_heure');
+        $info_suppl = $request->request->get('info_suppl');
 
+        $menu_id = $request->request->get('menu_id');
+        $quantite = $request->request->get('quantite');
+        $remise = $request->request->get('remise');
+        $total_ttc = $request->request->get('total_ttc');
+
+        // Vérifie l'utilisateur connecté
         $utilisateur = $userRepository->findById($utilisateur_id);
         if (!$utilisateur) {
-            $erreur = 'utilisateur inexistant';
+            $this->addFlash('danger', 'Veuillez vous connecter');
+            $this->redirectToRoute('login');
         }
 
+        // Vérifie le menu sélectionné
         $menu = $menuRepository->findById($menu_id);
         if (!$menu) {
-            $erreur = 'menu inexistant';
+            $this->addFlash('danger', 'menu inexistant');
+            return $this->redirectToRoute('commande_ajout', ['menu_id' => $menu_id, 'quantite' => $quantite]);
         }
 
-        $menus = $menuRepository->findAll(true);
+        // Vérifie les quantités disponibles
         $menu_commande = $menuRepository->findById($menu_id);
-        $plats_menu = $platRepository->findByMenuId($menu_id);
-        $plat_types = $platTypeRepository->findAll();
+        $quantite_min = $menu_commande->getQuantite_min();
+        $quantite_max = $menu_commande->getQuantite_disponible();
+        if ($quantite < $quantite_min || $quantite > $quantite_max)
+        {
+            if ($quantite_max == 0)
+            {
+                $this->addFlash('danger', "Le menu est victime de son succès, veuillez choisir un autre menu");
+            }
+            else
+            {
+                $this->addFlash('danger', "La quantité doit être comprise entre " . $quantite_min . " et " . $quantite_max);
+            }
+
+            return $this->redirectToRoute('commande_ajout', [
+                'menu_id' => $menu_id,
+                'quantite' => $quantite_min,
+                'commande_date' => $commande_date,
+                'commande_heure' => $commande_heure,
+            ]);
+        }
 
         // Vérifie la date et l'heure de livraison
         $tabHoraire = $horaireRepository->findBySociete(1);
 
         $day_cmd = date('N', strtotime($commande_date));
         foreach ($tabHoraire as $horaire) {
-            if ($horaire['id'] == $day_cmd) {
-                if ($horaire['ferme']) {
-                    $erreur = "Désolé, nous sommes fermé le " . $horaire['jour'];
+            if ($horaire->getId() == $day_cmd) {
+                if ($horaire->isFerme()) {
+                    $erreur = "Désolé, nous sommes fermé le " . $horaire->getJour();
                 }
-                if ($commande_heure < $horaire['ouverture'] && $commande_heure >= $horaire['fermeture']) {
-                    $erreur = "heure souhaité hors des horaires d'ouverture du " . $horaire['jour'];
+                elseif ($commande_heure < $horaire->getOuverture() && $commande_heure >= $horaire->getFermeture()) {
+                    $erreur = "heure souhaité hors des horaires d'ouverture du " . $horaire->getJour();
                 }
 
                 if ($erreur != "") {
                     $this->addFlash('danger', $erreur);
-                    return $this->render('commande/ajout.html.twig', [
-                        'utilisateur' => $utilisateur,
-                        'tabMenu' => $menus,
-                        'menu' => $menu_commande,
-                        'plats_menu' => $plats_menu,
-                        'plat_types' => $plat_types,
-                        'quantite' => $quantite,
+                    return $this->redirectToRoute('commande_ajout', [
+                        'menu_id' => $menu_id,
+                        'quantite' => $quantite_min,
+                        'commande_date' => $commande_date,
+                        'commande_heure' => $commande_heure,
                     ]);
                 }
             }
         }
-
-        // Vérifier les tarifs
-
 
 
         // Ajouter la commande en bdd
@@ -139,19 +160,23 @@ class CommandeController extends AbstractController
             $menu_id,
             1,
             $numero,
-            new DateTime($commande_date),
-            0,
-            0,
+            new DateTime($commande_date.' '.$commande_heure),
+            $quantite,
+            $total_ttc,
+            $remise,
             new DateTime()
         );
 
         $commande_id = $commandeRepository->insert($commande);
+
         if (is_array($commande_id))
         {
             $this->addFlash('danger', "Erreur lors de l'enregistrement de la commande : " . $commande_id['message']);
-            return $this->render('commande/ajout.html.twig', [
+            return $this->redirectToRoute('commande_ajout', [
                 'menu' => $menu,
                 'quantite' => $quantite,
+                'commande_date' => $commande_date,
+                'commande_heure' => $commande_heure,
                 'utilisateur_id' => $utilisateur_id,
             ]);
         }
@@ -179,9 +204,7 @@ class CommandeController extends AbstractController
                                 <br>
                                 Date de commande : {$date_commande}<br>
                                 Date de livraison : {$date_livraison}<br>
-                                Montant total : {$commande->getMontant_ht()} €<br>
-                                <br>
-                                Vous recevrez un nouvel e-mail dès que votre commande sera expédiée ou prête à être livrée.
+                                Montant total : {$commande->getTotal_ttc()} €<br>
                                 <br>
                                 Si vous avez la moindre question, notre équipe reste à votre disposition via le formulaire de contact :
                                 <a href='{$lienContact}'>Formulaire de contact</a>
@@ -196,13 +219,14 @@ class CommandeController extends AbstractController
 
         $mailer->send($email);
 
+        $this->addFlash('success', "Commande validée avec succès");
         return $this->redirectToRoute('commande_historique', [
             'id' => $commande_id,
         ]);
     }
 
-    #[Route('/historique/{id}', name: 'historique')]
-    public function historique(int $id, CommandeRepository $commandeRepository, GeneriqueRepository $generiqueRepository, MenuRepository $menuRepository, Security $security): Response
+    #[Route('/historique', name: 'historique')]
+    public function historique(CommandeRepository $commandeRepository, GeneriqueRepository $generiqueRepository, MenuRepository $menuRepository, Security $security): Response
     {
         $tabCommande = $commandeRepository->findAll($security->getUser()->getId());
         $tabCommandeEtat = $generiqueRepository->findAll('commande_etat');
@@ -222,14 +246,17 @@ class CommandeController extends AbstractController
 
         if (!$menu)
         {
-            return new JsonResponse(['error' => 'Menu introuvable'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['erreur' => 'Menu introuvable'], Response::HTTP_NOT_FOUND);
         }
 
         $plats_menu = $platRepository->findByMenuId($menu->getId());
         $plat_types = $platTypeRepository->findAll();
 
         return new JsonResponse([
-            'quantite'   => $menu->getQuantite(),
+            'menu' => $menu,
+            'tarif_unitaire'   => $menu->getTarif_unitaire(),
+            'quantite_min'   => $menu->getQuantite_min(),
+            'quantite_disponible'   => $menu->getQuantite_disponible(),
             'conditions' => $menu->getConditions(),
             'composition_menu' => $this->renderView('commande/_composition_menu.html.twig', ['plats_menu' => $plats_menu, 'plat_types' => $plat_types]),
          ]);

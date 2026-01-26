@@ -27,7 +27,7 @@ class AdminCommandeController extends AbstractController
     {
         $listeCommandes = $commandeRepository->findAll();
         $listeEtats = $generiqueRepository->findAll('commande_etat');
-        $listeUtilisateurs = $userRepository->findAll('ROLE_USER');
+        $listeUtilisateurs = $userRepository->findAll();
         $listeMenus = $menuRepository->findAll();
 
         $tabCommande = [];
@@ -71,20 +71,20 @@ class AdminCommandeController extends AbstractController
                 $request->request->get('commande_etat_id'),
                 $numero,
                 new \DateTime($request->request->get('date_livraison')),
-                $request->request->get('montant_ht', 0),
+                $request->request->get('quantite', 0),
+                $request->request->get('total_ttc', 0),
                 $request->request->get('remise', 0),
             );
 
-            $mode = "";
             if ($id == 0)
             {
                 $retour = $commandeRepository->insert($commande);
-                $mode = "ajoutée";;
+                $mode = "ajoutée";
             }
             else
             {
                 $retour = $commandeRepository->update($commande);
-                $mode = "modifiée";;
+                $mode = "modifiée";
             }
 
             if (is_int($retour))
@@ -97,7 +97,7 @@ class AdminCommandeController extends AbstractController
                 $this->addFlash('danger', "Erreur lors de l'enregistrement de la commande : " . $retour['message']);
             }
 
-            return $this->render('admin_commande_edit', ['id' => $id]);
+            return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
         }
 
         $commande = $commandeRepository->findById($id);
@@ -115,17 +115,21 @@ class AdminCommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete')]
     public function delete(int $id, CommandeRepository $commandeRepository): Response
     {
+        $ret = $commandeRepository->delete($id);
 
-        //...........
+        if ($ret)
+        {
+            $this->addFlash('success', 'Commande supprimée avec succès');
+        }
+        else
+        {
+            $this->addFlash('danger', 'Une erreur est survenue lors de la suppression de la commande : '.$ret);
+        }
 
-        $tabCommande = $commandeRepository->findAll();
-
-        return $this->render('admin/commande/index.html.twig', [
-            'tabCommande' => $tabCommande,
-        ]);
+        return $this->redirectToRoute('admin_commande_index');
     }
 
     #[Route('/{id}/historique', name: 'historique')]
@@ -134,36 +138,58 @@ class AdminCommandeController extends AbstractController
         Security $security,
         CommandeRepository $commandeRepository,
         GeneriqueRepository $generiqueRepository,
+        MenuRepository  $menuRepository,
     ): Response
     {
+        // Historique de l'utilisateur connecté
         $user = $security->getUser();
 
         if (!$user) {
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('login');
         }
 
         $tabCommande = $commandeRepository->findAll($user->getUserId());
-        $tabCommandeEtat = [];
+        $tabMenu = $menuRepository->findAll();
 
+        $tabCommandeEtat = [];
         $tab_commande_etat = $generiqueRepository->findAll('commande_etat');
+
         foreach ($tab_commande_etat as $commande_etat)
         {
             $tabCommandeEtat[$commande_etat['id']]['libelle'] = $commande_etat['libelle'];
+            $tabCommandeEtat[$commande_etat['id']]['couleur'] = $commande_etat['couleur'];
         }
 
         return $this->render('admin/commande/historique.html.twig', [
             'tabCommande' => $tabCommande,
             'tabCommandeEtat' => $tabCommandeEtat,
+            'tabMenu' => $tabMenu,
         ]);
     }
 
     #[Route('/{id}/visualisation', name: 'visualisation')]
-    public function visualisation(int $id, CommandeRepository $commandeRepository): Response
+    public function visualisation(int $id, CommandeRepository $commandeRepository, MenuRepository $menuRepository, GeneriqueRepository $generiqueRepository): Response
     {
         $commande = $commandeRepository->findById($id);
 
+        if (!$commande)
+        {
+            $this->addFlash('danger', 'Commande introuvable');
+            return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+        }
+
+        $menu = $menuRepository->findById($commande->getMenu_id());
+        $tabCommande_etat = $generiqueRepository->findAll('commande_etat');
+        $commande->setTotal_ttc($menu->getTarif_unitaire() * $commande->getQuantite());
+        if ($commande->getRemise() > 0)
+        {
+            $commande->setTotal_ttc($commande->getTotal_ttc() - ($commande->getTotal_ttc() * $commande->getRemise() / 100));
+        }
+
         return $this->render('admin/commande/visualisation.html.twig', [
             'commande' => $commande,
+            'menu' => $menu,
+            'tabCommande_etat' => $tabCommande_etat,
         ]);
     }
 

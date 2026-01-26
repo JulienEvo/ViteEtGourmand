@@ -24,8 +24,9 @@
 
                         <p class="card-text text-truncate">{{ menu.description }}</p>
 
-                        <p class="mb-1"><b>Min. {{ menu.min_personne }} pers. - {{ menu.tarif_personne }}€</b></p>
-                        <p class="mb-3">Stock : {{ menu.quantite }}</p>
+                        <p class="mb-1"><b>Min. {{ menu.quantite_min }} pers.</b></p>
+                        <p class="mb-3">Stock : {{ menu.quantite_disponible }}</p>
+                        <h4 class="text-end mb-3">{{ menu.tarif_unitaire|number_format(2, '.', ' ') }} €/pers.</h4>
 
                         <form method="get" action="{{ path('commande_ajout') }}">
                             <input type="hidden" name="menu_id" id="menu_id" value="{{ menu.id }}">
@@ -39,10 +40,10 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <input type="number" name="quantite" min="1" max="{{ menu.quantite }}" value="1" class="form-control">
+                                        <input type="number" name="quantite" min="{{ menu.quantite_min }}" max="{{ menu.quantite_disponible }}" value="{{ menu.quantite_min }}" class="form-control">
                                     </td>
                                     <td>
-                                        <button type="submit" class="btn btn-primary" title="Commander">
+                                        <button type="submit" class="btn btn-primary" title="Commander" {% if menu.quantite_disponible == 0 or menu.quantite_disponible < menu.quantite_min %}disabled{% endif %}>
                                             <i class="bi bi-cart"></i>
                                         </button>
                                     </td>

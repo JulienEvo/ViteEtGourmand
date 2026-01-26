@@ -18,8 +18,8 @@ class CommandeRepository
 
     public function insert(Commande $commande): int|array
     {
-        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, montant_ht, remise)
-                VALUES (:utilisateur_id, :menu_id, :etat, :numero, :date, :montant_ht, :remise)";
+        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, quantite, total_ttc, remise)
+                VALUES (:utilisateur_id, :menu_id, :etat, :numero, :date, :quantite, :total_ttc, :remise)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
@@ -28,7 +28,8 @@ class CommandeRepository
             'etat' => $commande->getCommande_etat_id(),
             'numero' => $commande->getNumero(),
             'date' => $commande->getDate()?->format('Y-m-d H:i:s'),
-            'montant_ht' => $commande->getMontant_ht(),
+            'quantite' => $commande->getQuantite(),
+            'total_ttc' => $commande->getTotal_ttc(),
             'remise' => $commande->getRemise(),
         ]))
         {
@@ -64,6 +65,23 @@ class CommandeRepository
         }
     }
 
+    public function delete(int $commande_id): bool|array
+    {
+        $sql = "UPDATE commande
+                SET commande_etat_id = 8
+                WHERE id = :commande_id";
+        $stmt = $this->pdo->prepare($sql);
+
+        if ($stmt->execute([':commande_id' => $commande_id]))
+        {
+            return true;
+        }
+        else
+        {
+            return $stmt->errorInfo();
+        }
+    }
+
     public function findAll(int $utilisateur_id = 0): array
     {
         $vars = [];
@@ -77,7 +95,7 @@ class CommandeRepository
             $vars['utilisateur_id'] = $utilisateur_id;
         }
 
-        $sql .= " ORDER BY commande.date";
+        $sql .= " ORDER BY commande.date DESC";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
@@ -92,8 +110,9 @@ class CommandeRepository
                 $row->commande_etat_id,
                 $row->numero,
                 new DateTime($row->date),
+                $row->quantite,
+                $row->total_ttc,
                 $row->remise,
-                $row->montant_ht,
                 new DateTime($row->created_at),
             );
         }
@@ -123,8 +142,9 @@ class CommandeRepository
                 $row->commande_etat_id,
                 $row->numero,
                 new DateTime($row->date),
+                $row->quantite,
+                $row->total_ttc,
                 $row->remise,
-                $row->montant_ht,
                 new DateTime($row->created_at)
             );
         }
@@ -136,16 +156,15 @@ class CommandeRepository
     {
         $retour = "C".date('ym')."0001";
 
-        $sql = "SELECT MAX(id), numero
+        $sql = "SELECT MAX(numero) AS numero
                 FROM commande";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
-        if ($stmt->rowCount() > 0)
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row)
         {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
             $numero = substr($row['numero'], -4);
             $numero++;
 

@@ -27,8 +27,8 @@ class MenuRepository
 
     public function insert(array $menu): bool
     {
-        $sql = "INSERT INTO menu (libelle, description, conditions, theme, min_personne, tarif_personne, regime, quantite, actif)
-                VALUES (:libelle, :description, :conditions, :theme, :min_personne, :tarif_personne, :regime, :quantite, :actif)";
+        $sql = "INSERT INTO menu (libelle, description, conditions, theme, quantite_min, tarif_unitaire, quantite_disponible, actif)
+                VALUES (:libelle, :description, :conditions, :theme, :quantite_min, :tarif_unitaire, :quantite_disponible, :actif)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -37,10 +37,9 @@ class MenuRepository
             ':description' => $menu['description'],
             ':conditions' => $menu['conditions'],
             ':theme' => $menu['theme'],
-            ':min_personne' => $menu['min_personne'],
-            ':tarif_personne' => $menu['tarif_personne'],
-            ':regime' => $menu['regime'],
-            ':quantite' => $menu['quantite'],
+            ':quantite_min' => $menu['quantite_min'],
+            ':tarif_unitaire' => $menu['tarif_unitaire'],
+            ':quantite_disponible' => $menu['quantite_disponible'],
             ':actif' => $menu['actif'] ?? 1
         ]);
     }
@@ -52,9 +51,9 @@ class MenuRepository
                 SET libelle = :libelle,
                     description = :description,
                     conditions = :conditions,
-                    min_personne = :min_personne,
-                    tarif_personne = :tarif_personne,
-                    quantite = :quantite,
+                    quantite_min = :quantite_min,
+                    tarif_unitaire = :tarif_unitaire,
+                    quantite_disponible = :quantite_disponible,
                     actif = :actif
                 WHERE id = :id";
 
@@ -64,9 +63,9 @@ class MenuRepository
             ':libelle' => $menu->getLibelle(),
             ':description' => $menu->getDescription(),
             ':conditions' => $menu->getConditions(),
-            ':min_personne' => $menu->getMin_personne(),
-            ':tarif_personne' => $menu->getTarif_personne(),
-            ':quantite' => $menu->getQuantite(),
+            ':quantite_min' => $menu->getquantite_min(),
+            ':tarif_unitaire' => $menu->gettarif_unitaire(),
+            ':quantite_disponible' => $menu->getQuantite_disponible(),
             ':actif' => $menu->isActif(),
             ':id' => $id
         ]);
@@ -77,14 +76,21 @@ class MenuRepository
         // Met à jour les régimes du menu
     }
 
-    public function delete(int $menu_id): bool
+    public function delete(int $menu_id): bool|array
     {
         $sql = "UPDATE menu
                 SET actif = 0
                 WHERE id = :menu_id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([':menu_id' => $menu_id]);
+        if ($stmt->execute([':menu_id' => $menu_id]))
+        {
+            return true;
+        }
+        else
+        {
+            return $stmt->errorInfo();
+        }
     }
 
     public function findAll($only_actif = false): array
@@ -120,9 +126,9 @@ class MenuRepository
                 $row['libelle'],
                 $row['description'],
                 $row['conditions'],
-                $row['min_personne'],
-                $row['tarif_personne'],
-                $row['quantite'],
+                $row['quantite_min'],
+                $row['tarif_unitaire'],
+                $row['quantite_disponible'],
                 $row['actif'],
                 $row['themes'],
                 $row['regimes'],
@@ -154,9 +160,9 @@ class MenuRepository
                 $row['libelle'],
                 $row['description'],
                 $row['conditions'],
-                $row['min_personne'],
-                $row['tarif_personne'],
-                $row['quantite'],
+                $row['quantite_min'],
+                $row['tarif_unitaire'],
+                $row['quantite_disponible'],
                 $row['actif'],
                 implode($themes),
                 implode($regimes)
@@ -200,17 +206,17 @@ class MenuRepository
         }
 
         if (!empty($filters['tarif_min'])) {
-            $sql .= " AND menu.tarif_personne >= :tarif_min";
+            $sql .= " AND menu.tarif_unitaire >= :tarif_min";
             $vars[':tarif_min'] = $filters['tarif_min'];
         }
 
         if (!empty($filters['tarif_max'])) {
-            $sql .= " AND menu.tarif_personne <= :tarif_max";
+            $sql .= " AND menu.tarif_unitaire <= :tarif_max";
             $vars[':tarif_max'] = $filters['tarif_max'];
         }
 
         if (!empty($filters['disponible'])) {
-            $sql .= " AND menu.quantite > 0";
+            $sql .= " AND menu.quantite_disponible > 0";
         }
 
         $stmt = $this->pdo->prepare($sql);
