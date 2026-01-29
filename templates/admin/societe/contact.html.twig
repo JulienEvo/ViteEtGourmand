@@ -40,12 +40,12 @@
                     <div class="card-body">
                         <div class="row col-12">
                             <div class="mb-3 col-12 col-lg-3">
-                                <label for="nom" class="form-label">Nom :</label>
-                                <input type="text" class="form-control" name="nom" id="nom" value="{{ user.nom ?? '' }}" required>
-                            </div>
-                            <div class="mb-3 col-12 col-lg-3">
                                 <label for="email" class="form-label">Email :</label>
                                 <input type="email" class="form-control" name="email" id="email" value="{{ user.email ?? '' }}" required>
+                            </div>
+                            <div class="mb-3 col-12 col-lg-3">
+                                <label for="titre" class="form-label">Titre :</label>
+                                <input type="text" class="form-control" name="titre" id="titre" value="" placeholder="ex: Demande d'informations" required>
                             </div>
                             <div class="mb-3 col-12 col-lg-6">
                                 <label for="message" class="form-label">Message :</label>

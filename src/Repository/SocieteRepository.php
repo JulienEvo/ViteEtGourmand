@@ -22,6 +22,7 @@ class SocieteRepository
                     statut = :statut,
                     capital = :capital,
                     rcs = :rcs,
+                    siret = :siret,
                     tva = :tva,
                     telephone = :telephone,
                     email = :email,
@@ -29,6 +30,8 @@ class SocieteRepository
                     code_postal = :code_postal,
                     commune = :commune,
                     pays = :pays,
+                    latitude = :latitude,
+                    longitude = :longitude,
                     actif = :actif
                 WHERE id = :id";
 
@@ -39,6 +42,7 @@ class SocieteRepository
             ':statut' => $societe->getStatut(),
             ':capital' => $societe->getCapital(),
             ':rcs' => $societe->getRcs(),
+            ':siret' => $societe->getSiret(),
             ':tva' => $societe->getTva(),
             ':telephone' => $societe->getTelephone(),
             ':email' => $societe->getEmail(),
@@ -46,6 +50,8 @@ class SocieteRepository
             ':code_postal' => $societe->getCode_postal(),
             ':commune' => $societe->getCommune(),
             ':pays' => $societe->getPays(),
+            ':latitude' => $societe->getLatitude(),
+            ':longitude' => $societe->getLongitude(),
             ':actif' => $societe->isActif() ?? 1,
             ':id' => $societe->getId()
         ]);
@@ -88,12 +94,13 @@ class SocieteRepository
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $societe = new Societe(
+        return new Societe(
             $row['id'],
             $row['libelle'],
             $row['statut'],
             $row['capital'],
             $row['rcs'],
+            $row['siret'],
             $row['tva'],
             $row['telephone'],
             $row['email'],
@@ -101,12 +108,12 @@ class SocieteRepository
             $row['code_postal'],
             $row['commune'],
             $row['pays'],
+            (isset($row['latitude'])) ?? null,
+            (isset($row['longitude'])) ?? null,
             $row['actif'],
             new DateTime($row['created_at']),
             $row['updated_at'] ? new DateTime($row['updated_at']) : null
         );
-
-        return $societe;
     }
 
 }

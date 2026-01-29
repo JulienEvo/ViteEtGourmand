@@ -69,6 +69,8 @@ class SecurityController extends AbstractController
                 $request->request->get('code_postal'),
                 $request->request->get('commune'),
                 $request->request->get('pays'),
+                $request->request->get('latitude'),
+                $request->request->get('longitude'),
                 ($request->request->get('poste') ?? '')
             );
 

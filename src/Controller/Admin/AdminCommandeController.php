@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+const BORDEAUX_LAT = 44.837789;
+const BORDEAUX_LON = -0.57918;
+
 #[Route('/admin/commande', name: 'admin_commande_')]
 class AdminCommandeController extends AbstractController
 {
@@ -64,6 +67,8 @@ class AdminCommandeController extends AbstractController
                 $numero = $commandeRepository->getNumero();
             }
 
+            $utilisateur = $userRepository->findById($request->request->get('utilisateur_id'));
+
             $commande = new Commande(
                 $id,
                 $request->request->get('menu_id'),
@@ -71,6 +76,11 @@ class AdminCommandeController extends AbstractController
                 $request->request->get('commande_etat_id'),
                 $numero,
                 new \DateTime($request->request->get('date_livraison')),
+                $utilisateur->getAdresse(),
+                $utilisateur->getCode_postal(),
+                $utilisateur->getCommune(),
+                $utilisateur->getLatitude(),
+                $utilisateur->getLongitude(),
                 $request->request->get('quantite', 0),
                 $request->request->get('total_ttc', 0),
                 $request->request->get('remise', 0),
@@ -168,7 +178,13 @@ class AdminCommandeController extends AbstractController
     }
 
     #[Route('/{id}/visualisation', name: 'visualisation')]
-    public function visualisation(int $id, CommandeRepository $commandeRepository, MenuRepository $menuRepository, GeneriqueRepository $generiqueRepository): Response
+    public function visualisation(
+        int $id,
+        CommandeRepository $commandeRepository,
+        MenuRepository $menuRepository,
+        GeneriqueRepository $generiqueRepository,
+        UserRepository $userRepository,
+    ): Response
     {
         $commande = $commandeRepository->findById($id);
 
@@ -180,16 +196,32 @@ class AdminCommandeController extends AbstractController
 
         $menu = $menuRepository->findById($commande->getMenu_id());
         $tabCommande_etat = $generiqueRepository->findAll('commande_etat');
-        $commande->setTotal_ttc($menu->getTarif_unitaire() * $commande->getQuantite());
+
+        $total_ttc = $menu->getTarif_unitaire() * $commande->getQuantite();
+
         if ($commande->getRemise() > 0)
         {
-            $commande->setTotal_ttc($commande->getTotal_ttc() - ($commande->getTotal_ttc() * $commande->getRemise() / 100));
+            $total_ttc -= ($total_ttc * $commande->getRemise() / 100);
         }
+
+        // Calcule des frais de livraison
+        $tarif_livraison = 0;
+        $utilisateur = $this->getUser();
+
+        if (!empty($utilisateur->getLatitude()))
+        {
+            $distance_km = FonctionsService::distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude());
+            $tarif_livraison = round(5 + (0.59 * $distance_km), 2);
+        }
+
+        $commande->setTotal_ttc(round($total_ttc, 2));
 
         return $this->render('admin/commande/visualisation.html.twig', [
             'commande' => $commande,
             'menu' => $menu,
             'tabCommande_etat' => $tabCommande_etat,
+            'tarif_livraison' => $tarif_livraison,
+            'distance_km' => $distance_km,
         ]);
     }
 

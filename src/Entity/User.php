@@ -20,6 +20,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $code_postal;
     private string $commune;
     private string $pays;
+    private ?float $latitude;
+    private ?float $longitude;
     private ?string $poste;
     private bool $actif;
     private DateTime $createdAt;
@@ -37,10 +39,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         string $code_postal = '',
         string $commune = '',
         string $pays = '',
+        ?string $latitude = null,
+        ?string $longitude = null,
         string $poste = '',
         bool $actif = true,
         dateTime $createdAt = new DateTime,
-        DateTime $updatedAt = null
+        ?DateTime $updatedAt = null
     ) {
         $this->setId($id);
         $this->setRoles($roles);
@@ -53,6 +57,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->setCode_postal($code_postal);
         $this->setCommune($commune);
         $this->setPays($pays);
+        $this->setLatitude($latitude);
+        $this->setLongitude($longitude);
         $this->setPoste($poste);
         $this->setActif($actif);
         $this->setCreatedAt($createdAt);
@@ -122,6 +128,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->pays;
     }
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
     public function getPoste(): string
     {
         return $this->poste;
@@ -182,6 +196,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPays(string $pays): void
     {
         $this->pays = $pays;
+    }
+    public function setLatitude(?float $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
+    public function setLongitude(?float $longitude): void
+    {
+        $this->longitude = $longitude;
     }
     public function setPoste(string $poste): void
     {

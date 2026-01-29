@@ -11,6 +11,8 @@ CREATE TABLE utilisateur (
     code_postal VARCHAR(32) NOT NULL,
     commune VARCHAR(64) NOT NULL,
     pays VARCHAR(64) NOT NULL,
+    latitude FLOAT NULL,
+    longitude FLOAT NULL,
     poste VARCHAR(64) NULL,
     actif BOOLEAN NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL,

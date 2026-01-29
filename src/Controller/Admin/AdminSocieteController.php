@@ -4,11 +4,15 @@ namespace App\Controller\Admin;
 
 use App\Repository\HoraireRepository;
 use App\Repository\SocieteRepository;
+use App\Repository\UserRepository;
 use App\Service\FonctionsService;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/societe', name: 'admin_societe_')]
@@ -73,24 +77,89 @@ class AdminSocieteController extends AbstractController
     }
 
     #[Route('/contact', name: 'contact')]
-    public function contact(SocieteRepository $societeRepository, HoraireRepository $horaireRepository, Request $request): Response
+    public function contact(
+        SocieteRepository $societeRepository,
+        MailerInterface $mailer,
+        Request $request
+    ): Response
     {
         $societe = $societeRepository->findById(1);
-        $tabHoraire = $horaireRepository->findBySociete(1);
 
         if ($request->isMethod('POST')) {
-            $nom = trim($request->request->get('nom'));
+            $titre = trim($request->request->get('titre'));
             $email = trim($request->request->get('email'));
             $message = trim($request->request->get('message'));
 
-            echo "ee : " . $message; exit;
+            // Envoie email à l'administrateur
+            $lien_repondre = "mailto:".$email;
+            $email = (new Email())
+                ->from('no-reply@vite-et-gourmand.fr')
+                ->to($societe->getEmail())
+                ->subject('Vite & Gourmand - Contact - '.$titre)
+                ->html("
+                            <p>
+                                Bonjour,
+                                <br><br>
+                                Nouveau message via le formulaire de contact :
+                                <br><br>
+                                E-mail : {$email}<br>
+                                Titre : {$titre}<br>
+                                Message : {$message}<br>
+                                <br>
+                                Vous pouvez répondre au message en suivant ce lien :
+                                <a href='{$lien_repondre}'>Répondre au message</a>
+                                <br><br>
+                                Cordialement,<br>
+                                L’équipe <b>Vite & Gourmand</b>
+                            </p>
+                        "
+                );
 
-            --> ENVOYER MAILss (Sauvegarde en bdd ???)
+            try {
+                $mailer->send($email);
+                $this->addFlash('success', "Votre message à bien été envoyé");
+            } catch (TransportExceptionInterface $e) {
+                $this->addFlash('danger', 'Erreur lors de l’envoi du message : ' . $e->getMessage());
+            }
 
-            $this->addFlash('success', "Votre message à bien été envoyé");
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('admin/societe/contact.html.twig');
+    }
+
+    #[Route('/cgv', name: 'cgv')]
+    public function cgv(
+        SocieteRepository $societeRepository,
+    ): Response
+    {
+        $societe = $societeRepository->findById(1);
+        $tarif_livraison = 5;
+
+        return $this->render('admin/societe/cgv.html.twig', [
+            'societe' => $societe,
+            'tarif_livraison' => $tarif_livraison,
+        ]);
+    }
+
+    #[Route('/mentions', name: 'mentions')]
+    public function mentions(
+        SocieteRepository $societeRepository,
+        UserRepository $userRepository,
+    ): Response
+    {
+        $societe = $societeRepository->findById(1);
+        $tab_admin = $userRepository->findAll('ROLE_ADMIN');
+        foreach ($tab_admin as $user)
+        {
+            $admin = $user;
+            break;
+        }
+
+        return $this->render('admin/societe/mentions.html.twig', [
+            'societe' => $societe,
+            'admin' => $admin,
+        ]);
     }
 
 }

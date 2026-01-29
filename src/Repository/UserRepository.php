@@ -19,13 +19,7 @@ class UserRepository
 
     public function insert(User $user): int|array
     {
-        $sql = "INSERT INTO utilisateur
-                    (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, poste, created_at)
-                VALUES
-                    (:roles, :email, :password, :prenom, :nom, :telephone, :adresse, :code_postal, :commune, :pays, :poste, :created_at)";
-        $stmt = $this->pdo->prepare($sql);
-
-        if ($stmt->execute([
+        $vars = [
             'roles' => json_encode($user->getRoles()),
             'email' => $user->getEmail(),
             'password' => password_hash($user->getPassword(), PASSWORD_DEFAULT),
@@ -38,7 +32,25 @@ class UserRepository
             'pays' => $user->getPays(),
             'poste' => $user->getPoste(),
             'created_at' => date('Y-m-d H:i:s')
-        ]))
+        ];
+
+        $latitude = $user->getLatitude();
+        $longitude = $user->getLongitude();
+        if (isset($latitude) && isset($longitude))
+        {
+            $sql_ins = "latitude, longitude, ";
+            $sql_val = ":latitude, :longitude, ";
+            $vars['latitude'] = $user->getLatitude();
+            $vars['longitude'] = $user->getLongitude();
+        }
+
+        $sql = "INSERT INTO utilisateur
+                    (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, {$sql_ins} poste, created_at)
+                VALUES
+                    (:roles, :email, :password, :prenom, :nom, :telephone, :adresse, :code_postal, :commune, :pays, {$sql_val} :poste, :created_at)";
+        $stmt = $this->pdo->prepare($sql);
+
+        if ($stmt->execute($vars))
         {
             return $this->pdo->lastInsertId();
         }
@@ -50,17 +62,6 @@ class UserRepository
     public function update(UserInterface $user, bool $save_pass): bool|array
 
     {
-        $password = "";
-        if ($save_pass)
-        {
-            $password = ", password=:password";
-        }
-
-        $sql = "UPDATE utilisateur
-                SET roles=:roles, email=:email {$password} , prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
-                    code_postal=:code_postal, commune=:commune, pays=:pays, poste=:poste, actif=:actif, updated_at=:updated
-                WHERE id = :id";
-
         $vars = [
             ':roles' => json_encode($user->getRoles()),
             ':email' => $user->getEmail(),
@@ -76,10 +77,28 @@ class UserRepository
             ':updated' => date('Y-m-d'),
             ':id' => $user->getUserId(),
         ];
+
+        $password = "";
         if ($save_pass)
         {
             $vars['password'] = password_hash($user->getPassword(), PASSWORD_DEFAULT);
+            $password = "password=:password,";
         }
+
+        $sql_upl = "";
+        $latitude = $user->getLatitude();
+        $longitude = $user->getLongitude();
+        if (isset($latitude) && $latitude != '' && isset($longitude) && $longitude != '')
+        {
+            $sql_upl = "latitude=:latitude, longitude=:longitude, ";
+            $vars['latitude'] = $user->getLatitude();
+            $vars['longitude'] = $user->getLongitude();
+        }
+
+        $sql = "UPDATE utilisateur
+                SET roles=:roles, email=:email, {$password} prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
+                    code_postal=:code_postal, commune=:commune, pays=:pays, {$sql_upl} poste=:poste, actif=:actif, updated_at=:updated
+                WHERE id = :id";
 
         $stmt = $this->pdo->prepare($sql);
         if ($stmt->execute($vars))
@@ -149,6 +168,8 @@ class UserRepository
                     $row['code_postal'],
                     $row['commune'],
                     $row['pays'],
+                    $row['latitude'],
+                    $row['longitude'],
                     $row['poste'],
                     $row['actif'],
                     new DateTime($row['created_at']),
@@ -189,6 +210,8 @@ class UserRepository
                 $row['code_postal'],
                 $row['commune'],
                 $row['pays'],
+                $row['latitude'],
+                $row['longitude'],
                 $row['poste'],
                 $row['actif'],
                 new DateTime($row['created_at']),
@@ -226,6 +249,8 @@ class UserRepository
                 $row['code_postal'],
                 $row['commune'],
                 $row['pays'],
+                $row['latitude'],
+                $row['longitude'],
                 $row['poste'],
                 $row['actif'],
                 new DateTime($row['created_at']),

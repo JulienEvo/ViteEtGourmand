@@ -11,6 +11,7 @@
         <thead>
         <tr>
             <th>État</th>
+            <th>Numéro</th>
             <th>Client</th>
             <th>Commande</th>
             <th>Note</th>
@@ -35,9 +36,14 @@
 
                 <tr>
                     <td class="{{ bg }}">{{ etat }}</td>
+                    <td class="text-end">{{ item.avis.id }}</td>
                     <td>{{ item.utilisateur.nom~ ' ' ~ item.utilisateur.prenom }}</td>
                     <td>{{ item.commande.numero }}</td>
-                    <td>{{ item.avis.note }}</td>
+                    <td>
+                        {% for i in 1..5 %}
+                            {{ i <= item.avis.note ? '⭐' : '☆' }}
+                        {% endfor %}
+                    </td>
                     <td>{{ item.avis.commentaire }}</td>
                     <td>{{ item.avis.created_at|date('d/m/Y') }}</td>
                     <td>

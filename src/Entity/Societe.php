@@ -11,6 +11,7 @@ class Societe
     private string $statut;
     private ?float $capital;
     private ?string $rcs;
+    private ?string $siret;
     private ?string $tva;
     private string $telephone;
     private string $email;
@@ -18,19 +19,22 @@ class Societe
     private string $code_postal;
     private string $commune;
     private string $pays;
+    private ?float $latitude;
+    private ?float $longitude;
     private bool $actif;
     private DateTime $createdAt;
     private ?DateTime $updatedAt;
 
-    public function __construct(int $id, string $libelle, string $statut, ?float $capital, ?string $rcs, ?string $tva,
+    public function __construct(int $id, string $libelle, string $statut, ?float $capital, ?string $rcs, ?string $siret, ?string $tva,
                                 string $telephone, string $email, string $adresse, string $code_postal, string $commune,
-                                string $pays, bool $actif, DateTime $createdAt, ?DateTime $updatedAt = null)
+                                string $pays, ?float $latitude, ?float $longitude, bool $actif, DateTime $createdAt, ?DateTime $updatedAt = null)
     {
         $this->id = $id;
         $this->libelle = $libelle;
         $this->statut = $statut;
         $this->capital = $capital;
         $this->rcs = $rcs;
+        $this->siret = $siret;
         $this->tva = $tva;
         $this->telephone = $telephone;
         $this->email = $email;
@@ -38,6 +42,8 @@ class Societe
         $this->code_postal = $code_postal;
         $this->commune = $commune;
         $this->pays = $pays;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
         $this->actif = $actif;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
@@ -66,6 +72,11 @@ class Societe
     public function getRcs(): ?string
     {
         return $this->rcs;
+    }
+
+    public function getSiret(): ?string
+    {
+        return $this->siret;
     }
 
     public function getTva(): ?string
@@ -103,6 +114,16 @@ class Societe
         return $this->pays;
     }
 
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
     public function isActif(): bool
     {
         return $this->actif;
@@ -138,6 +159,11 @@ class Societe
         $this->rcs = $rcs;
     }
 
+    public function setSiret(?string $siret): void
+    {
+        $this->siret = $siret;
+    }
+
     public function setTva(?string $tva): void
     {
         $this->tva = $tva;
@@ -171,6 +197,16 @@ class Societe
     public function setPays(string $pays): void
     {
         $this->pays = $pays;
+    }
+
+    public function setLatitude(?float $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
+
+    public function setLongitude(?float $longitude): void
+    {
+        $this->longitude = $longitude;
     }
 
     public function setActif(bool $actif): void

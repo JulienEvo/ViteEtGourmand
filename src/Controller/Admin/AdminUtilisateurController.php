@@ -8,6 +8,7 @@ use App\Service\FonctionsService;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[Route('/admin/utilisateur', name: 'admin_utilisateur_')]
 class AdminUtilisateurController extends AbstractController
@@ -34,8 +36,18 @@ class AdminUtilisateurController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit')]
-    public function edit(int $id, UserRepository $userRepository, Request $request, MailerInterface $mailer): Response
+    public function edit(
+        int $id,
+        UserRepository $userRepository,
+        Request $request,
+        MailerInterface $mailer,
+        HttpClientInterface $httpClient
+    ): Response
     {
+        // Récupère l'employé par son ID
+        $utilisateur = $userRepository->findById($id);
+
+        // Utilisateur OU employé
         $mode = $request->query->get('mode');
         $type = $request->query->get('type');
 
@@ -48,7 +60,35 @@ class AdminUtilisateurController extends AbstractController
             $email = trim($request->request->get('email'));
             $password = trim($request->request->get('password'));
             $confirm = trim($request->request->get('confirm'));
+            $adresse = trim($request->request->get('adresse'));
+            $commune = trim($request->request->get('commune'));
 
+            $latitude = null;
+            $longitude = null;
+            if ($utilisateur->getAdresse() != $adresse || $utilisateur->getCommune() != $commune)
+            {
+                // Géolocalise l'adresse
+                $geocode = $this->geocode($adresse, $commune, $httpClient);
+
+                $data = json_decode($geocode->getContent(), true);
+
+                if (isset($data['erreur']))
+                {
+                    $this->addFlash('danger', "Erreur de géolocalisation : ".$data['erreur']);
+                }
+                else
+                {
+                    $latitude = $data['latitude'];
+                    $longitude = $data['longitude'];
+                    $ville = $data['ville'];
+
+                    if ($ville != "" && strtoupper($ville) != strtoupper($commune)) {
+                        $commune = $ville;
+                    }
+
+                    $this->addFlash('success', "Adresse géolocalisée");
+                }
+            }
 
             $utilisateur = new User(
                 $id,
@@ -58,10 +98,12 @@ class AdminUtilisateurController extends AbstractController
                 $prenom,
                 $nom,
                 trim($request->request->get('telephone')),
-                trim($request->request->get('adresse')),
+                $adresse,
                 trim($request->request->get('code_postal')),
-                trim($request->request->get('commune')),
+                $commune,
                 trim($request->request->get('pays')),
+                $latitude,
+                $longitude,
                 trim($request->request->get('poste')),
                 $request->request->get('actif'),
                 new DateTime(),
@@ -147,19 +189,8 @@ class AdminUtilisateurController extends AbstractController
                     $this->addFlash('danger', "Erreur lors de la modification de l'employé : ".$ret['message'] );
                 }
             }
-
-            return $this->render('admin/utilisateur/edit.html.twig', [
-                'id' => $id,
-                'utilisateur' => $utilisateur,
-                'mode' => 'modif',
-                'type' => $type,
-            ]);
         }
 
-        // Récupère l'employé par son ID
-        $utilisateur = $userRepository->findById($id);
-
-        // Affiche l'employé
         return $this->render('admin/utilisateur/edit.html.twig', [
             'id' => $id,
             'utilisateur' => $utilisateur,
@@ -191,7 +222,11 @@ class AdminUtilisateurController extends AbstractController
     }
 
     #[Route('/profil', name: 'profil')]
-    public function profil(Security $security, UserRepository $userRepository, Request $request): Response
+    public function profil(
+        Security $security,
+        UserRepository $userRepository,
+        HttpClientInterface $httpClient,
+        Request $request): Response
     {
         $comeFrom = $request->query->get('comeFrom', '');
 
@@ -199,6 +234,39 @@ class AdminUtilisateurController extends AbstractController
 
         if ($request->isMethod('POST'))
         {
+            $adresse = trim($request->request->get('adresse'));
+            $commune = trim($request->request->get('commune'));
+
+            $latitude = $request->request->get('latitude');
+            $longitude = $request->request->get('longitude');
+            if ($utilisateur->getAdresse() != $adresse || $utilisateur->getCommune() != $commune)
+            {
+                // Géolocalise l'adresse
+                $geocode = $this->geocode($adresse, $commune, $httpClient);
+
+                $data = json_decode($geocode->getContent(), true);
+
+                if (isset($data['erreur']))
+                {
+                    $latitude = null;
+                    $longitude = null;
+                    $this->addFlash('danger', "Erreur de géolocalisation : ".$data['erreur']);
+                }
+                else
+                {
+                    $latitude = $data['latitude'];
+                    $longitude = $data['longitude'];
+                    $ville = $data['ville'];
+
+                    if ($ville != "" && strtoupper($ville) != strtoupper($commune)) {
+                        $commune = $ville;
+                    }
+
+                    $this->addFlash('success', "Adresse géolocalisée");
+                }
+            }
+
+
             // Récupère les données du formulaire
             $utilisateur->setNom(trim($request->request->get('nom')));
             $utilisateur->setPrenom(trim($request->request->get('prenom')));
@@ -207,6 +275,8 @@ class AdminUtilisateurController extends AbstractController
             $utilisateur->setCode_postal(trim($request->request->get('code_postal')));
             $utilisateur->setCommune(trim($request->request->get('commune')));
             $utilisateur->setPays(trim($request->request->get('pays')));
+            $utilisateur->setLatitude($latitude);
+            $utilisateur->setLongitude($longitude);
             $utilisateur->setPoste(trim($request->request->get('poste')));
             $utilisateur->setActif($request->request->get('actif') ?? true);
             $utilisateur->setPassword(trim($request->request->get('password')));
@@ -234,7 +304,7 @@ class AdminUtilisateurController extends AbstractController
                     return $this->redirectToRoute('login');
                 }
 
-                $this->addFlash('success', "Profil modifié avec succès");
+                $this->addFlash('success', "Informations personnelles modifiées avec succès");
 
                 $comeFrom = $request->request->get('comeFrom', '');
                 if ($comeFrom != '')
@@ -252,6 +322,47 @@ class AdminUtilisateurController extends AbstractController
             'utilisateur' => $utilisateur,
             'comeFrom' => $comeFrom,
         ]);
+    }
+
+    #[Route('/geocode{adresse]{commune}', name: 'geocode_address')]
+    public function geocode(string $adresse, string $commune, HttpClientInterface $client): JsonResponse
+    {
+        try {
+            $response = $client->request('GET', 'https://nominatim.openstreetmap.org/search', [
+                'query' => [
+                    'q' => $adresse.' '.$commune,
+                    'format' => 'json',
+                    'addressdetails' => 1,
+                    'limit' => 1,
+                ],
+                'headers' => [
+                    'User-Agent' => 'vite-&-gourmand/1.0 (julien.chiarotti@gmail.com)',
+                ],
+            ]);
+
+            $data = $response->toArray();
+
+            if (empty($data)) {
+                return $this->json([
+                    'erreur' => 'Adresse non trouvée'
+                ], 404);
+            }
+
+            return $this->json([
+                'latitude'  => $data[0]['lat'],
+                'longitude' => $data[0]['lon'],
+                'ville'     => $data[0]['address']['city']
+                    ?? $data[0]['address']['town']
+                        ?? $data[0]['address']['village']
+                        ?? null,
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'erreur' => 'Erreur lors de l’appel à Nominatim',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

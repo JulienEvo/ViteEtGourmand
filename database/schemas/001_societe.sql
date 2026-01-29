@@ -12,6 +12,8 @@ CREATE TABLE societe (
     code_postal VARCHAR(32) NOT NULL,
     commune VARCHAR(64) NOT NULL,
     pays VARCHAR(64) NOT NULL,
+    latitude FLOAT NULL,
+    longitude FLOAT NULL,
     actif BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NULL,

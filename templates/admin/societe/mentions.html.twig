@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}V&G : Mentions légales{% endblock %}
+
+{% block body %}
+
+    {% set user = app.getUser() %}
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Mentions légales</h1>
+            <a href="{{ path('admin_societe_cgv') }}" class="btn btn-primary">
+                Voir les CGV
+            </a>
+        </div>
+    </section>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div>
+                        <h4>Éditeur du site</h4>
+                        <p>
+                            <ul>
+                            <li><label class="form-label">Nom :</label> {{ societe.libelle }}</li>
+                                <li><label class="form-label">Forme juridique :</label> {{ societe.statut }}</li>
+                                <li><label class="form-label">Capital social :</label> {{ societe.capital }} €</li>
+                                <li><label class="form-label">Siège social :</label> {{ societe.adresse ~ societe.code_postal ~ societe.commune }}</li>
+                                <li><label class="form-label">RCS :</label> {{ societe.rcs }}</li>
+                                <li><label class="form-label">SIRET :</label> {{ societe.siret }}</li>
+                                <li><label class="form-label">TVA intracommunautaire :</label> {{ societe.tva }}</li>
+                                <li><label class="form-label">Email :</label> {{ societe.email }}</li>
+                                <li><label class="form-label">Téléphone :</label> {{ societe.telephone }}</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div>
+                        <h4>Directeur de la publication</h4>
+                        <p>
+                            {{ admin.nom ~' '~ admin.prenom }}
+                        </p>
+                    </div>
+                    <div>
+                        <h4>Hébergement</h4>
+                        <p>
+                            <ul>
+                                <li><label class="form-label">Hébergeur :</label> hébergeur</li>
+                                <li><label class="form-label">Adresse :</label> adresse_hébergeur</li>
+                                <li><label class="form-label">Téléphone :</label> téléphone_hébergeur</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div>
+                        <h4>Propriété intellectuelle</h4>
+                        <p>
+                            L’ensemble du site (textes, images, logos, code) est protégé par le droit de la propriété intellectuelle.
+                            Toute reproduction est interdite sans autorisation écrite préalable.
+                        </p>
+                    </div>
+                    <div>
+                        <h4>Cookies</h4>
+                        <p>
+                            Le site peut utiliser des cookies à des fins de fonctionnement, statistiques ou amélioration de l’expérience utilisateur.
+                            <br><br>
+                            Le Client peut configurer son navigateur pour refuser les cookies.
+                        </p>
+                    </div>
+                    <div>
+                        <h4>Responsabilité</h4>
+                        <p>
+                            Les livraisons sont effectuées à l’adresse fournie par le client.
+                            Les délais sont donnés à titre indicatif.
+                        </p>
+                    </div>
+                    <div>
+                        <h4>7. Droit de rétractation</h4>
+                        <p>
+                            L’éditeur ne saurait être tenu responsable des erreurs, interruptions ou dysfonctionnements du site.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

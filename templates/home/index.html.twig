@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
+    {% block title %}
 
     {% set societe = query_service.getSociete(1) %}
 
@@ -14,7 +14,7 @@
 {% block body %}
     <section class="hero-section">
         <div class="hero-content">
-            <h1>Traiteur passionné<br> pour vos moments d’exception</h1>
+            <h1>Traiteur passionné<br>pour vos moments d’exception</h1>
             <p>Plats faits maison – Événementiel – Commande en ligne</p>
             <a href="{{ path('menu_index') }}" class="btn btn-primary">
                 Découvrir nos menus

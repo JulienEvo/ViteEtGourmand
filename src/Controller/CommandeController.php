@@ -40,10 +40,8 @@ class CommandeController extends AbstractController
 
         // Pas d'utilisateur connecté, redirige vers la page de connexion
         if (!$utilisateur) {
-            return $this->redirectToRoute('login', [
-                'redirect' => 'commande_ajout',
-                'objet_id' => $menu_id,
-            ]);
+            $this->addFlash('danger', "Veuillez d'abord vous connecter");
+            return $this->redirectToRoute('login');
         }
 
         $menu_commande = $menuRepository->findById($menu_id);
@@ -69,8 +67,6 @@ class CommandeController extends AbstractController
         UserRepository $userRepository,
         MenuRepository $menuRepository,
         HoraireRepository $horaireRepository,
-        PlatRepository $platRepository,
-        PlatTypeRepository $platTypeRepository,
         MailerInterface $mailer,
         Request $request):
     Response
@@ -161,6 +157,11 @@ class CommandeController extends AbstractController
             1,
             $numero,
             new DateTime($commande_date.' '.$commande_heure),
+            $utilisateur->getAdresse(),
+            $utilisateur->getCode_postal(),
+            $utilisateur->getCommune(),
+            $utilisateur->getLatitude(),
+            $utilisateur->getLongitude(),
             $quantite,
             $total_ttc,
             $remise,

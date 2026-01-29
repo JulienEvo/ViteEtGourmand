@@ -12,6 +12,11 @@ class Commande
     private int $commande_etat_id;
     private ?string $numero;
     private ?DateTime $date;
+    private ?string $adresse_livraison;
+    private ?string $cp_livraison;
+    private ?string $commune_livraison;
+    private ?string $latitude;
+    private ?string $longitude;
     private int $quantite;
     private ?float $total_ttc;
     private ?float $remise;
@@ -24,6 +29,11 @@ class Commande
         int $commande_etat_id = 1,
         ?string $numero = null,
         ?DateTime $date = null,
+        ?string $adresse_livraison = null,
+        ?string $cp_livraison = null,
+        ?string $commune_livraison = null,
+        ?float $latitude = null,
+        ?float $longitude = null,
         ?float $quantite = 0,
         ?float $total_ttc = null,
         ?float $remise = null,
@@ -36,6 +46,11 @@ class Commande
         $this->setCommande_etat_id($commande_etat_id);
         $this->setNumero($numero);
         $this->setDate($date);
+        $this->setAdresse_livraison($adresse_livraison);
+        $this->setCp_livraison($cp_livraison);
+        $this->setCommune_livraison($commune_livraison);
+        $this->setLatitude($latitude);
+        $this->setLongitude($longitude);
         $this->setQuantite($quantite);
         $this->setTotal_ttc($total_ttc);
         $this->setRemise($remise);
@@ -65,6 +80,26 @@ class Commande
     public function getDate(): ?DateTime
     {
         return $this->date;
+    }
+    public function getAdresse_livraison(): ?string
+    {
+        return $this->adresse_livraison;
+    }
+    public function getCp_livraison(): ?string
+    {
+        return $this->cp_livraison;
+    }
+    public function getCommune_livraison(): ?string
+    {
+        return $this->commune_livraison;
+    }
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
     }
     public function getRemise(): ?float
     {
@@ -106,6 +141,26 @@ class Commande
     public function setDate(?DateTime $date): void
     {
         $this->date = $date;
+    }
+    public function setAdresse_livraison(?string $adresse_livraison): void
+    {
+        $this->adresse_livraison = $adresse_livraison;
+    }
+    public function setCp_livraison(?string $cp_livraison): void
+    {
+        $this->cp_livraison = $cp_livraison;
+    }
+    public function setCommune_livraison(?string $commune_livraison): void
+    {
+        $this->commune_livraison = $commune_livraison;
+    }
+    public function setLatitude(?float $latitude): void
+    {
+        $this->latitude = $latitude;
+    }
+    public function setLongitude(?float $longitude): void
+    {
+        $this->longitude = $longitude;
     }
     public function setRemise(?float $remise): void
     {

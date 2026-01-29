@@ -4,6 +4,8 @@
 
 {% block body %}
 
+    {% set user = app.getUser() %}
+
     <h1>Commande N°{{ commande.numero }}</h1>
 
     <div class="card mb-3">
@@ -29,9 +31,9 @@
                     <label for="date_livraison" class="form-label">Date de livraison :</label>
                     <p>{{ commande.date|date('d/m/Y') }}</p>
                 </div>
-                <div class="mb-3 col-12 col-lg-3">
+                <div class="mb-3 col-12 col-lg-4">
                     <label for="date_livraison" class="form-label">Adresse de livraison :</label>
-                    <p>{{ app.getUser().adresse }}<br>{{ app.getUser().code_postal ~ ' - ' ~ app.getUser().commune }}</p>
+                    <p>{{ user.adresse }}<br>{{ user.code_postal ~ ' - ' ~ user.commune }}</p>
                 </div>
             </div>
 
@@ -44,15 +46,21 @@
                     <label for="remise" class="form-label">Quantité :</label>
                     <p>{{ commande.quantite }}</p>
                 </div>
-                {% if commande.remise > 0 %}
-                    <div class="mb-3 col-12 col-lg-2">
-                        <label for="remise" class="form-label">Remise :</label>
-                        <p>{{ commande.remise }} %</p>
-                    </div>
-                {% endif %}
+                <div class="mb-3 col-12 col-lg-2">
+                    <label for="remise" class="form-label">Total TTC hors fdl :</label>
+                    <p>{{ commande.total_ttc }} €</p>
+                </div>
+                <div class="mb-3 col-12 col-lg-2">
+                    <label for="remise" class="form-label">Remise :</label>
+                    <p>{{ commande.remise }} %</p>
+                </div>
+                <div class="mb-3 col-12 col-lg-2">
+                    <label for="tarif_livraison" class="form-label">Tarif livraison <br><span class="small fw-normal">({{ distance_km }} km)</span> :</label>
+                    <p>{{ tarif_livraison }} €</p>
+                </div>
                 <div class="mb-3 col-12 col-lg-2">
                     <label for="remise" class="form-label">Total TTC :</label>
-                    <p>{{ commande.total_ttc|number_format(2, '.', ' ') }} €</p>
+                    <p>{{ commande.total_ttc + tarif_livraison }} €</p>
                 </div>
             </div>
         </div>
