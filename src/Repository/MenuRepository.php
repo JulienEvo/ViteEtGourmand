@@ -175,12 +175,12 @@ class MenuRepository
     public function findByFilters(array $filters): array
     {
         $vars = [];
-        $sql = "SELECT DISTINCT(menu.id), menu.*
+        $sql = "SELECT menu.*
                 FROM menu
-                LEFT OUTER JOIN menu_theme ON menu_theme.menu_id = menu.id
-                LEFT OUTER JOIN theme ON theme.id = menu_theme.theme_id
-                LEFT OUTER JOIN menu_regime ON menu_regime.menu_id = menu.id
-                LEFT OUTER JOIN regime ON regime.id = menu_regime.regime_id
+                LEFT JOIN menu_theme ON menu_theme.menu_id = menu.id
+                LEFT JOIN theme ON theme.id = menu_theme.theme_id
+                LEFT JOIN menu_regime ON menu_regime.menu_id = menu.id
+                LEFT JOIN regime ON regime.id = menu_regime.regime_id
                 WHERE 1 ";
 
         if (!empty($filters['term'])) {
@@ -218,6 +218,8 @@ class MenuRepository
         if (!empty($filters['disponible'])) {
             $sql .= " AND menu.quantite_disponible > 0";
         }
+
+        $sql .= " GROUP BY menu.id";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);

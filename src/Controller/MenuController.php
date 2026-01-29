@@ -87,6 +87,7 @@ class MenuController extends AbstractController
         $filters = [
             'term' => $request->query->get('term'),
             'theme' => $request->query->get('theme'),
+            'regime' => $request->query->get('regime'),
             'tarif_min' => $request->query->get('tarif_min'),
             'tarif_max' => $request->query->get('tarif_max'),
             'disponible' => $request->query->getBoolean('disponible'),
