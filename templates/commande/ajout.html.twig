@@ -35,17 +35,17 @@
                         <div class="row col-12">
 
                             <div class="col-12 col-lg-4">
-                                <label for="utilisateur_nom" class="form-label">Nom :</label>
+                                <label for="utilisateur_nom" class="form-label">Nom
                                 <input type="text" class="form-control" name="utilisateur_nom" id="utilisateur_nom" value="{{ utilisateur.nom }}" readonly>
                             </div>
 
                             <div class="col-12 col-lg-4">
-                                <label for="utilisateur_prenom" class="form-label">Prénom :</label>
+                                <label for="utilisateur_prenom" class="form-label">Prénom
                                 <input type="text" class="form-control" name="utilisateur_prenom" id="utilisateur_prenom" value="{{ utilisateur.prenom }}" readonly>
                             </div>
 
                             <div class="col-12 col-lg-4">
-                                <label for="utilisateur_email" class="form-label">E-mail :</label>
+                                <label for="utilisateur_email" class="form-label">E-mail
                                 <input type="email" class="form-control" name="utilisateur_email" id="utilisateur_email" value="{{ utilisateur.email }}" readonly>
                             </div>
                         </div>
@@ -59,34 +59,34 @@
                     <div class="card-body">
                         <div class="row col-12">
                             <div class="col-12 col-lg-2">
-                                <label for="commande_date" class="form-label">Date :</label>
+                                <label for="commande_date" class="form-label">Date
                                 <input type="date" class="form-control" name="commande_date" id="commande_date" value="{{ commande_date ?? '' }}" required>
                             </div>
                             <div class="col-12 col-lg-2">
-                                <label for="commande_heure" class="form-label">Heure souhaitée :</label>
+                                <label for="commande_heure" class="form-label">Heure souhaitée
                                 <input type="time" class="form-control" name="commande_heure" id="commande_heure" value="{{ commande_heure ?? '' }}">
                             </div>
                             <div class="col-12 col-lg-2">
-                                <label for="utilisateur_telephone" class="form-label">Téléphone :</label>
+                                <label for="utilisateur_telephone" class="form-label">Téléphone
                                 <input type="text" class="form-control" name="utilisateur_telephone" id="utilisateur_telephone" value="{{ utilisateur.telephone }}" readonly>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <label for="info_suppl" class="form-label">Information supplémentaire :</label>
+                                <label for="info_suppl" class="form-label">Information supplémentaire
                                 <input type="text" class="form-control" name="info_suppl" id="info_suppl" value="">
                             </div>
                         </div>
 
                         <div class="row col-12">
                             <div class="col-12 col-lg-6">
-                                <label for="utilisateur_adresse" class="form-label">Adresse :</label>
+                                <label for="utilisateur_adresse" class="form-label">Adresse
                                 <input type="text" class="form-control" name="utilisateur_adresse" id="utilisateur_adresse" value="{{ utilisateur.adresse }}" readonly>
                             </div>
                             <div class="col-12 col-lg-4">
-                                <label for="utilisateur_commune" class="form-label">Commune :</label>
+                                <label for="utilisateur_commune" class="form-label">Commune
                                 <input type="text" class="form-control" name="utilisateur_commune" id="utilisateur_commune" value="{{ utilisateur.commune }}" readonly>
                             </div>
                             <div class="col-12 col-lg-2">
-                                <label for="utilisateur_code_postal" class="form-label">Code postal :</label>
+                                <label for="utilisateur_code_postal" class="form-label">Code postal
                                 <input type="text" class="form-control" name="utilisateur_code_postal" id="utilisateur_code_postal" value="{{ utilisateur.code_postal }}" readonly>
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                         <p class="text-center text-danger d-none" id="p_pers_remise">Une remise de 10% sera appliquée pour une commande à partir de <span id="nb_pers_remise">0</span> personnes</p>
                         <div class="row col-12">
                             <div class="col-12 col-lg-6">
-                                <label for="menu_id" class="form-label">Menu :</label>
+                                <label for="menu_id" class="form-label">Menu
                                 <select class="form-select" name="menu_id" id="menu_id" onchange="loadMenu(this.value)">
                                     <option value="">Choix</option>
                                     {% for item in tabMenu %}
@@ -119,25 +119,25 @@
                                 </select>
                             </div>
                             <div class="col-12 col-lg-2">
-                                <label for="quantite" class="form-label">Nombre de pers. :</label>
+                                <label for="quantite" class="form-label">Nombre de pers.
                                 <input type="number" class="form-control" step="1" min="{{ menu.quantite_min ?? 0 }}" max="{{ menu.quantite_disponible ?? 1 }}" name="quantite" id="quantite" value="{{ quantite ?? 0 }}" onchange="setRemise()">
                                 <input type="hidden" class="form-control" step="0.01" min="0" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire }}">
                             </div>
                             <div class="col-12 col-lg-2">
-                                <label for="remise" class="form-label">Remise (%) :</label>
+                                <label for="remise" class="form-label">Remise (%)
                                 <input type="number" class="form-control" step="0.01" min="0" max="100" name="remise" id="remise" value="{{ remise ?? 0 }}" readonly>
                             </div>
                             <div class="col-12 col-lg-2">
-                                <label for="total_ttc" class="form-label">Total TTC :</label>
+                                <label for="total_ttc" class="form-label">Total TTC
                                 <input type="number" class="form-control" step="0.01" min="0" max="100" name="total_ttc" id="total_ttc" value="{{ (menu.tarif_unitaire * quantite - (menu.tarif_unitaire * quantite * remise ?? 0) / 100) }}" readonly>
                             </div>
                         </div>
                         <div class="row col-12 mt-3">
-                            <label for="description" class="form-label">Description :</label>
+                            <label for="description" class="form-label">Description
                             <textarea class="form-control" rows="3" name="description" id="description" readonly>{{ menu.description ?? '' }}</textarea>
                         </div>
                         <div class="row col-12 mt-3">
-                            <label for="conditions" class="form-label text-danger">Conditions :</label>
+                            <label for="conditions" class="form-label text-danger">Conditions
                             <textarea class="form-control" rows="3" name="conditions" id="conditions" readonly>{{ menu.conditions ?? '' }}</textarea>
                         </div>
 

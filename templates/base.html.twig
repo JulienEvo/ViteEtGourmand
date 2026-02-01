@@ -3,15 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>
-            {% block title %}
-                {% set societe = query_service.getSociete(1) %}
-
-                {% if societe %}
-                    {{ societe.libelle }}
-                {% else %}
-                    Vite & Gourmand
-                {% endif %}
-            {% endblock %}
+            {% block title %}Vite & Gourmand{% endblock %}
         </title>
 
         {% block stylesheets %}

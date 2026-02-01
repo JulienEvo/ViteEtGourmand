@@ -104,7 +104,12 @@
                 </div>
                 <div class="row col-12">
                     <div class="mb-3 col-12 col-lg-3">
-                        <label for="adresse" class="form-label">Adresse {% if utilisateur.latitude and utilisateur.longitude %}<span class='text-success' style="font-size: smaller">&nbsp;(Géolocalisée)</span>{% endif %}</label>
+                        <label for="adresse" class="form-label">
+                            Adresse
+                            {% if utilisateur.latitude and utilisateur.longitude %}
+                                <span class='text-success' style="font-size: smaller">&nbsp;(Géolocalisée)</span>
+                            {% endif %}
+                        </label>
                         <input type="text" class="form-control" name="adresse" id="adresse" value="{{ utilisateur.adresse ?? '' }}" required>
                     </div>
 

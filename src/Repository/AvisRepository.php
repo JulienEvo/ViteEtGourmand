@@ -48,12 +48,17 @@ class AvisRepository
         ]);
     }
 
-    public function findAll(): array
+    public function findAll(bool $valide_only = false): array
     {
         $sql = "SELECT *
                 FROM avis
-                WHERE 1
-                ORDER BY created_at DESC";
+                WHERE 1";
+
+        if ($valide_only)
+        {
+            $sql .= " AND valide = 1";
+        }
+        $sql .= " ORDER BY created_at DESC";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();

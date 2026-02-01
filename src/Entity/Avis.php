@@ -36,11 +36,11 @@ class Avis
     {
         return $this->id;
     }
-    public function getUtilisateurId(): int
+    public function getUtilisateur_id(): int
     {
         return $this->utilisateur_id;
     }
-    public function getCommandeId(): int
+    public function getCommande_id(): int
     {
         return $this->commande_id;
     }

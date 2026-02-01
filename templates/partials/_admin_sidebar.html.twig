@@ -1,14 +1,14 @@
 {% set user = app.user %}
 
-<nav class="admin-sidebar d-flex flex-column p-3 bg-secondary text-white min-vh-100" style="width: 250px;" id="adminSidebar">
-    <h4 class="text-center mb-4">Espace de {{ user.prenom|capitalize }}</h4>
+<nav class="admin-sidebar d-flex flex-column p-3 bg-secondary text-white" id="adminSidebar">
+    <h4 class="text-center mb-4"><span class="nav-text">Espace de {{ user.prenom|capitalize }}</span></h4>
 
     <ul class="nav nav-pills flex-column gap-1">
 
         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
             <li class="nav-item">
                 <a href="{{ path('admin_dashboard') }}" class="nav-link {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-bar-chart-line-fill"></i>&emsp;Tableau de bord
+                    <i class="bi bi-bar-chart-line-fill"></i><span class="nav-text" title="Tableau de bord">&emsp;Tableau de bord</span>
                 </a>
             </li>
         {% endif %}
@@ -23,19 +23,19 @@
             {% endif %}
 
             <a href="{{ path('admin_utilisateur_profil') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_utilisateur_profil' ? 'active' : 'text-white' }}">
-                <i class="bi bi-person-square"></i>&emsp;Mon profil
+                <i class="bi bi-person-square"></i><span class="nav-text" title="Mon profil">&emsp;Mon profil</span>
             </a>
         </li>
 
         {% if is_granted('ROLE_ADMIN') %}
             <li class="nav-item">
                 <a href="{{ path('admin_utilisateur_index', {type: 'employe'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_utilisateur' and app.request.get('type') == 'employe' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-people-fill"></i>&emsp;Employés
+                    <i class="bi bi-people-fill"></i><span class="nav-text" title="Employés">&emsp;Employés</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ path('admin_utilisateur_index', {type: 'utilisateur'}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_utilisateur' and app.request.get('type') == 'utilisateur' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-people-fill"></i>&emsp;Utilisateurs
+                    <i class="bi bi-people-fill"></i><span class="nav-text" title="Utilisateurs">&emsp;Utilisateurs</span>
                 </a>
             </li>
         {% endif %}
@@ -44,33 +44,33 @@
             <li class="nav-item">
                 <a href="{{ path('admin_commande_index') }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_commande' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-bag-fill"></i>&emsp;Commandes
+                    <i class="bi bi-bag-fill"></i><span class="nav-text" title="Commandes">&emsp;Commandes</span>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a href="{{ path('admin_menu_index') }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_menu' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-fork-knife"></i>&emsp;Menus
+                    <i class="bi bi-fork-knife"></i><span class="nav-text" title="Menus">&emsp;Menus</span>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a href="{{ path('admin_plat_index', {comeFrom: 'plat'}) }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_plat' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-fork-knife"></i>&emsp;Plats
+                    <i class="bi bi-fork-knife"></i><span class="nav-text" title="Plats">&emsp;Plats</span>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a href="{{ path('admin_avis_index') }}" class="nav-link {{ app.request.get('_route') starts with 'admin_avis' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-star-fill"></i>&emsp;Avis clients
+                    <i class="bi bi-star-fill"></i><span class="nav-text" title="Avis clients">&emsp;Avis clients</span>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a href="{{ path('admin_societe_edit', {id: 1}) }}" class="nav-link {{ app.request.get('_route') starts with 'admin_societe' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-info-square-fill"></i>&emsp;Société
+                    <i class="bi bi-info-square-fill"></i><span class="nav-text" title="Société">&emsp;Société</span>
                 </a>
             </li>
 
@@ -80,7 +80,7 @@
             <li class="nav-item">
                 <a href="{{ path('admin_commande_historique', {id: 0}) }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_commande_historique' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-bag-fill"></i>&emsp;Historique
+                    <i class="bi bi-bag-fill"></i><span class="nav-text" title="Historique">&emsp;Historique</span>
                 </a>
             </li>
         {% endif %}
@@ -89,7 +89,7 @@
 
         <li class="nav-item">
             <a href="{{ path('logout') }}" class="nav-link text-danger">
-                <i class="bi bi-door-closed-fill"></i>&emsp;Déconnexion
+                <i class="bi bi-door-closed-fill"></i><span class="nav-text" title="Déconnexion">&emsp;Déconnexion</span>
             </a>
         </li>
     </ul>

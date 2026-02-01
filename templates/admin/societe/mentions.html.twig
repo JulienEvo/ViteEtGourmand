@@ -23,15 +23,15 @@
                         <h4>Éditeur du site</h4>
                         <p>
                             <ul>
-                            <li><label class="form-label">Nom :</label> {{ societe.libelle }}</li>
-                                <li><label class="form-label">Forme juridique :</label> {{ societe.statut }}</li>
-                                <li><label class="form-label">Capital social :</label> {{ societe.capital }} €</li>
-                                <li><label class="form-label">Siège social :</label> {{ societe.adresse ~ societe.code_postal ~ societe.commune }}</li>
-                                <li><label class="form-label">RCS :</label> {{ societe.rcs }}</li>
-                                <li><label class="form-label">SIRET :</label> {{ societe.siret }}</li>
-                                <li><label class="form-label">TVA intracommunautaire :</label> {{ societe.tva }}</li>
-                                <li><label class="form-label">Email :</label> {{ societe.email }}</li>
-                                <li><label class="form-label">Téléphone :</label> {{ societe.telephone }}</li>
+                            <li><label class="form-label">Nom {{ societe.libelle }}</li>
+                                <li><label class="form-label">Forme juridique {{ societe.statut }}</li>
+                                <li><label class="form-label">Capital social {{ societe.capital }} €</li>
+                                <li><label class="form-label">Siège social {{ societe.adresse ~ societe.code_postal ~ societe.commune }}</li>
+                                <li><label class="form-label">RCS {{ societe.rcs }}</li>
+                                <li><label class="form-label">SIRET {{ societe.siret }}</li>
+                                <li><label class="form-label">TVA intracommunautaire {{ societe.tva }}</li>
+                                <li><label class="form-label">Email {{ societe.email }}</li>
+                                <li><label class="form-label">Téléphone {{ societe.telephone }}</li>
                             </ul>
                         </p>
                     </div>
@@ -45,9 +45,9 @@
                         <h4>Hébergement</h4>
                         <p>
                             <ul>
-                                <li><label class="form-label">Hébergeur :</label> hébergeur</li>
-                                <li><label class="form-label">Adresse :</label> adresse_hébergeur</li>
-                                <li><label class="form-label">Téléphone :</label> téléphone_hébergeur</li>
+                                <li><label class="form-label">Hébergeur hébergeur</li>
+                                <li><label class="form-label">Adresse adresse_hébergeur</li>
+                                <li><label class="form-label">Téléphone téléphone_hébergeur</li>
                             </ul>
                         </p>
                     </div>
