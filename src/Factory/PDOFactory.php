@@ -6,8 +6,9 @@ use PDO;
 
 class PDOFactory
 {
-    public static function create(string $url, string $user, string $pass): PDO
+    public static function create(): PDO
     {
+        /*
         $parts = parse_url($url);
 
         $host = $parts['host'] ?? '127.0.0.1';
@@ -21,6 +22,30 @@ class PDOFactory
         } catch (\PDOException $e) {
             throw new \RuntimeException(
                 'Connexion BDD impossible : ' . $e->getMessage()
+            );
+        }
+        */
+
+        $url = $_ENV['DATABASE_URL'];
+
+        $parts = parse_url($url);
+
+        $host = $parts['host'];
+        $port = $parts['port'] ?? 3306;
+        $dbname = ltrim($parts['path'], '/'); // enlève le slash
+        $user = $parts['user'];
+        $pass = $parts['pass'];
+
+        try {
+            return new PDO(
+                "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4",
+                $user,
+                $pass,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
+        } catch (PDOException $e) {
+            throw new \RuntimeException(
+                'Connexion BDD impossible : '.$e->getMessage()
             );
         }
     }

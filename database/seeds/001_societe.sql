@@ -1,5 +1,5 @@
 /*** SOCIETE ***/
-INSERT INTO societe (libelle, type, capital, rcs, tva, telephone, email,
+INSERT INTO societe (libelle, statut, capital, rcs, tva, telephone, email,
                      adresse, code_postal, commune, pays, created_at)
 VALUES (
     'Vite & Gourmand',

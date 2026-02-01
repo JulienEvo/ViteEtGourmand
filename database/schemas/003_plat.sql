@@ -39,7 +39,6 @@ COLLATE=utf8mb4_unicode_ci;
 
 /*************************************************************************/
 
-
 CREATE TABLE plat_allergene (
     plat_id INT NOT NULL,
     allergene_id INT NOT NULL,

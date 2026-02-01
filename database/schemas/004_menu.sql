@@ -41,7 +41,6 @@ COLLATE=utf8mb4_unicode_ci;
 
 /*** JOINTURES ***/
 
-
 CREATE TABLE menu_theme (
     menu_id INT NOT NULL,
     theme_id INT NOT NULL,
@@ -53,7 +52,6 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 
-
 CREATE TABLE menu_regime (
     menu_id INT NOT NULL,
     regime_id INT NOT NULL,
@@ -64,7 +62,6 @@ CREATE TABLE menu_regime (
     ENGINE=InnoDB
     DEFAULT CHARSET=utf8mb4
     COLLATE=utf8mb4_unicode_ci;
-
 
 CREATE TABLE menu_plat (
     menu_id INT NOT NULL,

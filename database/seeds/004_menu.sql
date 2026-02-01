@@ -72,4 +72,4 @@ INSERT INTO menu_theme (menu_id, theme_id) VALUES (1, 6);
 /*** MENUS_REGIME ***/
 INSERT INTO menu_regime (menu_id, regime_id) VALUES (1, 1);
 INSERT INTO menu_regime (menu_id, regime_id) VALUES (1, 3);
-INSERT INTO menu_regime (menu_id, regime_id) VALUES (1, 5);
+INSERT INTO menu_regime (menu_id, regime_id) VALUES (1, 2);

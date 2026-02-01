@@ -56,4 +56,3 @@ INSERT INTO plat_allergene (plat_id, allergene_id) VALUES (1, 5);
 INSERT INTO plat_allergene (plat_id, allergene_id) VALUES (1, 6);
 
 
-/*** PLAT_IMAGE ***/

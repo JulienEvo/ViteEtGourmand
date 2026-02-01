@@ -42,7 +42,6 @@ COLLATE=utf8mb4_unicode_ci;
 
 /*** JOINTURES ***/
 
-
 CREATE TABLE societe_horaire (
     societe_id INT NOT NULL,
     horaire_id INT NOT NULL,

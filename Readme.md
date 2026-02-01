@@ -1,34 +1,35 @@
 # Vite & Gourmand
-« Vite & Gourmand » est une entreprise constituée de deux personnes, Julie et José. Elle existe
-depuis 25 ans à Bordeaux, et propose leurs prestations pour tout événement (simple repas
-comme Noel ou encore Pâques) au travers d’un menu en constante évolution.
 
-Cette application dynamique développé en PHP avec le framework Symfony permet la visualisation et la consultation de menus pour des visiteurs qui pourront s'inscrire et se connecter 
+## Présentation du projet
+
+« Vite & Gourmand » est une entreprise constituée de deux personnes, Julie et José. Elle existe
+depuis 25 ans à Bordeaux, et propose leurs prestations pour tous types d'événements (simple repas
+comme Noel ou encore Pâques) au travers de menus en constante évolution.
+
+Cette application web et web mobile dynamique développé en PHP avec le framework Symfony permet la visualisation et la consultation de menus pour des visiteurs qui pourront s'inscrire et se connecter 
 en tant qu'utilisateurs afin d'effectuer des commandes de menus faits maison, livrées à domicile, et de gérer leurs informations via leur espace.
 
-Les administrateurs et employés pourront, via cette application, gérer les menus, les commandes ainsi que les avis envoyés par 
+Les administrateurs et employés pourront, via cette application, gérer les menus, les plats, les commandes ainsi que les avis envoyés par 
 des clients.
 
-## Prérequis
+## Technologies utilisées
 
-Pour exécuter le projet en local, les éléments suivants sont nécessaires :
-
-- Langage : PHP 8.2
-- Framework : Symfony
-- Gestionnaire de dépendances : Composer
-- Serveur web : Apache
-- SGBD : MariaDB (MySQL)
-- HTML / CSS / JavaScript
-- Gestion de versions : Git
+- Langage : **PHP 8.2**
+- Framework : **Symfony** (reposytory / templates twig / contrôleurs)
+- Gestionnaire de dépendances : **Composer**
+- Serveur web : **Apache**
+- SGBD : **MariaDB** (MySQL)
+- **HTML** / **CSS** / **JavaScript**
+- Gestion de versions : **Git**
 
 ---
 
-# Installation
+## Installation
 
 ### 1. Récupération du projet
 Cloner le dépôt Git sur la machine locale.
-```
-git clone https://github.com/JulienEvo/ViteEtGourmand.git
+``` bash 
+  git clone https://github.com/JulienEvo/ViteEtGourmand.git
 ```
 
 ### 2. Installation des dépendances
@@ -66,11 +67,36 @@ http://viteetgourmand.local/
 
 ---
 
-# Déploiement
-L’application est conçue pour être déployée sur un serveur Windows avec :
-- Apache
-- PHP
-- MariaDB
+## Déploiement
+
+Le site est déployé sur un serveur distant via **AlwaysData**.
+
+- Hébergement PHP
+- Base de données **MariaDB**
+- Accès distant via **SSH/SFTP**
+- Domaine public fourni par l’hébergeur
+
+---
+
+## Comptes de test
+
+Administrateur
+- Email : admin@test.fr
+- Mot de passe : Admin123+
+
+Employé
+- Email : employe@test.fr
+- Mot de passe : Employe123+
+
+Utilisateur
+- Email : utilisateur@test.fr
+- Mot de passe : Utilisateur123+
+
+---
+
+## Accès au site de production
+
+URL du site : https://vite-et-gourmand.alwaysdata.net/
 
 ---
 
