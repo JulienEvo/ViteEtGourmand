@@ -11,8 +11,17 @@
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h6>Commandes</h6>
-                    <p class="fs-4">12</p>
+                    <h5>Commandes</h5>
+                    {% for commande_etat in tab_commande_etat %}
+                        <a href="{{ path('admin_commande_index', {filtre_etat:commande_etat.id }) }}">
+                            <div class="d-flex justify-content-between align-items-center text-black py-2">
+                                <span class="fw-semibold">{{ commande_etat.libelle }}</span>
+                                <span class="badge bg-primary fs-6">
+                                    {{ commande_etat.nb_commande }}
+                                </span>
+                            </div>
+                        </a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -20,8 +29,15 @@
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h6>Avis en attente</h6>
-                    <p class="fs-4">3</p>
+                    <h5>Avis</h5>
+                    {% for avis_libelle, avis_valide in tab_avis_valide %}
+                        <div class="d-flex justify-content-between align-items-center text-black py-2">
+                            <span class="fw-semibold">{{ avis_libelle }}</span>
+                            <span class="badge bg-primary fs-6">
+                                {{ avis_valide }}
+                            </span>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

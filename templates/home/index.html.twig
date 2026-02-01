@@ -1,22 +1,13 @@
 {% extends 'base.html.twig' %}
 
-    {% block title %}
-
-    {% set societe = query_service.getSociete(1) %}
-
-    {% if societe %}
-        {{ societe.libelle }}
-    {% else %}
-        V&G
-    {% endif %}
-{% endblock %}
+{% block title %}{{ societe.libelle }}{% endblock %}
 
 {% block body %}
     <section class="hero-section">
         <div class="hero-content">
             <h1>Traiteur passionné<br>pour vos moments d’exception</h1>
             <p>Plats faits maison – Événementiel – Commande en ligne</p>
-            <a href="{{ path('menu_index') }}" class="btn btn-primary">
+            <a href="{{ path('menu_index') }}" class="btn btn-primary" title="Découvrir nos menus">
                 Découvrir nos menus
             </a>
         </div>

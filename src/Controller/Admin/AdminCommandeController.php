@@ -26,8 +26,11 @@ class AdminCommandeController extends AbstractController
         GeneriqueRepository $generiqueRepository,
         UserRepository $userRepository,
         MenuRepository $menuRepository,
+        Request $request,
     ): Response
     {
+        $filtre_etat = $request->query->get('filtre_etat', 0);
+
         $listeCommandes = $commandeRepository->findAll();
         $listeEtats = $generiqueRepository->findAll('commande_etat');
         $listeUtilisateurs = $userRepository->findAll();
@@ -36,10 +39,13 @@ class AdminCommandeController extends AbstractController
         $tabCommande = [];
         foreach ($listeCommandes as $commande_id => $commande)
         {
-            $tabCommande[$commande_id]['commande'] = $commande;
-            $tabCommande[$commande_id]['commande_etat'] = $listeEtats[$commande->getCommande_etat_id()];
-            $tabCommande[$commande_id]['utilisateur'] = $listeUtilisateurs[$commande->getUtilisateur_id()];
-            $tabCommande[$commande_id]['menu'] = $listeMenus[$commande->getMenu_id()];
+            if ($filtre_etat == 0 || $filtre_etat == $commande->getCommande_etat_id())
+            {
+                $tabCommande[$commande_id]['commande'] = $commande;
+                $tabCommande[$commande_id]['commande_etat'] = $listeEtats[$commande->getCommande_etat_id()];
+                $tabCommande[$commande_id]['utilisateur'] = $listeUtilisateurs[$commande->getUtilisateur_id()];
+                $tabCommande[$commande_id]['menu'] = $listeMenus[$commande->getMenu_id()];
+            }
         }
 
         return $this->render('admin/commande/index.html.twig', [
