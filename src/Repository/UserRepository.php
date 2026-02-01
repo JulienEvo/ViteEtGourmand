@@ -34,6 +34,8 @@ class UserRepository
             'created_at' => date('Y-m-d H:i:s')
         ];
 
+        $sql_ins = '';
+        $sql_val = '';
         $latitude = $user->getLatitude();
         $longitude = $user->getLongitude();
         if (isset($latitude) && isset($longitude))

@@ -7,11 +7,13 @@
         <i class="bi bi-people-fill"></i>Commandes
     </h1>
 
+    <!--
     <a href="{{ path('admin_commande_edit', {id: 0}) }}" class="btn btn-primary mb-3">
         <i class="bi bi-plus-circle"></i>&nbsp;Ajouter une commande
     </a>
+    -->
 
-    <table class="table table-striped align-middle">
+    <table class="table table-striped align-middle table-bordered">
         <thead>
         <tr>
             <th>Statut</th>
@@ -41,12 +43,14 @@
                     <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.remise }}</td>
                     <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.total_ttc }}</td>
                     <td>
-                        <a href="{{ lien_cmd }}" class="btn btn-sm btn-warning" title="Voir la commande">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a href="{{ path('admin_commande_delete', {id: item.commande.id}) }}" class="btn btn-sm btn-danger" title="Supprimer la commande" onclick="return confirm('Êtes-vous sûr de vouloir supprimer la commande ?')">
-                            <i class="bi bi-trash3-fill"></i>
-                        </a>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <a href="{{ lien_cmd }}" class="btn btn-sm btn-warning" title="Voir la commande">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{{ path('admin_commande_delete', {id: item.commande.id}) }}" class="btn btn-sm btn-danger" title="Supprimer la commande" onclick="return confirm('Êtes-vous sûr de vouloir supprimer la commande ?')">
+                                <i class="bi bi-trash3-fill"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

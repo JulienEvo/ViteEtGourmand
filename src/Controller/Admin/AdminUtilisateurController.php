@@ -65,7 +65,7 @@ class AdminUtilisateurController extends AbstractController
 
             $latitude = null;
             $longitude = null;
-            if ($utilisateur->getAdresse() != $adresse || $utilisateur->getCommune() != $commune)
+            if (!isset($utilisateur) || $utilisateur->getAdresse() != $adresse || $utilisateur->getCommune() != $commune)
             {
                 // Géolocalise l'adresse
                 $geocode = $this->geocode($adresse, $commune, $httpClient);

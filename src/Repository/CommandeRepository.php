@@ -18,14 +18,14 @@ class CommandeRepository
 
     public function insert(Commande $commande): int|array
     {
-        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, quantite, total_ttc, remise)
-                VALUES (:utilisateur_id, :menu_id, :etat, :numero, :date, :quantite, :total_ttc, :remise)";
+        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, quantite, total_ttc, remise)
+                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :quantite, :total_ttc, :remise)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
             'utilisateur_id' => $commande->getUtilisateur_id(),
             'menu_id' => $commande->getMenu_id(),
-            'etat' => $commande->getCommande_etat_id(),
+            'commande_etat_id' => $commande->getCommande_etat_id(),
             'numero' => $commande->getNumero(),
             'date' => $commande->getDate()?->format('Y-m-d H:i:s'),
             'adresse_livraison' => $commande->getAdresse_livraison(),

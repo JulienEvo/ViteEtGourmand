@@ -3,8 +3,8 @@
 -- > mysql -h mysql-vite-et-gourmand.alwaysdata.net -u vite-et-gourmand -p vite-et-gourmand_ecf-studi < database/script/init_prod_db.sql
 
 
-USE vite_et_gourmand;
-/* USE vite-et-gourmand_ecf-studi; */
+/* USE vite_et_gourmand; */
+USE vite-et-gourmand_ecf-studi;
 
 SET NAMES utf8mb4;
 
@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS commande;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
+/*
 -- Schéma initial
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/001_societe.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/002_user.sql;
@@ -46,9 +47,9 @@ SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/003_plat.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/004_menu.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/005_commande.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/006_avis.sql;
+*/
 
 
-/*
 SOURCE database/schemas/001_societe.sql;
 SOURCE database/schemas/002_user.sql;
 SOURCE database/schemas/003_plat.sql;
@@ -63,4 +64,3 @@ SOURCE database/seeds/003_plat.sql;
 SOURCE database/seeds/004_menu.sql;
 SOURCE database/seeds/005_commande.sql;
 SOURCE database/seeds/006_avis.sql;
-*/

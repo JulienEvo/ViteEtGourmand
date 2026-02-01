@@ -14,7 +14,7 @@ CREATE TABLE commande (
     quantite TINYINT(3) NOT NULL,
     total_ttc DECIMAL(10, 0),
     remise DECIMAL(10, 0),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_DATE,
     PRIMARY KEY (id),
     INDEX(utilisateur_id),
     INDEX(menu_id),
