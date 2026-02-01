@@ -5,6 +5,7 @@ CREATE TABLE societe (
     statut VARCHAR(32) NOT NULL,
     capital FLOAT NULL,
     rcs VARCHAR(64),
+    siret VARCHAR(32),
     tva VARCHAR(32),
     telephone VARCHAR(32) NOT NULL,
     email VARCHAR(64) NOT NULL,

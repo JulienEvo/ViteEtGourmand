@@ -69,6 +69,7 @@ class AdminTdbController extends AbstractController
         return $this->render('admin/dashboard.html.twig', [
             'tab_commande_etat' => $tab_commande_etat,
             'tab_avis_valide' => $tab_avis_valide,
+            'nb_commande' => count($tab_commande) ?? 0,
             'nb_avis' => count($tab_avis),
         ]);
     }

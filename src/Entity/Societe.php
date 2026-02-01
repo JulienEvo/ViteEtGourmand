@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
 class Societe
 {
@@ -22,31 +23,31 @@ class Societe
     private ?float $latitude;
     private ?float $longitude;
     private bool $actif;
-    private DateTime $createdAt;
-    private ?DateTime $updatedAt;
+    private DateTime $created_at;
+    private ?DateTime $updated_at;
 
     public function __construct(int $id, string $libelle, string $statut, ?float $capital, ?string $rcs, ?string $siret, ?string $tva,
                                 string $telephone, string $email, string $adresse, string $code_postal, string $commune,
-                                string $pays, ?float $latitude, ?float $longitude, bool $actif, DateTime $createdAt, ?DateTime $updatedAt = null)
+                                string $pays, ?float $latitude, ?float $longitude, bool $actif, DateTime $created_at, ?DateTime $updated_at = null)
     {
-        $this->id = $id;
-        $this->libelle = $libelle;
-        $this->statut = $statut;
-        $this->capital = $capital;
-        $this->rcs = $rcs;
-        $this->siret = $siret;
-        $this->tva = $tva;
-        $this->telephone = $telephone;
-        $this->email = $email;
-        $this->adresse = $adresse;
-        $this->code_postal = $code_postal;
-        $this->commune = $commune;
-        $this->pays = $pays;
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
-        $this->actif = $actif;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
+        $this->setId($id);
+        $this->setLibelle($libelle);
+        $this->setStatut($statut)   ;
+        $this->setCapital($capital);
+        $this->setRcs($rcs);
+        $this->setSiret($siret);
+        $this->setTva($tva);
+        $this->setTelephone($telephone);
+        $this->setEmail($email);
+        $this->setAdresse($adresse);
+        $this->setCode_postal($code_postal);
+        $this->setCommune($commune);
+        $this->setPays($pays);
+        $this->setLatitude($latitude);
+        $this->setLongitude($longitude);
+        $this->setActif($actif);
+        $this->setcreated_at = $created_at;
+        $this->updated_at = $updated_at;
     }
 
     public function getId(): int
@@ -129,14 +130,19 @@ class Societe
         return $this->actif;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getcreated_at(): DateTime
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
-    public function getUpdatedAt(): ?DateTime
+    public function getupdated_at(): ?DateTime
     {
-        return $this->updatedAt;
+        return $this->updated_at;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 
     public function setLibelle(string $libelle): void
@@ -213,4 +219,15 @@ class Societe
     {
         $this->actif = $actif;
     }
+
+    public function setCreated_at(DateTime $created_at): void
+    {
+        $this->created_at = $created_at;
+    }
+
+    public function setUpdated_at(?DateTime $updated_at): void
+    {
+        $this->updated_at = $updated_at;
+    }
+
 }

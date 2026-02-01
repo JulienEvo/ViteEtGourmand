@@ -2,15 +2,9 @@
 -- > mysql -u jchiarotti -p < C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/script/init_prod_db.sql
 -- > mysql -h mysql-vite-et-gourmand.alwaysdata.net -u vite-et-gourmand -p vite-et-gourmand_ecf-studi < database/script/init_prod_db.sql
 
--- Création de la BDD
-/*
-CREATE DATABASE vite_et_gourmand
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-*/
 
-/*USE vite_et_gourmand;*/
-USE vite-et-gourmand_ecf-studi;
+USE vite_et_gourmand;
+/* USE vite-et-gourmand_ecf-studi; */
 
 SET NAMES utf8mb4;
 
@@ -36,13 +30,14 @@ DROP TABLE IF EXISTS commande;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-/*
+
 -- Schéma initial
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/001_societe.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/002_user.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/003_plat.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/004_menu.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/005_commande.sql;
+SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/schemas/006_avis.sql;
 
 -- Seed initial
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/001_societe.sql;
@@ -50,13 +45,16 @@ SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/002_user.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/003_plat.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/004_menu.sql;
 SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/005_commande.sql;
-*/
+SOURCE C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/seeds/006_avis.sql;
 
+
+/*
 SOURCE database/schemas/001_societe.sql;
-SOURCE database/schemas/005_commande.sql;
 SOURCE database/schemas/002_user.sql;
 SOURCE database/schemas/003_plat.sql;
 SOURCE database/schemas/004_menu.sql;
+SOURCE database/schemas/005_commande.sql;
+SOURCE database/schemas/006_avis.sql;
 
 -- Seed initial
 SOURCE database/seeds/001_societe.sql;
@@ -64,4 +62,5 @@ SOURCE database/seeds/002_user.sql;
 SOURCE database/seeds/003_plat.sql;
 SOURCE database/seeds/004_menu.sql;
 SOURCE database/seeds/005_commande.sql;
-
+SOURCE database/seeds/006_avis.sql;
+*/

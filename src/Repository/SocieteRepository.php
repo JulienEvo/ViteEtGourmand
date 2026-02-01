@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Societe;
+use App\Service\FonctionsService;
 use PDO;
 use DateTime;
 

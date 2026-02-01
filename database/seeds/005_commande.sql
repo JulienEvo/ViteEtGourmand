@@ -6,8 +6,8 @@ INSERT INTO commande_etat (libelle, couleur) VALUES ('Annulée', '#6B7280');
 INSERT INTO commande_etat (libelle, couleur) VALUES ('Supprimée', '#6B7280');
 INSERT INTO commande_etat (libelle, couleur) VALUES ('En cours de livraison', '#1D4ED8');
 INSERT INTO commande_etat (libelle, couleur) VALUES ('Livrée', '#22C55E');
-INSERT INTO commande_etat (libelle, couleur) VALUES ('en attente du retour de matériel', '#F59E0B');
-INSERT INTO commande_etat (libelle, couleur) VALUES ('terminée', '#15803D');
+INSERT INTO commande_etat (libelle, couleur) VALUES ('En attente du retour de matériel', '#F59E0B');
+INSERT INTO commande_etat (libelle, couleur) VALUES ('Terminée', '#15803D');
 
 
 /*** COMMANDE ***/
@@ -15,7 +15,7 @@ INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, q
 VALUES (
     3,
     1,
-    6,
+    9,
     'C26010001',
     '2026-01-01',
     2,
@@ -28,7 +28,7 @@ INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, q
 VALUES (
    5,
    2,
-   6,
+   9,
    'C26010002',
    '2026-01-05',
    1,
@@ -41,7 +41,7 @@ INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, q
 VALUES (
     4,
     3,
-    6,
+    9,
     'C26010003',
     '2026-01-08',
     3,
@@ -54,7 +54,7 @@ INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, q
 VALUES (
    4,
    3,
-   6,
+   9,
    'C26010004',
    '2026-01-12',
    1,
