@@ -26,7 +26,7 @@ VALUES (
 
 INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, quantite, total_ttc, remise, created_at)
 VALUES (
-   5,
+   3,
    2,
    9,
    'C26010002',
