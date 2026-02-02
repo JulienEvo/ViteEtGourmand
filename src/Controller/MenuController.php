@@ -25,6 +25,7 @@ class MenuController extends AbstractController
             'regime' => $request->query->get('regime'),
             'tarif_min' => $request->query->get('tarif_min'),
             'tarif_max' => $request->query->get('tarif_max'),
+            'pers_min' => $request->query->get('pers_min'),
             'disponible' => $request->query->get('disponible'),
         ];
 
@@ -90,13 +91,12 @@ class MenuController extends AbstractController
             'regime' => $request->query->get('regime'),
             'tarif_min' => $request->query->get('tarif_min'),
             'tarif_max' => $request->query->get('tarif_max'),
+            'pers_min' => $request->query->get('pers_min'),
             'disponible' => $request->query->getBoolean('disponible'),
         ];
 
         $menus = $menuRepository->findByFilters($filters);
-
         $themes = $generiqueRepository->findAll('theme');
-
         $regimes = $generiqueRepository->findAll('regime');
 
         return $this->render('menu/_list.html.twig', [

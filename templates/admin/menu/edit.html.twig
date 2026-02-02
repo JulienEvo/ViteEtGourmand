@@ -24,32 +24,32 @@
             </div>
             <div class="card-body">
                 <div class="row col-12">
-                    <div class="mb-3 col-12 col-lg-3">
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
                         <label for="libelle" class="form-label">Titre</label>
                         <input type="text" class="form-control" name="libelle" id="libelle" value="{{ menu.libelle ?? '' }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="quantite_min" class="form-label">Nombre minimum de personne</label>
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="quantite_min" class="form-label">Nombre min. de personne</label>
                         <input type="number" step="1" min="1" class="form-control" name="quantite_min" id="quantite_min" value="{{ menu.quantite_min ?? 1 }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
                         <label for="tarif_unitaire" class="form-label">Tarif par personne</label>
                         <input type="number" step="00.1" min="0" class="form-control" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire ?? '0' }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
                         <label for="quantite" class="form-label">Quantité disponible</label>
-                        <input type="number" step="1" min="0" class="form-control" name="quantite" id="quantite" value="{{ menu.quantite_disponible ?? '0' }}" required>
+                        <input type="number" step="1" min="0" class="form-control" name="quantite_disponible" id="quantite_disponible" value="{{ menu.quantite_disponible ?? '0' }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-4">
                         <label for="description" class="form-label">Description</label>
                         <textarea class="form-control" rows="5" name="description" id="description" required>{{ menu.description ?? '' }}</textarea>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-4">
                         <label for="menu_theme" class="form-label">Thèmes</label>
                         <select class="form-select" size="5" name="menu_theme[]" id="menu_theme" multiple>
                             {% for theme in tab_themes %}
@@ -60,8 +60,8 @@
                         </select>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="menu_regime" class="form-label">Régime
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="menu_regime" class="form-label">Régime</label>
                         <select class="form-select" size="5" name="menu_regime[]" id="menu_regime" multiple>
                             {% for regime in tab_regimes %}
                                 <option value="{{ regime.id }}" {% if regime.id in (menu.regimes ?? []) %}selected{% endif %}>
@@ -71,8 +71,13 @@
                         </select>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="actif_1" class="form-label">Actif
+                    <div class="mb-3 col-12 col-lg-10">
+                        <label for="conditions" class="form-label">Conditions</label>
+                        <textarea class="form-control" rows="5" name="conditions" id="conditions">{{ menu.conditions ?? '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-2">
+                        <label for="actif_1" class="form-label">Actif</label>
                         <div>
                             <span>Oui :&nbsp;</span>
                             <input type="radio" name="actif" id="actif_1" value="1" {% if (menu.actif == 1) %} {{ 'checked' }} {% endif %}>
@@ -82,21 +87,27 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-12">
-                        <label for="conditions" class="form-label">Conditions
-                        <textarea class="form-control" rows="5" name="conditions" id="conditions">{{ menu.conditions ?? '' }}</textarea>
-                    </div>
-
                 </div>
             </div>
+        </div>
+
+        <div class="d-flex justify-content-between pb-3">
+            <a href="{{ path('admin_menu_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
         </div>
 
         <div class="card mb-3">
             <div class="card-header">
                 <h4>Composition&emsp;
-                    <a href="{{ path('admin_plat_index', {menu_id: menu.id, comeFrom: 'menu'}) }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un plat
-                    </a>
+                    {% if menu.id > 0 %}
+                        <a href="{{ path('admin_plat_index', {menu_id: menu.id, comeFrom: 'menu'}) }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un plat
+                        </a>
+                    {% endif %}
                 </h4>
             </div>
             <div class="card-body">
@@ -158,14 +169,6 @@
         </div>
         -->
 
-        <div class="d-flex justify-content-between">
-            <a href="{{ path('admin_menu_index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
-            </a>
-            <button type="submit" class="btn btn-success">
-                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
-            </button>
-        </div>
     </form>
 
     <script src="{{ asset('js/image.js') }}"></script>

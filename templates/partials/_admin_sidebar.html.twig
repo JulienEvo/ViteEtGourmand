@@ -42,9 +42,9 @@
 
         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
             <li class="nav-item">
-                <a href="{{ path('admin_commande_index') }}"
-                   class="nav-link {{ app.request.get('_route') starts with 'admin_commande' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-bag-fill"></i><span class="nav-text" title="Commandes">&emsp;Commandes</span>
+                <a href="{{ path('admin_plat_index', {comeFrom: 'plat'}) }}"
+                   class="nav-link {{ app.request.get('_route') starts with 'admin_plat' ? 'active' : 'text-white' }}">
+                    <i class="bi bi-fork-knife"></i><span class="nav-text" title="Plats">&emsp;Plats</span>
                 </a>
             </li>
 
@@ -56,9 +56,9 @@
             </li>
 
             <li class="nav-item">
-                <a href="{{ path('admin_plat_index', {comeFrom: 'plat'}) }}"
-                   class="nav-link {{ app.request.get('_route') starts with 'admin_plat' ? 'active' : 'text-white' }}">
-                    <i class="bi bi-fork-knife"></i><span class="nav-text" title="Plats">&emsp;Plats</span>
+                <a href="{{ path('admin_commande_index') }}"
+                   class="nav-link {{ app.request.get('_route') starts with 'admin_commande' ? 'active' : 'text-white' }}">
+                    <i class="bi bi-bag-fill"></i><span class="nav-text" title="Commandes">&emsp;Commandes</span>
                 </a>
             </li>
 

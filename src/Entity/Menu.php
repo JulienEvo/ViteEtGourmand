@@ -22,7 +22,7 @@ class Menu
         string $conditions = '',
         int $quantite_min = 1,
         float $tarif_unitaire = 0,
-        int $quantite = 0,
+        int $quantite_disponible = 0,
         bool $actif = true,
         string $themes = '',
         string $regime = ''
@@ -34,7 +34,7 @@ class Menu
         $this->setConditions($conditions);
         $this->setquantite_min($quantite_min);
         $this->settarif_unitaire($tarif_unitaire);
-        $this->setQuantite_disponible($quantite);
+        $this->setQuantite_disponible($quantite_disponible);
         $this->setActif($actif);
 
         $this->setThemes($themes);

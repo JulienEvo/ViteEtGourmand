@@ -17,23 +17,27 @@ class ContactController extends AbstractController
         if ($request->isMethod('POST')) {
 
             $nom = $request->request->get('nom');
-            $emailExpediteur = $request->request->get('email');
+            $email = $request->request->get('email');
             $message = $request->request->get('message');
 
             // Sécurité minimale
-            if (!$nom || !$emailExpediteur || !$message) {
+            if (!$nom || !$email || !$message) {
                 $this->addFlash('danger', 'Tous les champs sont obligatoires');
                 return $this->redirectToRoute('contact');
             }
 
             $email = (new Email())
-                ->from($emailExpediteur)
+                ->from($email)
                 ->to('contact@monsite.fr')
-                ->subject('Message depuis le formulaire de contact')
+                ->subject('V&G : Message depuis le formulaire de contact')
                 ->text(
-                    "Nom : $nom\n".
-                    "Email : $emailExpediteur\n\n".
-                    "Message :\n$message"
+                    "Bonjour,\n\n".
+                    "Vous avez reçu un nouveau message : \n".
+                    " - Nom : $nom\n".
+                    " - Email : $email\n\n".
+                    " - Message :\n$message\n\n".
+                    "Bien cordialement.\n".
+                    "Vite & Gourmand"
                 );
 
             $mailer->send($email);

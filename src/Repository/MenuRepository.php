@@ -215,6 +215,11 @@ class MenuRepository
             $vars[':tarif_max'] = $filters['tarif_max'];
         }
 
+        if (!empty($filters['pers_min'])) {
+            $sql .= " AND menu.quantite_min <= :pers_min AND quantite_disponible >= :pers_min";
+            $vars[':pers_min'] = $filters['pers_min'];
+        }
+
         if (!empty($filters['disponible'])) {
             $sql .= " AND menu.quantite_disponible > 0";
         }

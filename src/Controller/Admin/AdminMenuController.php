@@ -58,13 +58,13 @@ class AdminMenuController extends AbstractController
 
                     $menu = new Menu(
                         $id,
-                        trim($request->request->get('titre')),
+                        trim($request->request->get('libelle')),
                         trim($request->request->get('description')),
                         trim($request->request->get('conditions')),
-                        trim($request->request->get('quantite_min')),
-                        trim($request->request->get('tarif_unitaire')),
-                        trim($request->request->get('quantite_disponible')),
-                        trim($request->request->get('actif')),
+                        $request->request->get('quantite_min'),
+                        $request->request->get('tarif_unitaire'),
+                        $request->request->get('quantite_disponible'),
+                        $request->request->get('actif'),
                         implode($menu_theme),
                         implode($menu_regime),
                     );

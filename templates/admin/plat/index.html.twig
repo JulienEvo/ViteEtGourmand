@@ -23,8 +23,14 @@
             <th>Image</th>
             <th>Libelle</th>
             <th>Catégorie</th>
-            <th>Actif</th>
-            <th>Actions</th>
+            {% if (comeFrom == 'plat') %}
+                <th>Actif</th>
+            {% endif %}
+            {% if (comeFrom == 'plat') %}
+                <th>Actions</th>
+            {% else %}
+                <th>Sélection</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -42,7 +48,9 @@
                     </td>
                     <td>{{ plat.libelle }}</td>
                     <td>{{ plat.type_libelle }}</td>
-                    <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
+                    {% if (comeFrom == 'plat') %}
+                        <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
+                    {% endif %}
                     <td>
                         {% if (comeFrom == 'plat') %}
                             <a href="{{ path('admin_plat_edit', {id: plat.id, comeFrom: comeFrom}) }}" title="Voir le plat" class="btn btn-sm btn-warning">
