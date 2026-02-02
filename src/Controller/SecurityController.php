@@ -52,26 +52,27 @@ class SecurityController extends AbstractController
     {
 
         if ($request->isMethod('POST')) {
+
             $token = new CsrfToken('register', $request->request->get('_csrf_token'));
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
-            $confirm = $request->request->get('confirm_password');
+            $email = htmlspecialchars(trim($request->request->get('email')));
+            $password = htmlspecialchars(trim($request->request->get('password')));
+            $confirm_password = htmlspecialchars(trim($request->request->get('confirm_password')));
 
             $utilisateur = new User(
                 0,
                 [$request->request->get('roles', 'ROLE_USER')],
-                $request->request->get('email'),
+                $email,
                 $password,
-                $request->request->get('prenom'),
-                $request->request->get('nom'),
-                $request->request->get('telephone'),
-                $request->request->get('adresse'),
-                $request->request->get('code_postal'),
-                $request->request->get('commune'),
-                $request->request->get('pays'),
+                htmlspecialchars(trim($request->request->get('prenom'))),
+                htmlspecialchars(trim($request->request->get('nom'))),
+                htmlspecialchars(trim($request->request->get('telephone'))),
+                htmlspecialchars(trim($request->request->get('adresse'))),
+                htmlspecialchars(trim($request->request->get('code_postal'))),
+                htmlspecialchars(trim($request->request->get('commune'))),
+                htmlspecialchars(trim($request->request->get('pays'))),
                 $request->request->get('latitude'),
                 $request->request->get('longitude'),
-                ($request->request->get('poste') ?? '')
+                (htmlspecialchars(trim($request->request->get('poste'))) ?? '')
             );
 
             if (!$csrfTokenManager->isTokenValid($token)) {
@@ -79,7 +80,7 @@ class SecurityController extends AbstractController
                 return $this->render('security/register.html.twig', ['utilisateur' => $utilisateur]);
             }
 
-            $retValid = $userRepository->isValidUtilisateur($utilisateur, true, $confirm);
+            $retValid = $userRepository->isValidUtilisateur($utilisateur, true, true, $confirm_password);
             if ($retValid !== true)
             {
                 $this->addFlash('danger', $retValid);
@@ -89,7 +90,7 @@ class SecurityController extends AbstractController
             if ($userRepository->insert($utilisateur))
             {
                 $this->addFlash('success', 'Compte créé avec succès');
-                return $this->render('security/login.html.twig', ['email' => $email]);
+                return $this->render('security/login.html.twig', ['last_username' => $email]);
             }
             else
             {

@@ -1,42 +1,120 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <!-- BOUTONS HEADER -->
+    <div class="d-flex justify-content-between ms-3 mt-3">
+        <a href="{{ path('menu_index') }}" class="btn btn-secondary" title="Retour">
+            <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+        </a>
+    </div>
+
     <div class="card m-3">
         <div class="card-header">
             <h1>{{ menu.libelle }}</h1>
         </div>
 
-        <div class="card-body">
-            <h2 class="mt-1">Composition du menu</h2>
+        <div class="card m-3">
+            <div class="card-body">
+                <h2 class="mt-1 mb-3">Informations générales</h2>
 
-            {% for type, plats in plats_par_type %}
-                <h3 class="mt-4">{{ type }}</h3>
+                <div class="row col-12">
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="menu_id" class="form-label">Nombre minimum de personne : </label>
+                        <p>{{ menu.quantite_min }}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="menu_id" class="form-label">Tarif par personne : </label>
+                        <p>{{ menu.tarif_unitaire }} €</p>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="menu_id" class="form-label">Quantité disponible : </label>
+                        <p>{{ menu.quantite_disponible }}</p>
+                    </div>
 
-                <div class="row">
-                    {% for plat in plats %}
-                        <div class="col-md-6 mb-3">
-                            <div class="card h-100">
-                                <div class="row g-0">
-                                    <div class="col-4">
-                                        <img src="{{ asset(plat.image) }}"
-                                             class="img-fluid rounded-start"
-                                             alt="{{ plat.libelle }}">
-                                    </div>
-                                    <div class="col-8">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ plat.libelle }}</h5>
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="menu_id" class="form-label">Description : </label>
+                        <p>{{ menu.description }}</p>
+                    </div>
+
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="menu_id" class="form-label">Thèmes : </label>
+                        <ul>
+                            {% for theme in tab_themes %}
+                                {% if theme.id in (menu.themes ?? []) %}
+                                    <li>{{ theme.libelle }}</li>
+                                    <p>{{ theme.description }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                        <label for="menu_id" class="form-label">Régimes : </label>
+                        <ul>
+                            {% for regime in tab_regimes %}
+                                {% if regime.id in (menu.regimes ?? []) %}
+                                    <li>{{ regime.libelle }}</li>
+                                    <p>{{ regime.description }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-6">
+                        <label for="menu_id" class="form-label text-danger">Conditions : </label>
+                        <p class="text-danger">{{ menu.conditions }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card m-3">
+            <div class="card-body">
+                <h2 class="mt-1">Composition du menu</h2>
+
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% if plats|length > 0 %}
+                            {% for plat in plats %}
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body text-center">
+                                            <h4>{{ plat.plat_type_libelle|upper }}</h4>
+
+                                            <div class="image-container mt-2 mb-2">
+                                                {% if (plat.image != '') %}
+                                                    <img src="{{ asset(plat.image) }}" class="img-fluid rounded" alt=" image de {{ plat.libelle ?? '' }}">
+                                                {% else %}
+                                                    <img src="/images/no_image.jpg" class="img-fluid rounded" alt=" image de {{ plat.libelle ?? '' }}">
+                                                {% endif %}
+                                            </div>
+
+                                            <h5>{{ plat.libelle }}</h5>
+                                            <p class="mt-3">{{ plat.description }}</p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            <table class="w-100 text-center">
+                                <tbody>
+                                <tr>
+                                    <td class="border p-3">
+                                        <span class="alert alert-warning text-center">Aucun plat associé</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
 
-        <div class="card-footer">
-            TEST footer
+        <!-- BOUTONS FOOTER -->
+        <div class="d-flex justify-content-between ms-3 mb-3">
+            <a href="{{ path('menu_index') }}" class="btn btn-secondary" title="Retour">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
         </div>
     </div>
 {% endblock %}

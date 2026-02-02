@@ -38,12 +38,13 @@ class PlatRepository
     public function update(Plat $plat): int|array
     {
         $sql = "UPDATE plat
-                SET libelle=:libelle, type_id=:type_id, image=:image, actif=:actif
+                SET libelle=:libelle, description=:description, type_id=:type_id, image=:image, actif=:actif
                 WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
             'libelle' => $plat->getLibelle(),
+            'description' => $plat->getDescription(),
             'type_id' => $plat->getType_id(),
             'image' => $plat->getImage(),
             'actif' => $plat->isActif(),
@@ -104,6 +105,7 @@ class PlatRepository
 
             $plat->setId($row['id']);
             $plat->setLibelle($row['libelle']);
+            $plat->setDescription($row['description']);
             $plat->setType_id($row['type_id']);
             $plat->setImage($row['image']);
             $plat->setActif($row['actif']);

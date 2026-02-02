@@ -25,7 +25,7 @@
             <div class="card-body">
                 <div class="row col-12">
                     <div class="mb-3 col-12 col-md-6 col-lg-3">
-                        <label for="libelle" class="form-label">Titre</label>
+                        <label for="libelle" class="form-label">Libellé</label>
                         <input type="text" class="form-control" name="libelle" id="libelle" value="{{ menu.libelle ?? '' }}" required>
                     </div>
 
@@ -128,6 +128,7 @@
                                         </div>
 
                                         <h5 class="">{{ plat.libelle }}</h5>
+                                        <p>{{ plat.description }}</p>
                                     </div>
                                 </div>
                                 <div class="text-center mt-2">
@@ -168,7 +169,6 @@
             </div>
         </div>
         -->
-
     </form>
 
     <script src="{{ asset('js/image.js') }}"></script>

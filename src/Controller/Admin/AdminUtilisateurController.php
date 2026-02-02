@@ -24,6 +24,7 @@ class AdminUtilisateurController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(UserRepository $userRepository, Request $request): Response
     {
+
         $type = $request->query->get('type', '');
         $role = $userRepository->getRoleByType($type);
 
@@ -55,13 +56,13 @@ class AdminUtilisateurController extends AbstractController
         if ($request->isMethod('POST')) {
 
             $roles = [$request->request->get('role')];
-            $nom = trim($request->request->get('nom'));
-            $prenom = trim($request->request->get('prenom'));
-            $email = trim($request->request->get('email'));
-            $password = trim($request->request->get('password'));
-            $confirm = trim($request->request->get('confirm'));
-            $adresse = trim($request->request->get('adresse'));
-            $commune = trim($request->request->get('commune'));
+            $nom = htmlspecialchars(trim($request->request->get('nom')));
+            $prenom = htmlspecialchars(trim($request->request->get('prenom')));
+            $email = htmlspecialchars(trim($request->request->get('email')));
+            $password = htmlspecialchars(trim($request->request->get('password')));
+            $confirm = htmlspecialchars(trim($request->request->get('confirm')));
+            $adresse = htmlspecialchars(trim($request->request->get('adresse')));
+            $commune = htmlspecialchars(trim($request->request->get('commune')));
 
             $latitude = null;
             $longitude = null;
@@ -97,14 +98,14 @@ class AdminUtilisateurController extends AbstractController
                 password_hash($password, PASSWORD_DEFAULT),
                 $prenom,
                 $nom,
-                trim($request->request->get('telephone')),
+                htmlspecialchars(trim($request->request->get('telephone'))),
                 $adresse,
-                trim($request->request->get('code_postal')),
+                htmlspecialchars(trim($request->request->get('code_postal'))),
                 $commune,
-                trim($request->request->get('pays')),
+                htmlspecialchars(trim($request->request->get('pays'))),
                 $latitude,
                 $longitude,
-                trim($request->request->get('poste')),
+                htmlspecialchars(trim($request->request->get('poste'))),
                 $request->request->get('actif'),
                 new DateTime(),
                 new DateTime(),
@@ -216,7 +217,7 @@ class AdminUtilisateurController extends AbstractController
 
         $type = $request->query->get('type', '');
 
-        return $this->redirectToRoute('admin_utilisateur_index.html.twig', [
+        return $this->render('admin_utilisateur_index', [
             'type' => $type
         ]);
     }
@@ -234,8 +235,8 @@ class AdminUtilisateurController extends AbstractController
 
         if ($request->isMethod('POST'))
         {
-            $adresse = trim($request->request->get('adresse'));
-            $commune = trim($request->request->get('commune'));
+            $adresse = htmlspecialchars(trim($request->request->get('adresse')));
+            $commune = htmlspecialchars(trim($request->request->get('commune')));
 
             $latitude = $request->request->get('latitude');
             $longitude = $request->request->get('longitude');
@@ -243,7 +244,6 @@ class AdminUtilisateurController extends AbstractController
             {
                 // Géolocalise l'adresse
                 $geocode = $this->geocode($adresse, $commune, $httpClient);
-
                 $data = json_decode($geocode->getContent(), true);
 
                 if (isset($data['erreur']))
@@ -268,19 +268,19 @@ class AdminUtilisateurController extends AbstractController
 
 
             // Récupère les données du formulaire
-            $utilisateur->setNom(trim($request->request->get('nom')));
-            $utilisateur->setPrenom(trim($request->request->get('prenom')));
-            $utilisateur->setTelephone(trim($request->request->get('telephone')));
-            $utilisateur->setAdresse(trim($request->request->get('adresse')));
-            $utilisateur->setCode_postal(trim($request->request->get('code_postal')));
-            $utilisateur->setCommune(trim($request->request->get('commune')));
-            $utilisateur->setPays(trim($request->request->get('pays')));
+            $utilisateur->setNom(htmlspecialchars(trim($request->request->get('nom'))));
+            $utilisateur->setPrenom(htmlspecialchars(trim($request->request->get('prenom'))));
+            $utilisateur->setTelephone(htmlspecialchars(trim($request->request->get('telephone'))));
+            $utilisateur->setAdresse(htmlspecialchars(trim($request->request->get('adresse'))));
+            $utilisateur->setCode_postal(htmlspecialchars(trim($request->request->get('code_postal'))));
+            $utilisateur->setCommune(htmlspecialchars(trim($request->request->get('commune'))));
+            $utilisateur->setPays(htmlspecialchars(trim($request->request->get('pays'))));
             $utilisateur->setLatitude($latitude);
             $utilisateur->setLongitude($longitude);
-            $utilisateur->setPoste(trim($request->request->get('poste')));
+            $utilisateur->setPoste(htmlspecialchars(trim($request->request->get('poste'))));
             $utilisateur->setActif($request->request->get('actif') ?? true);
-            $utilisateur->setPassword(trim($request->request->get('password')));
-            $confirm = trim($request->request->get('confirm'));
+            $utilisateur->setPassword(htmlspecialchars(trim($request->request->get('password'))));
+            $confirm = htmlspecialchars(trim($request->request->get('confirm')));
 
             $save_pass = ($utilisateur->getPassword() != "");
 
@@ -324,7 +324,6 @@ class AdminUtilisateurController extends AbstractController
         ]);
     }
 
-    #[Route('/geocode{adresse]{commune}', name: 'geocode_address')]
     public function geocode(string $adresse, string $commune, HttpClientInterface $client): JsonResponse
     {
         try {

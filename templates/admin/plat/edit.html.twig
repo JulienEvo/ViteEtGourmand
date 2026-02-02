@@ -23,18 +23,18 @@
             </div>
             <div class="card-body">
                 <div class="row col-12">
-                    <div class="mb-3 col-12 col-lg-3" style="width: 250px; margin-right: 20px">
-                        <label for="image_id" class="form-label">Image
-                        <div class="image-wrapper" style="width: 250px; min-width: 250px">
+                    <div class="mb-3 col-12 col-lg-4" style="width: 250px">
+                        <label for="image_id" class="form-label">Image</label>
+                        <div style="width: 250px; max-width: 250px">
                             <div class="image-actions position-absolute m-1" style="top: 100px; left: 20px">
                                 <button type="button" class="btn btn-sm btn-warning" title="Modifier" onclick="changeImage()"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn btn-sm btn-danger" title="Supprimer" onclick="removeImage()"><i class="bi bi-trash"></i></button>
                             </div>
 
                             {% if plat.image %}
-                                <img id="previewImage" src="{{ asset(plat.image) }}" class="img-fluid rounded">
+                                <img id="previewImage" src="{{ asset(plat.image) }}" class="img-fluid rounded" alt="Image du plat">
                             {% else %}
-                                <img id="previewImage" src="{{ asset('/images/no_image.jpg') }}" class="img-fluid rounded">
+                                <img id="previewImage" src="{{ asset('/images/no_image.jpg') }}" class="img-fluid rounded" alt="Aucune image">
                             {% endif %}
 
                             <input type="file" name="image" id="imageInput" accept="image/*" class="d-none" onchange="previewFile(this)">
@@ -42,43 +42,52 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="libelle" class="form-label">Libellé
-                        <input type="text" class="form-control" name="libelle" id="libelle" value="{{ plat.libelle ?? '' }}" required>
-                        <br>
-                        <label for="type_id" class="form-label">Catégorie
-                        <select class="form-select" name="type_id" id="type_id" required>
-                            <option value="">Choix</option>
-                            {% for type in tab_plat_type %}
-                                <option value="{{ type.id }}" {% if (type.id == (plat.type_id ?? 0)) %}selected{% endif %}>
-                                    {{ type.libelle }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                    <div class="mb-3 col-12 col-lg-9">
+                        <div class="row col-12">
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="libelle" class="form-label">Libellé</label>
+                                <input type="text" class="form-control" name="libelle" id="libelle" value="{{ plat.libelle ?? '' }}" required>
+                            </div>
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="type_id" class="form-label">Catégorie</label>
+                                <select class="form-select" name="type_id" id="type_id" required>
+                                    <option value="">Choix</option>
+                                    {% for type in tab_plat_type %}
+                                        <option value="{{ type.id }}" {% if (type.id == (plat.type_id ?? 0)) %}selected{% endif %}>
+                                            {{ type.libelle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="actif_1" class="form-label">Actif</label>
+                                <div>
+                                    <span>Oui :&nbsp;</span>
+                                    <input type="radio" name="actif" id="actif_1" value="1" {% if (plat.actif == 1) %} {{ 'checked' }} {% endif %}>
 
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="plat_allergenes" class="form-label">Allergènes
-                        <select class="form-select" size="6" name="plat_allergenes[]" id="plat_allergenes" multiple>
-                            {% for allergene in tab_allergenes %}
-                                <option value="{{ allergene.id }}" {% if allergene.id in (tab_plat_allergene ?? []) %}selected{% endif %}>
-                                    {{ allergene.libelle }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                                    <span>&nbsp;Non :&nbsp;</span>
+                                    <input type="radio" name="actif" id="actif_0" value="0" {% if (plat.actif != 1) %} {{ 'checked' }} {% endif %}>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="actif_1" class="form-label">Actif
-                        <div>
-                            <span>Oui :&nbsp;</span>
-                            <input type="radio" name="actif" id="actif_1" value="1" {% if (plat.actif == 1) %} {{ 'checked' }} {% endif %}>
-
-                            <span>&nbsp;Non :&nbsp;</span>
-                            <input type="radio" name="actif" id="actif_0" value="0" {% if (plat.actif != 1) %} {{ 'checked' }} {% endif %}>
+                        <div class="row col-12">
+                            <div class="mb-3 col-12 col-lg-4">
+                                <label for="plat_allergenes" class="form-label">Allergènes</label>
+                                <select class="form-select" size="4" name="plat_allergenes[]" id="plat_allergenes" multiple>
+                                    {% for allergene in tab_allergenes %}
+                                        <option value="{{ allergene.id }}" {% if allergene.id in (tab_plat_allergene ?? []) %}selected{% endif %}>
+                                            {{ allergene.libelle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 col-12 col-lg-8">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" rows="4" name="description" id="description" required>{{ plat.description ?? '' }}</textarea>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

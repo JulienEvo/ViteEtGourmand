@@ -6,14 +6,16 @@ class Plat
 {
     private int $id;
     private string $libelle;
+    private string $description;
     private int $type_id;
     private string $image;
     private bool $actif;
 
-    public function __construct(int $id = 0, string $libelle = '', int $type_id = 0, string $image = '', bool $actif = true)
+    public function __construct(int $id = 0, string $libelle = '', $description = '', int $type_id = 0, string $image = '', bool $actif = true)
     {
         $this->setId($id);
         $this->setLibelle($libelle);
+        $this->setDescription($description);
         $this->setType_id($type_id);
         $this->setImage($image);
         $this->setActif($actif);
@@ -26,6 +28,10 @@ class Plat
     public function getLibelle(): string
     {
         return $this->libelle;
+    }
+    public function getDescription(): string
+    {
+        return $this->description;
     }
     public function getType_id(): int
     {
@@ -46,6 +52,10 @@ class Plat
     public function setLibelle(string $libelle): void
     {
         $this->libelle = $libelle;
+    }
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
     }
     public function setType_id(int $type_id): void
     {

@@ -70,15 +70,15 @@ class MenuController extends AbstractController
             }
         }
 
-        $themes = $generiqueRepository->findAll('theme');
-        $regimes = $generiqueRepository->findAll('regime');
+        $tab_themes = $generiqueRepository->findAll('theme');
+        $tab_regimes = $generiqueRepository->findAll('regime');
 
         return $this->render('menu/edit.html.twig', [
             'menu' => $menu,
             'plats' => $plats,
             'plats_par_type' => $plats_par_type,
-            'themes' => $themes,
-            'regimes' => $regimes,
+            'tab_themes' => $tab_themes,
+            'tab_regimes' => $tab_regimes,
         ]);
     }
 

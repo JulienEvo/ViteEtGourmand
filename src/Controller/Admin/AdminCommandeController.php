@@ -10,12 +10,14 @@ use App\Repository\UserRepository;
 use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-const BORDEAUX_LAT = 44.837789;
-const BORDEAUX_LON = -0.57918;
+const BORDEAUX_LAT = 44.833328;
+const BORDEAUX_LON = -0.56667;
 
 #[Route('/admin/commande', name: 'admin_commande_')]
 class AdminCommandeController extends AbstractController
@@ -189,6 +191,7 @@ class AdminCommandeController extends AbstractController
         CommandeRepository $commandeRepository,
         MenuRepository $menuRepository,
         GeneriqueRepository $generiqueRepository,
+        HttpClientInterface $httpClient,
         UserRepository $userRepository,
     ): Response
     {
@@ -211,13 +214,23 @@ class AdminCommandeController extends AbstractController
         }
 
         // Calcule des frais de livraison
-        $tarif_livraison = 0;
+        $distance_km = 0;
+        $tarif_livraison = 5;
         $utilisateur = $this->getUser();
 
         if (!empty($utilisateur->getLatitude()))
         {
-            $distance_km = FonctionsService::distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude());
-            $tarif_livraison = round(5 + (0.59 * $distance_km), 2);
+            $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+
+            if (!is_float($distance_km))
+            {
+                $data = json_decode($distance_km->getContent(), true);
+
+                $this->addFlash('danger', $data['erreur'].$data['message']);
+                return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+            }
+
+            $tarif_livraison += round($distance_km * 0.59, 2);
         }
 
         $commande->setTotal_ttc(round($total_ttc, 2));
@@ -227,8 +240,41 @@ class AdminCommandeController extends AbstractController
             'menu' => $menu,
             'tabCommande_etat' => $tabCommande_etat,
             'tarif_livraison' => $tarif_livraison,
-            'distance_km' => $distance_km,
+            'distance_km' => round($distance_km, 2),
         ]);
+    }
+
+    public function distanceKm($lat1, $lon1, $lat2, $lon2, HttpClientInterface $client): float|JsonResponse
+    {
+        try {
+            $response = $client->request(
+                'POST',
+                'https://api.openrouteservice.org/v2/directions/driving-car',
+                [
+                    'headers' => [
+                        'Authorization' => $_ENV['ORS_API_KEY'],
+                    ],
+                    'json' => [
+                        'coordinates' => [
+                            [$lon1, $lat1],
+                            [$lon2, $lat2],
+                        ],
+                    ],
+                    'timeout' => 10,
+                ]
+            );
+
+            $data = $response->toArray();
+
+            // Retourne la distance Km
+            return $data['routes'][0]['segments'][0]['distance'] / 1000;
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'erreur' => 'Erreur lors de l’appel à ORS : ',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

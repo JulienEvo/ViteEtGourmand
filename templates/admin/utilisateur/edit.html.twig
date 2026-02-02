@@ -132,10 +132,15 @@
         </div>
 
         <div class="d-flex justify-content-between">
-            <a href="{{ path('admin_utilisateur_index', {type: type}) }}" class="btn btn-secondary">
+            <a href="{{ path('admin_utilisateur_index', {type: type}) }}" class="btn btn-secondary" title="Retour">
                 <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
             </a>
-            <button type="submit" class="btn btn-success">
+            {% if mode == 'modif' %}
+                <a href="{{ path('admin_utilisateur_delete', {id: utilisateur.id}) }}" class="btn btn-danger" title="Supprimer">
+                    <i class="bi bi-trash"></i>&nbsp;Supprimer
+                </a>
+            {% endif %}
+            <button type="submit" class="btn btn-success" title="Enregistrer">
                 <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
             </button>
         </div>

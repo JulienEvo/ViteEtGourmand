@@ -18,7 +18,7 @@ INSERT INTO allergene (libelle, description) VALUES ('Céréales', '');
 
 
 /*** PLAT ***/
-INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Mini quiches lorraines', '', 1, 'images/plats/mini_quiches_lorraine.jfif', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Mini quiches lorraine', '', 1, 'images/plats/mini_quiches_lorraine.jfif', 1);
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Salade tomates Mozzarella', '', 1, 'images/plats/Salade_tomates_mozarella.jpg', 1);
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Verrines avocat saumon', '', 1, 'images/plats/Verrines_avocat_saumon.jpg', 1);
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Toasts de tapenade', '', 1, 'images/plats/Toasts_tapenade_verte_tomates_sechees.jpg', 1);
