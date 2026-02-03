@@ -94,7 +94,7 @@
                                     <strong>{{ tab_utilisateur[avis.getUtilisateur_id()].getPrenom() ~' '~ tab_utilisateur[avis.getUtilisateur_id()].getNom()|first|upper ~ '.' }}</strong>
                                     <span class="small">&nbsp;le {{ avis.created_at|date('d/m/Y')}}</span>
                                 </span>
-                                <span class="text-warning">
+                                <span class="text-primary">
                                     {% for i in 1..avis.note %}
                                         ★
                                     {% endfor %}

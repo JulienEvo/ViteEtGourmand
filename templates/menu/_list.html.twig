@@ -2,7 +2,7 @@
 {% if menus|length > 0 %}
     <div class="row cols-12 cols-sm-6 cols-md-4 cols-lg-3 g-4">
         {% for menu in menus %}
-            <div class="col-12 col-lg-3">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
                         <h5 class="text-center pb-3">{{ menu.libelle }}</h5>
@@ -35,15 +35,15 @@
 
                                 <table class="w-100 text-center">
                                     <tr>
-                                        <td style="width: 50%">
+                                        <td class="w-auto text-end pe-1">
                                             <a href="{{ path('menu_edit', {id: menu.id}) }}" class="btn btn-outline-primary mt-auto">
                                                 Voir le détail
                                             </a>
                                         </td>
-                                        <td>
+                                        <td style="width: 80px">
                                             <input type="number" name="quantite" min="{{ menu.quantite_min }}" max="{{ menu.quantite_disponible }}" value="{{ menu.quantite_min }}" class="form-control">
                                         </td>
-                                        <td>
+                                        <td style="width: 50px">
                                             <button type="submit" class="btn btn-primary" title="Commander" {% if menu.quantite_disponible == 0 or menu.quantite_disponible < menu.quantite_min %}disabled{% endif %}>
                                                 <i class="bi bi-cart"></i>
                                             </button>

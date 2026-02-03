@@ -19,8 +19,8 @@
             <h1>Contact</h1>
             <p>Plats faits maison – Événementiel – Commande en ligne</p>
             {% if user %}
-                <a href="{{ path('commande_historique') }}">
-                    <button type="button" class="btn btn-primary" title="Voir mes commandes">Voir mes commandes</button>
+                <a href="{{ path('admin_utilisateur_profil') }}">
+                    <button type="button" class="btn btn-primary" title="Voir mes commandes">Voir mon profil</button>
                 </a>
             {% else %}
                 <a href="{{ path('login', {redirect: app.request.requestUri}) }}">
@@ -40,7 +40,7 @@
                     <div class="card-body">
                         <div class="row col-12">
                             <div class="mb-3 col-12 col-lg-4">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">E-mail</label>
                                 <input type="email" class="form-control" name="email" id="email" value="{{ user.email ?? '' }}" required>
                             </div>
                             <div class="mb-3 col-12 col-lg-4">
