@@ -18,8 +18,8 @@ class CommandeRepository
 
     public function insert(Commande $commande): int|array
     {
-        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, quantite, total_ttc, remise)
-                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :quantite, :total_ttc, :remise)";
+        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, pret_materiel, quantite, remise, total_ttc)
+                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :pret_materiel, :quantite, :remise, :total_ttc)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
@@ -33,6 +33,7 @@ class CommandeRepository
             'commune_livraison' => $commande->getCommune_livraison(),
             'latitude' => $commande->getLatitude(),
             'longitude' => $commande->getLongitude(),
+            'pret_materiel' => $commande->getPret_materiel(),
             'quantite' => $commande->getQuantite(),
             'total_ttc' => $commande->getTotal_ttc(),
             'remise' => $commande->getRemise(),
@@ -120,6 +121,7 @@ class CommandeRepository
                 $row->commune_livraison,
                 $row->latitude,
                 $row->longitude,
+                $row->pret_materiel,
                 $row->quantite,
                 $row->total_ttc,
                 $row->remise,
@@ -157,6 +159,7 @@ class CommandeRepository
                 $row->commune_livraison,
                 $row->latitude,
                 $row->longitude,
+                $row->pret_materiel,
                 $row->quantite,
                 $row->total_ttc,
                 $row->remise,

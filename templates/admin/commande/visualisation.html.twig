@@ -15,51 +15,55 @@
         <div class="card-body">
             <div class="row col-12">
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="menu_id" class="form-label">Menu</label>
+                    <label class="form-label">Menu</label>
                     <p>{{ menu.libelle }}</p>
                 </div>
 
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="commande_etat_id" class="form-label">État</label>
+                    <label class="form-label">État</label>
                     <p style="background-color: {{ tabCommande_etat[commande.commande_etat_id].couleur }}">{{ tabCommande_etat[commande.commande_etat_id].libelle }}</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="date_livraison" class="form-label">Date de commande</label>
+                    <label class="form-label">Date de commande</label>
                     <p>{{ commande.created_at|date('d/m/Y') }}</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="date_livraison" class="form-label">Date de livraison</label>
+                    <label class="form-label">Date de livraison</label>
                     <p>{{ commande.date|date('d/m/Y') }}</p>
                 </div>
-                <div class="mb-3 col-12 col-lg-4">
-                    <label for="date_livraison" class="form-label">Adresse de livraison</label>
+                <div class="mb-3 col-12 col-lg-2">
+                    <label class="form-label">Adresse de livraison</label>
                     <p>
                         {{ commande.adresse_livraison ?? user.adresse }}
                         <br>
                         {{ commande.cp_livraison ?? user.code_postal ~ ' - ' ~ commande.commune_livraison ?? user.commune }}
                     </p>
                 </div>
+                <div class="mb-3 col-12 col-lg-2">
+                    <label class="form-label">Prêt matériel</label>
+                    <p>{% if commande.pret_materiel %}<span class="text-danger fw-bold">Oui</span>{% else %}Non{% endif %}</p>
+                </div>
             </div>
 
             <div class="row col-12">
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="remise" class="form-label">Prix unitaire</label>
+                    <label class="form-label">Prix unitaire</label>
                     <p>{{ menu.tarif_unitaire|number_format(2, '.', ' ') }} €</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="remise" class="form-label">Quantité</label>
+                    <label class="form-label">Quantité</label>
                     <p>{{ commande.quantite }}</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="remise" class="form-label">Total TTC hors fdl</label>
+                    <label class="form-label">Total TTC</label>
                     <p>{{ commande.total_ttc }} €</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="remise" class="form-label">Remise</label>
+                    <label class="form-label">Remise</label>
                     <p>{{ commande.remise }} %</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="tarif_livraison" class="form-label">
+                    <label class="form-label">
                         Tarif livraison&nbsp;
                         {% if distance_km > 0 %}
                             <br><span class="small fw-normal">({{ distance_km }} km)</span>
@@ -68,8 +72,8 @@
                     <p>{{ tarif_livraison }} €</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label for="remise" class="form-label">Total TTC</label>
-                    <p>{{ commande.total_ttc + tarif_livraison }} €</p>
+                    <label class="form-label">Total TTC</label>
+                    <p class="fw-bold">{{ commande.total_ttc + tarif_livraison }} €</p>
                 </div>
             </div>
         </div>

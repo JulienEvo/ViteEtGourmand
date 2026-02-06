@@ -81,6 +81,7 @@ class CommandeController extends AbstractController
         $info_suppl = $request->request->get('info_suppl');
 
         $menu_id = $request->request->get('menu_id');
+        $pret_mat = $request->request->get('pret_materiel');
         $quantite = $request->request->get('quantite');
         $remise = $request->request->get('remise');
         $total_ttc = $request->request->get('total_ttc');
@@ -162,6 +163,7 @@ class CommandeController extends AbstractController
             $utilisateur->getCommune(),
             $utilisateur->getLatitude(),
             $utilisateur->getLongitude(),
+            $pret_mat,
             $quantite,
             $total_ttc,
             $remise,
@@ -245,7 +247,7 @@ class CommandeController extends AbstractController
     {
         $menu = $menuRepository->findById($id);
 
-        if (!$menu)
+        if ($id > 0 && !$menu)
         {
             return new JsonResponse(['erreur' => 'Menu introuvable'], Response::HTTP_NOT_FOUND);
         }

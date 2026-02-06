@@ -72,18 +72,31 @@
                     </div>
 
                     <div class="mb-3 col-12 col-lg-10">
-                        <label for="conditions" class="form-label">Conditions</label>
+                        <label for="conditions" class="form-label text-danger">Conditions</label>
                         <textarea class="form-control" rows="5" name="conditions" id="conditions">{{ menu.conditions ?? '' }}</textarea>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-2">
-                        <label for="actif_1" class="form-label">Actif</label>
                         <div>
-                            <span>Oui :&nbsp;</span>
-                            <input type="radio" name="actif" id="actif_1" value="1" {% if (menu.actif == 1) %} {{ 'checked' }} {% endif %}>
+                            <label for="pret_materiel_1" class="form-label">Prêt materiel</label>
+                            <div>
+                                <span>Oui :&nbsp;</span>
+                                <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (menu.pret_materiel == 1) %} {{ 'checked' }} {% endif %}>
 
-                            <span>Non :&nbsp;</span>
-                            <input type="radio" name="actif" id="actif_0" value="0" {% if (menu.actif != 1) %} {{ 'checked' }} {% endif %}>
+                                <span>Non :&nbsp;</span>
+                                <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (menu.pret_materiel != 1) %} {{ 'checked' }} {% endif %}>
+                            </div>
+                        </div>
+                        <br><br>
+                        <div>
+                            <label for="actif_1" class="form-label">Actif</label>
+                            <div>
+                                <span>Oui :&nbsp;</span>
+                                <input type="radio" name="actif" id="actif_1" value="1" {% if (menu.actif == 1) %} {{ 'checked' }} {% endif %}>
+
+                                <span>Non :&nbsp;</span>
+                                <input type="radio" name="actif" id="actif_0" value="0" {% if (menu.actif != 1) %} {{ 'checked' }} {% endif %}>
+                            </div>
                         </div>
                     </div>
 
@@ -169,6 +182,16 @@
             </div>
         </div>
         -->
+
+        <div class="d-flex justify-content-between pb-3">
+            <a href="{{ path('admin_menu_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-floppy-fill"></i>&nbsp;Enregistrer
+            </button>
+        </div>
+
     </form>
 
     <script src="{{ asset('js/image.js') }}"></script>

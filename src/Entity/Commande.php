@@ -6,6 +6,17 @@ use DateTime;
 
 class Commande
 {
+    const ETAT_EN_PREPARATION = 1;
+    const ETAT_ACCEPTEE = 2;
+    const ETAT_REFUSEE = 3;
+    const ETAT_ANNULEE = 4;
+    const ETAT_SUPPRIMEE = 5;
+    const ETAT_EN_COURS_LIVRAISON = 6;
+    const ETAT_LIVREE = 7;
+    const ETAT_EN_ATTENTE_MATERIEL = 8;
+    const ETAT_TERMINEE = 9;
+
+
     private int $id;
     private int $utilisateur_id;
     private int $menu_id;
@@ -17,9 +28,10 @@ class Commande
     private ?string $commune_livraison;
     private ?string $latitude;
     private ?string $longitude;
+    private int $pret_materiel;
     private int $quantite;
-    private ?float $total_ttc;
     private ?float $remise;
+    private ?float $total_ttc;
     private ?DateTime $created_at;
 
     public function __construct(
@@ -33,7 +45,8 @@ class Commande
         ?string $cp_livraison = null,
         ?string $commune_livraison = null,
         ?float $latitude = null,
-        ?float $longitude = null,
+        ?float $longitude = 0,
+        int $pret_materiel = 0,
         ?float $quantite = 0,
         ?float $total_ttc = null,
         ?float $remise = null,
@@ -51,6 +64,7 @@ class Commande
         $this->setCommune_livraison($commune_livraison);
         $this->setLatitude($latitude);
         $this->setLongitude($longitude);
+        $this->setPret_materiel($pret_materiel);
         $this->setQuantite($quantite);
         $this->setTotal_ttc($total_ttc);
         $this->setRemise($remise);
@@ -101,13 +115,17 @@ class Commande
     {
         return $this->longitude;
     }
+    public function getPret_materiel(): int
+    {
+        return $this->pret_materiel;
+    }
     public function getRemise(): ?float
     {
         return $this->remise;
     }
     public function getQuantite(): int
     {
-        return $this->quantite_disponible;
+        return $this->quantite;
     }
     public function getTotal_ttc(): ?float
     {
@@ -162,13 +180,17 @@ class Commande
     {
         $this->longitude = $longitude;
     }
+    public function setQuantite(int $quantite): void
+    {
+        $this->quantite = $quantite;
+    }
+    public function setPret_materiel (int $pret_materiel): void
+    {
+        $this->pret_materiel = $pret_materiel;
+    }
     public function setRemise(?float $remise): void
     {
         $this->remise = $remise;
-    }
-    public function setQuantite(int $quantite): void
-    {
-        $this->quantite_disponible = $quantite;
     }
     public function setTotal_ttc(?float $total_ttc): void
     {

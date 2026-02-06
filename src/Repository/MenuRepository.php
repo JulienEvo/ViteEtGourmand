@@ -27,8 +27,8 @@ class MenuRepository
 
     public function insert(array $menu): bool
     {
-        $sql = "INSERT INTO menu (libelle, description, conditions, theme, quantite_min, tarif_unitaire, quantite_disponible, actif)
-                VALUES (:libelle, :description, :conditions, :theme, :quantite_min, :tarif_unitaire, :quantite_disponible, :actif)";
+        $sql = "INSERT INTO menu (libelle, description, conditions, quantite_min, tarif_unitaire, quantite_disponible, pret_materiel, actif)
+                VALUES (:libelle, :description, :conditions, :quantite_min, :tarif_unitaire, :quantite_disponible, :pret_materiel, :actif)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -40,6 +40,7 @@ class MenuRepository
             ':quantite_min' => $menu['quantite_min'],
             ':tarif_unitaire' => $menu['tarif_unitaire'],
             ':quantite_disponible' => $menu['quantite_disponible'],
+            ':pret_materiel' => $menu['pret_materiel'],
             ':actif' => $menu['actif'] ?? 1
         ]);
     }
@@ -54,6 +55,7 @@ class MenuRepository
                     quantite_min = :quantite_min,
                     tarif_unitaire = :tarif_unitaire,
                     quantite_disponible = :quantite_disponible,
+                    pret_materiel = :pret_materiel,
                     actif = :actif
                 WHERE id = :id";
 
@@ -66,6 +68,7 @@ class MenuRepository
             ':quantite_min' => $menu->getquantite_min(),
             ':tarif_unitaire' => $menu->gettarif_unitaire(),
             ':quantite_disponible' => $menu->getQuantite_disponible(),
+            ':pret_materiel' => $menu->getPret_materiel(),
             ':actif' => $menu->isActif(),
             ':id' => $id
         ]);
@@ -129,6 +132,7 @@ class MenuRepository
                 $row['quantite_min'],
                 $row['tarif_unitaire'],
                 $row['quantite_disponible'],
+                $row['pret_materiel'],
                 $row['actif'],
                 $row['themes'],
                 $row['regimes'],
@@ -163,6 +167,7 @@ class MenuRepository
                 $row['quantite_min'],
                 $row['tarif_unitaire'],
                 $row['quantite_disponible'],
+                $row['pret_materiel'],
                 $row['actif'],
                 implode($themes),
                 implode($regimes)

@@ -11,6 +11,7 @@ class Menu
     private int $quantite_min;
     private float $tarif_unitaire;
     private int $quantite_disponible;
+    private int $pret_materiel;
     private string $themes;
     private string $regimes;
     private bool $actif;
@@ -23,6 +24,7 @@ class Menu
         int $quantite_min = 1,
         float $tarif_unitaire = 0,
         int $quantite_disponible = 0,
+        int $pret_materiel = 0,
         bool $actif = true,
         string $themes = '',
         string $regime = ''
@@ -35,6 +37,7 @@ class Menu
         $this->setquantite_min($quantite_min);
         $this->settarif_unitaire($tarif_unitaire);
         $this->setQuantite_disponible($quantite_disponible);
+        $this->setPret_materiel($pret_materiel);
         $this->setActif($actif);
 
         $this->setThemes($themes);
@@ -68,6 +71,10 @@ class Menu
     public function getQuantite_disponible(): int
     {
         return $this->quantite_disponible;
+    }
+    public function getPret_materiel(): int
+    {
+        return $this->pret_materiel;
     }
     public function getThemes(): string
     {
@@ -109,6 +116,10 @@ class Menu
     public function setQuantite_disponible(int $quantite_disponible): void
     {
         $this->quantite_disponible = $quantite_disponible;
+    }
+    public function setPret_materiel(int $pret_materiel): void
+    {
+        $this->pret_materiel = $pret_materiel;
     }
     public function setThemes(string $tab_theme): void
     {

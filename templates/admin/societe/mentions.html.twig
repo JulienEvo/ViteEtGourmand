@@ -21,19 +21,17 @@
                 <div class="card-body">
                     <div>
                         <h4>Éditeur du site</h4>
-                        <p>
-                            <ul>
-                            <li><label class="form-label">Nom {{ societe.libelle }}</li>
-                                <li><label class="form-label">Forme juridique {{ societe.statut }}</li>
-                                <li><label class="form-label">Capital social {{ societe.capital }} €</li>
-                                <li><label class="form-label">Siège social {{ societe.adresse ~ societe.code_postal ~ societe.commune }}</li>
-                                <li><label class="form-label">RCS {{ societe.rcs }}</li>
-                                <li><label class="form-label">SIRET {{ societe.siret }}</li>
-                                <li><label class="form-label">TVA intracommunautaire {{ societe.tva }}</li>
-                                <li><label class="form-label">Email {{ societe.email }}</li>
-                                <li><label class="form-label">Téléphone {{ societe.telephone }}</li>
-                            </ul>
-                        </p>
+                        <ul>
+                            <li><label class="form-label">Nom :&nbsp;</label>{{ societe.libelle }}</li>
+                            <li><label class="form-label">Forme juridique :&nbsp;</label>{{ societe.statut }}</li>
+                            <li><label class="form-label">Capital social :&nbsp;</label>{{ societe.capital }} €</li>
+                            <li><label class="form-label">Siège social :&nbsp;</label>{{ societe.adresse ~' '~ societe.code_postal ~' '~ societe.commune }}</li>
+                            <li><label class="form-label">RCS :&nbsp;</label>{{ societe.rcs }}</li>
+                            <li><label class="form-label">SIRET :&nbsp;</label>{{ societe.siret }}</li>
+                            <li><label class="form-label">TVA :&nbsp;</label>intracommunautaire {{ societe.tva }}</li>
+                            <li><label class="form-label">Email :&nbsp;</label>{{ societe.email }}</li>
+                            <li><label class="form-label">Téléphone :&nbsp;</label>{{ societe.telephone|formatTelFr }}</li>
+                        </ul>
                     </div>
                     <div>
                         <h4>Directeur de la publication</h4>
@@ -45,9 +43,9 @@
                         <h4>Hébergement</h4>
                         <p>
                             <ul>
-                                <li><label class="form-label">Hébergeur hébergeur</li>
-                                <li><label class="form-label">Adresse adresse_hébergeur</li>
-                                <li><label class="form-label">Téléphone téléphone_hébergeur</li>
+                                <li><label class="form-label">Hébergeur :&nbsp;</label>société ALWAYSDATA, SARL</li>
+                                <li><label class="form-label">Adresse :&nbsp;</label>91 rue du Faubourg Saint Honoré - 75008 Paris</li>
+                                <li><label class="form-label">Téléphone :&nbsp;</label>01 84 16 23 40</li>
                             </ul>
                         </p>
                     </div>

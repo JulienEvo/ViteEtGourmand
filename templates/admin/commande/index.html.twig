@@ -24,8 +24,9 @@
                 <th>Adresse</th>
                 <th>Date commande</th>
                 <th>Date livraison</th>
-                <th>Remise (%)</th>
+                <th>Remise</th>
                 <th>Montant ttc</th>
+                <th>Prêt matériel</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -35,14 +36,15 @@
                     {% set lien_cmd = path('admin_commande_edit', {id: item.commande.id}) %}
                     <tr style="cursor: pointer">
                         <td style="width: 10%; background-color: {{ item.commande_etat.couleur ?? '' }}" onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande_etat.libelle }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.numero }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.nom ~ ' ' ~ item.utilisateur.prenom }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.menu.libelle }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.adresse ~ ' - ' ~ item.utilisateur.commune ~ ' - ' ~ item.utilisateur.code_postal }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.created_at|date('d/m/Y à H:i') }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.date|date('d/m/Y à H:i') }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.remise }}</td>
-                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.total_ttc }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.numero }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.nom ~ ' ' ~ item.utilisateur.prenom }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.menu.libelle }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.adresse ~ ' - ' ~ item.utilisateur.code_postal ~ ' - ' ~ item.utilisateur.commune }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.created_at|date('d/m/Y à H:i') }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.date|date('d/m/Y à H:i') }}</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.remise }} %</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.total_ttc }} €</td>
+                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{% if item.commande.pret_materiel %}Oui{% else %}Non{% endif %}</td>
                         <td>
                             <div class="d-flex gap-1 flex-wrap">
                                 <a href="{{ lien_cmd }}" class="btn btn-sm btn-warning" title="Voir la commande">

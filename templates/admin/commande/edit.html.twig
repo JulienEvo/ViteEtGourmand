@@ -25,20 +25,27 @@
             <div class="card-body">
                 <div class="row col-12">
 
-                    <div class="mb-3 col-12 col-lg-2">
-                        <label for="menu_id" class="form-label">Menu
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="menu_id" class="form-label">Menu</label>
                         <select class="form-select" name="menu_id" id="menu_id" required>
                             <option value="">Choix</option>
                             {% for menu in tabMenu %}
                                 <option value="{{ menu.id }}" {% if (menu.id == (commande.menu_id ?? 0)) %}selected{% endif %}>
-                                    {{ menu.libelle }}
+                                    {{ menu.libelle ~ ' (' ~ menu.tarif_unitaire ~ ' € par pers.)' }}
                                 </option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-4">
-                        <label for="utilisateur_id" class="form-label">Client
+                        <label for="utilisateur_id" class="form-label">
+                            Client
+                            {% if utilisateur.latitude ?? null and utilisateur.longitude %}
+                                <span class='text-success' style="font-size: smaller">&nbsp;<i class="bi bi-pin-map-fill"></i></span>
+                            {% else %}
+                                <span class='text-danger' style="font-size: smaller">&nbsp;<i class="bi bi-pin-map-fill"></i></span>
+                            {% endif %}
+                        </label>
                         <select class="form-select" name="utilisateur_id" id="utilisateur_id" required>
                             <option value="">Choix</option>
                             {% for utilisateur in tabUtilisateur %}
@@ -49,8 +56,8 @@
                         </select>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-2">
-                        <label for="commande_etat_id" class="form-label">État
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="commande_etat_id" class="form-label">État</label>
                         <select class="form-select" name="commande_etat_id" id="commande_etat_id">
                             {% for etat in tabCommandeEtat %}
                                 <option value="{{ etat.id }}" style="background-color: {{ etat.couleur ?? '' }}" {% if (etat.id == (commande.commande_etat_id ?? 0)) %}selected{% endif %}>
@@ -60,16 +67,63 @@
                         </select>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-2">
-                        <label for="date_livraison" class="form-label">Date de livraison
-                        <input type="date" class="form-control" name="date_livraison" id="date_livraison" value="{% if commande %}{{ commande.date|date('Y-m-d') }}{% endif %}" required>
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="date_livraison" class="form-label">Date de livraison</label>
+                        <input type="date" class="form-control" name="date_livraison" id="date_livraison" value="{% if commande %}{{ commande.date|date('Y-m-d') }}{% endif %}" readonly>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-2">
-                        <label for="remise" class="form-label">Remise (%)
-                        <input type="number" step="0.1" min="0" max="100" class="form-control" name="remise" id="remise" value="{{ commande.remise ?? '' }}">
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="date_commande" class="form-label">Date de commande</label>
+                        <input type="date" class="form-control" name="date_commande" id="date_commande" value="{% if commande %}{{ commande.created_at|date('Y-m-d') }}{% endif %}" readonly>
                     </div>
 
+                    <div class="mb-3 col-12 col-lg-4">
+                        <label for="pret_materiel_1" class="form-label">Prêt materiel</label>
+                        <div>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (commande.pret_materiel == 1) %} {{ 'checked' }} {% endif %} readonly>
+
+                            <span>Non :&nbsp;</span>
+                            <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (commande.pret_materiel == 0) %} {{ 'checked' }} {% endif %} readonly>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Tarifications</h4>
+            </div>
+            <div class="card-body">
+                <div class="row col-12">
+
+                    <div class="mb-3 col-12 col-lg-6">
+                        <table class="table table-bordered table-responsive">
+                            <thead>
+                            <tr>
+                                <th>Quantité</th>
+                                <th>Remise</th>
+                                <th>
+                                    Tarif livraison
+                                    {% if distance_km > 0 %}
+                                        <br><span class="small fw-normal">({{ distance_km }} km)</span>
+                                    {% endif %}
+                                </th>
+                                <th>Total TTC</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="text-end">{{ commande.quantite ?? 0 }}</td>
+                                <td class="text-end">{{ commande.remise ?? '' }} %</td>
+                                <td class="text-end">{{ tarif_livraison }} €</td>
+                                <td class="text-end">{{ commande.total_ttc + tarif_livraison ?? 0 }} €</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

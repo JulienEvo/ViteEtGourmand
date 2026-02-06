@@ -7,6 +7,7 @@ CREATE TABLE menu (
     quantite_min SMALLINT NOT NULL DEFAULT 1,
     tarif_unitaire DOUBLE NOT NULL,
     quantite_disponible SMALLINT NOT NULL DEFAULT 0,
+    pret_materiel TINYINT(1) NOT NULL DEFAULT 0,
     actif BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id)
 )

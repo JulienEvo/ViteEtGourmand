@@ -64,6 +64,7 @@ class AdminMenuController extends AbstractController
                         $request->request->get('quantite_min'),
                         $request->request->get('tarif_unitaire'),
                         $request->request->get('quantite_disponible'),
+                        $request->request->get('pret_materiel'),
                         $request->request->get('actif'),
                         implode($menu_theme),
                         implode($menu_regime),

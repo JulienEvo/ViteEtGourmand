@@ -8,12 +8,16 @@ use App\Repository\GeneriqueRepository;
 use App\Repository\MenuRepository;
 use App\Repository\UserRepository;
 use App\Service\FonctionsService;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 const BORDEAUX_LAT = 44.833328;
@@ -43,10 +47,22 @@ class AdminCommandeController extends AbstractController
         {
             if ($filtre_etat == 0 || $filtre_etat == $commande->getCommande_etat_id())
             {
+                // Vérifie si le materiel a été restitué
+                $class_danger = '';
+                if ($commande->getPret_materiel() && $commande->getCommande_etat_id() == Commande::ETAT_EN_ATTENTE_MATERIEL)
+                {
+                    if ($commande->getDate()->modify('+10 days') < new DateTime('today') )
+                    {
+                        // La période de 10 jours pour réstituer le materiel est passée
+                        $class_danger = ' style="background-color: #ffe7e3;" ';
+                    }
+                }
+
                 $tabCommande[$commande_id]['commande'] = $commande;
                 $tabCommande[$commande_id]['commande_etat'] = $listeEtats[$commande->getCommande_etat_id()];
                 $tabCommande[$commande_id]['utilisateur'] = $listeUtilisateurs[$commande->getUtilisateur_id()];
                 $tabCommande[$commande_id]['menu'] = $listeMenus[$commande->getMenu_id()];
+                $tabCommande[$commande_id]['class_danger'] = $class_danger;
             }
         }
 
@@ -62,6 +78,8 @@ class AdminCommandeController extends AbstractController
         UserRepository $userRepository,
         MenuRepository $menuRepository,
         GeneriqueRepository $generiqueRepository,
+        MailerInterface $mailer,
+        HttpClientInterface $httpClient,
         Request $request
     ): Response
     {
@@ -89,6 +107,7 @@ class AdminCommandeController extends AbstractController
                 $utilisateur->getCommune(),
                 $utilisateur->getLatitude(),
                 $utilisateur->getLongitude(),
+                $request->request->get('pret_materiel', 0),
                 $request->request->get('quantite', 0),
                 $request->request->get('total_ttc', 0),
                 $request->request->get('remise', 0),
@@ -105,6 +124,40 @@ class AdminCommandeController extends AbstractController
                 $mode = "modifiée";
             }
 
+            // Si ETAT_EN_ATTENTE_MATERIEL, on envoi un email au client
+            if ($commande->getCommande_etat_id() == Commande::ETAT_EN_ATTENTE_MATERIEL)
+            {
+                $lienContact = $this->generateUrl('contact', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $email = (new Email())
+                    ->from('no-reply@vite-et-gourmand.fr')
+                    ->to($utilisateur->getEmail())
+                    ->subject('Vite & Gourmand - Confirmation de votre commande')
+                    ->html("
+                            <p>
+                                Bonjour {$utilisateur->getPrenom()},
+                                <br><br>
+                                Votre commande n°" . $commande->getNumero() . " a bien été livrée.
+                                <br><br>
+                                Du matériel de prêt vous a été fourni pour cette commande.
+                                <br>
+                                Merci de nous le restituer dans un délai de 10 jours ouvrés.
+                                <br>
+                                <span style='color: red'>Si vous dépassez ce délai, vous devrez vous acquitter de <b>600 €</b> de frais.</span>
+                                <br><br>
+                                Si vous avez la moindre question, notre équipe reste à votre disposition via le formulaire de contact :
+                                <a href='{$lienContact}'>Formulaire de contact</a>
+                                <br>
+                                Nous vous remercions pour votre confiance.
+                                <br>
+                                Cordialement,<br>
+                                L’équipe <b>Vite & Gourmand</b>
+                            </p>
+                        "
+                    );
+
+                $mailer->send($email);
+            }
+
             if (is_int($retour))
             {
                 $id = $retour;
@@ -116,6 +169,26 @@ class AdminCommandeController extends AbstractController
             }
 
             return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+        }
+
+        // Calcule des frais de livraison
+        $distance_km = 0;
+        $tarif_livraison = 5;
+        $utilisateur = $this->getUser();
+
+        if (!empty($utilisateur->getLatitude()))
+        {
+            $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+
+            if (!is_float($distance_km))
+            {
+                $data = json_decode($distance_km->getContent(), true);
+
+                $this->addFlash('danger', $data['erreur'].$data['message']);
+                return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+            }
+
+            $tarif_livraison += round($distance_km * 0.59, 2);
         }
 
         $commande = $commandeRepository->findById($id);
@@ -130,6 +203,8 @@ class AdminCommandeController extends AbstractController
             'tabUtilisateur' => $tabUtilisateur,
             'tabMenu' => $tabMenu,
             'tabCommandeEtat' => $tabCommandeEtat,
+            'distance_km' => $distance_km,
+            'tarif_livraison' => $tarif_livraison,
         ]);
     }
 
