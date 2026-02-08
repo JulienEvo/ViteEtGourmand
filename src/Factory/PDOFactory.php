@@ -8,33 +8,15 @@ class PDOFactory
 {
     public static function create(): PDO
     {
-        /*
-        $parts = parse_url($url);
-
-        $host = $parts['host'] ?? '127.0.0.1';
-        $port = $parts['port'] ?? 3306;
-        $db   = ltrim($parts['dbname'] ?? 'vite_et_gourmand', '/');
-
-        $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $host, $port, $db);
-
-        try {
-            return new PDO($dsn, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,]);
-        } catch (\PDOException $e) {
-            throw new \RuntimeException(
-                'Connexion BDD impossible : ' . $e->getMessage()
-            );
-        }
-        */
-
         $url = $_ENV['DATABASE_URL'];
 
         $parts = parse_url($url);
 
         $host = $parts['host'];
         $port = $parts['port'] ?? 3306;
-        $dbname = ltrim($parts['path'], '/'); // enlève le slash
-        $user = $parts['user'];
-        $pass = $parts['pass'];
+        $dbname = ltrim($parts['path'], '/');
+        $user = $_ENV['DATABASE_USER']; //$parts['user'];
+        $pass = $_ENV['DATABASE_PASSWORD']; //$parts['pass'];
 
         try {
             return new PDO(
@@ -43,7 +25,7 @@ class PDOFactory
                 $pass,
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
             );
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             throw new \RuntimeException(
                 'Connexion BDD impossible : '.$e->getMessage()
             );

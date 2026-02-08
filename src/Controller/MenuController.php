@@ -46,7 +46,6 @@ class MenuController extends AbstractController
     #[Route('/{id}/edit', name: 'edit')]
     public function edit(
         int $id,
-        Request $request,
         MenuRepository $menuRepository,
         PlatRepository $platRepository,
         GeneriqueRepository $generiqueRepository,
