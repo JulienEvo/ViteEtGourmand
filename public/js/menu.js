@@ -23,7 +23,7 @@ document.getElementById('reset-filters').addEventListener('click', () => {
 
     form.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {input.value = '';});
     form.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
-    form.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+    form.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
 
     fetch(form.action, {
         headers: { 'X-Requested-With': 'XMLHttpRequest' }

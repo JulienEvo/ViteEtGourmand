@@ -25,24 +25,31 @@ class MenuRepository
         $this->platRepository = $platRepository;
     }
 
-    public function insert(array $menu): bool
+    public function insert(Menu $menu): false|int
     {
         $sql = "INSERT INTO menu (libelle, description, conditions, quantite_min, tarif_unitaire, quantite_disponible, pret_materiel, actif)
                 VALUES (:libelle, :description, :conditions, :quantite_min, :tarif_unitaire, :quantite_disponible, :pret_materiel, :actif)";
 
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute([
-            ':libelle' => $menu['libelle'],
-            ':description' => $menu['description'],
-            ':conditions' => $menu['conditions'],
-            ':theme' => $menu['theme'],
-            ':quantite_min' => $menu['quantite_min'],
-            ':tarif_unitaire' => $menu['tarif_unitaire'],
-            ':quantite_disponible' => $menu['quantite_disponible'],
-            ':pret_materiel' => $menu['pret_materiel'],
-            ':actif' => $menu['actif'] ?? 1
+        $retour = $stmt->execute([
+            ':libelle' => $menu->getLibelle(),
+            ':description' => $menu->getDescription(),
+            ':conditions' => $menu->getConditions(),
+            ':quantite_min' => $menu->getQuantite_min(),
+            ':tarif_unitaire' => $menu->getTarif_unitaire(),
+            ':quantite_disponible' => $menu->getQuantite_disponible(),
+            ':pret_materiel' => $menu->getPret_materiel(),
+            ':actif' => ($menu->isActif()) ?? 1
         ]);
+
+        if ($retour)
+        {
+            // INSERT réussi : on renvoie l'ID du menu
+            $retour = $this->pdo->lastInsertId();
+        }
+
+        return $retour;
     }
 
     public function update(int $id, Menu $menu): bool
@@ -226,7 +233,7 @@ class MenuRepository
         }
 
         if (!empty($filters['disponible'])) {
-            $sql .= " AND menu.quantite_disponible > 0";
+            $sql .= " AND menu.actif = 1 AND menu.quantite_disponible > 0";
         }
 
         $sql .= " GROUP BY menu.id";

@@ -38,7 +38,7 @@ INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Curry de
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Lasagnes aux légumes', '', 4, 'images/plats/Lasagnes_legumes.jpg', 1);
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Tofu croustillant sauce coco, arachides et érable', '', 4, 'images/plats/Tofu_croustillant_sauce_coco_arachides_érable.jpg', 1);
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Risotto aux asperges', '', 4, 'images/plats/Risotto_asperges.jpg', 1);
-    INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Wok de légumes sautés', '', 4, 'images/plats/Wok_legumes_sautes.jpg', 1);
+INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Wok de légumes sautés', '', 4, 'images/plats/Wok_legumes_sautes.jpg', 1);
 
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Tiramisu', '', 5, 'images/plats/Tiramisu.jpg', 1);
 INSERT INTO plat (libelle, description, type_id, image, actif) VALUES ('Mousse au chocolat', '', 5, 'images/plats/Mousse_chocolat.jpg', 1);

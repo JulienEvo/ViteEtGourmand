@@ -31,6 +31,7 @@ class Commande
     private int $pret_materiel;
     private int $quantite;
     private ?float $remise;
+    private ?float $total_livraison;
     private ?float $total_ttc;
     private ?DateTime $created_at;
 
@@ -48,6 +49,7 @@ class Commande
         ?float $longitude = 0,
         int $pret_materiel = 0,
         ?float $quantite = 0,
+        ?float $total_livraison = null,
         ?float $total_ttc = null,
         ?float $remise = null,
         ?DateTime $created_at = new DateTime(),
@@ -66,6 +68,7 @@ class Commande
         $this->setLongitude($longitude);
         $this->setPret_materiel($pret_materiel);
         $this->setQuantite($quantite);
+        $this->setTotal_livraison($total_livraison);
         $this->setTotal_ttc($total_ttc);
         $this->setRemise($remise);
         $this->setCreated_at($created_at);
@@ -126,6 +129,10 @@ class Commande
     public function getQuantite(): int
     {
         return $this->quantite;
+    }
+    public function getTotal_livraison(): ?float
+    {
+        return $this->total_livraison;
     }
     public function getTotal_ttc(): ?float
     {
@@ -191,6 +198,10 @@ class Commande
     public function setRemise(?float $remise): void
     {
         $this->remise = $remise;
+    }
+    public function setTotal_livraison(?float $total_livraison): void
+    {
+        $this->total_livraison = $total_livraison;
     }
     public function setTotal_ttc(?float $total_ttc): void
     {

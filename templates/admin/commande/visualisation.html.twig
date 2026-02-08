@@ -64,23 +64,29 @@
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
                     <label class="form-label">
-                        Tarif livraison&nbsp;
+                        Frais de livraison&nbsp;
                         {% if distance_km > 0 %}
                             <br><span class="small fw-normal">({{ distance_km }} km)</span>
                         {% endif %}
                     </label>
-                    <p>{{ tarif_livraison }} €</p>
+                    <p>{{ commande.total_livraison }} €</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
                     <label class="form-label">Total TTC</label>
-                    <p class="fw-bold">{{ commande.total_ttc + tarif_livraison }} €</p>
+                    <p class="fw-bold">{{ commande.total_ttc + commande.total_livraison }} €</p>
                 </div>
             </div>
         </div>
     </div>
 
+    {% if is_granted('ROLE_USER') %}
+        {% set retour = path('admin_commande_historique', {id: app.user.id}) %}
+    {% else %}
+        {% set retour = path('admin_commande_index') %}
+    {% endif %}
+
     <div class="d-flex justify-content-between">
-        <a href="{{ path('admin_commande_index') }}" class="btn btn-secondary">
+        <a href="{{ retour }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
         </a>
     </div>

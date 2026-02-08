@@ -70,10 +70,24 @@ class AdminMenuController extends AbstractController
                         implode($menu_regime),
                     );
 
-                    // Met à jour le menu
-                    if (!$menuRepository->update($id, $menu))
+                    // Enregistre le menu
+                    if ($id == 0)
                     {
-                        $erreurs .= "Erreur lors de la mise à jour du menu \n";
+                        $new_id = $menuRepository->insert($menu);
+                        if (!$new_id)
+                        {
+                            $erreurs .= "Erreur lors de l'ajout du menu \n";
+                        }
+                        else{
+                            $id = $new_id;
+                        }
+                    }
+                    else
+                    {
+                        if (!$menuRepository->update($id, $menu))
+                        {
+                            $erreurs .= "Erreur lors de la mise à jour du menu \n";
+                        }
                     }
 
                     // Met à jour les thèmes du menu
@@ -137,9 +151,13 @@ class AdminMenuController extends AbstractController
 
         // Récupère le menu par son ID
         $menu = $menuRepository->findById($id);
+        $menu_id = (isset($menu)) ? $menu->getId():0;
+
+        // Récupère les plats du menu
+        $plats = $platRepository->findByMenuId($menu_id);
 
         // Récupère les images des plats du menu
-        $tab_images = $platRepository->findImagesByMenuId($menu->getId());
+        $tab_images = $platRepository->findImagesByMenuId($menu_id);
 
         // Récupère la liste de thèmes => MODIF : ajouter champs Actif
         $tab_themes = $generiqueRepository->findAll('theme');
@@ -147,8 +165,6 @@ class AdminMenuController extends AbstractController
         // Récupère la liste de régime => MODIF : ajouter champs Actif
         $tab_regimes = $generiqueRepository->findAll('regime');
 
-        // Récupère les plats du menu
-        $plats = $platRepository->findByMenuId($menu->getId());
 
         // Affiche le menu
         return $this->render('admin/menu/edit.html.twig', [

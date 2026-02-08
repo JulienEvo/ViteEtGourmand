@@ -21,6 +21,9 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use const App\Controller\Admin\BORDEAUX_LAT;
+use const App\Controller\Admin\BORDEAUX_LON;
 
 #[Route('/commande', name: 'commande_')]
 class CommandeController extends AbstractController
@@ -50,6 +53,8 @@ class CommandeController extends AbstractController
         $menus = $menuRepository->findAll(true);
         $plat_types = $platTypeRepository->findAll();
 
+        // MODIF : Afficher Frais de livraison
+
         return $this->render('commande/ajout.html.twig', [
             'utilisateur' => $utilisateur,
             'tabMenu' => $menus,
@@ -57,17 +62,18 @@ class CommandeController extends AbstractController
             'plats_menu' => $plats_menu,
             'plat_types' => $plat_types,
             'quantite' => $quantite,
+            'total_livraison' => 165,
         ]);
     }
 
     #[Route('/{commande_id}/validation', name: 'validation')]
     public function validation(
-        int $commande_id,
         CommandeRepository $commandeRepository,
         UserRepository $userRepository,
         MenuRepository $menuRepository,
         HoraireRepository $horaireRepository,
         MailerInterface $mailer,
+        HttpClientInterface $httpClient,
         Request $request):
     Response
     {
@@ -81,7 +87,6 @@ class CommandeController extends AbstractController
         $info_suppl = $request->request->get('info_suppl');
 
         $menu_id = $request->request->get('menu_id');
-        $pret_mat = $request->request->get('pret_materiel');
         $quantite = $request->request->get('quantite');
         $remise = $request->request->get('remise');
         $total_ttc = $request->request->get('total_ttc');
@@ -148,6 +153,30 @@ class CommandeController extends AbstractController
             }
         }
 
+        // Calcule des frais de livraison
+        $total_livraison = 5;
+        $utilisateur = $this->getUser();
+
+        if (!empty($utilisateur->getLatitude()))
+        {
+            $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+
+            if (!is_float($distance_km))
+            {
+                $data = json_decode($distance_km->getContent(), true);
+
+                $this->addFlash('danger', $data['erreur'].$data['message']);
+                return $this->redirectToRoute('commande_ajout', [
+                    'menu_id' => $menu_id,
+                    'quantite' => $quantite_min,
+                    'commande_date' => $commande_date,
+                    'commande_heure' => $commande_heure,
+                ]);
+            }
+
+            $total_livraison += round($distance_km * 0.59, 2);
+        }
+
 
         // Ajouter la commande en bdd
         $numero = $commandeRepository->getNumero();
@@ -163,8 +192,9 @@ class CommandeController extends AbstractController
             $utilisateur->getCommune(),
             $utilisateur->getLatitude(),
             $utilisateur->getLongitude(),
-            $pret_mat,
+            $menu->getPret_materiel(),
             $quantite,
+            $total_livraison,
             $total_ttc,
             $remise,
             new DateTime()
@@ -223,7 +253,7 @@ class CommandeController extends AbstractController
         $mailer->send($email);
 
         $this->addFlash('success', "Commande validée avec succès");
-        return $this->redirectToRoute('commande_historique', [
+        return $this->redirectToRoute('admin_commande_visualisation', [
             'id' => $commande_id,
         ]);
     }
@@ -263,6 +293,39 @@ class CommandeController extends AbstractController
             'conditions' => $menu->getConditions(),
             'composition_menu' => $this->renderView('commande/_composition_menu.html.twig', ['plats_menu' => $plats_menu, 'plat_types' => $plat_types]),
          ]);
+    }
+
+    public function distanceKm($lat1, $lon1, $lat2, $lon2, HttpClientInterface $client): float|JsonResponse
+    {
+        try {
+            $response = $client->request(
+                'POST',
+                'https://api.openrouteservice.org/v2/directions/driving-car',
+                [
+                    'headers' => [
+                        'Authorization' => $_ENV['ORS_API_KEY'],
+                    ],
+                    'json' => [
+                        'coordinates' => [
+                            [$lon1, $lat1],
+                            [$lon2, $lat2],
+                        ],
+                    ],
+                    'timeout' => 10,
+                ]
+            );
+
+            $data = $response->toArray();
+
+            // Retourne la distance Km
+            return $data['routes'][0]['segments'][0]['distance'] / 1000;
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'erreur' => 'Erreur lors de l’appel à ORS : ',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

@@ -26,7 +26,7 @@ class MenuController extends AbstractController
             'tarif_min' => $request->query->get('tarif_min'),
             'tarif_max' => $request->query->get('tarif_max'),
             'pers_min' => $request->query->get('pers_min'),
-            'disponible' => $request->query->get('disponible'),
+            'disponible' => $request->query->get('disponible') ?? 1,
         ];
 
         $themes = $generiqueRepository->findAll('theme');
@@ -92,7 +92,7 @@ class MenuController extends AbstractController
             'tarif_min' => $request->query->get('tarif_min'),
             'tarif_max' => $request->query->get('tarif_max'),
             'pers_min' => $request->query->get('pers_min'),
-            'disponible' => $request->query->getBoolean('disponible'),
+            'disponible' => $request->query->getBoolean('disponible', true),
         ];
 
         $menus = $menuRepository->findByFilters($filters);

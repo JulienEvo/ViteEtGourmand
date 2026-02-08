@@ -81,10 +81,10 @@
                             <label for="pret_materiel_1" class="form-label">Prêt materiel</label>
                             <div>
                                 <span>Oui :&nbsp;</span>
-                                <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (menu.pret_materiel == 1) %} {{ 'checked' }} {% endif %}>
+                                <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (menu and menu.pret_materiel == 1) %} {{ 'checked' }} {% endif %}>
 
                                 <span>Non :&nbsp;</span>
-                                <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (menu.pret_materiel != 1) %} {{ 'checked' }} {% endif %}>
+                                <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (not menu or menu.pret_materiel != 1) %} {{ 'checked' }} {% endif %}>
                             </div>
                         </div>
                         <br><br>
@@ -92,10 +92,10 @@
                             <label for="actif_1" class="form-label">Actif</label>
                             <div>
                                 <span>Oui :&nbsp;</span>
-                                <input type="radio" name="actif" id="actif_1" value="1" {% if (menu.actif == 1) %} {{ 'checked' }} {% endif %}>
+                                <input type="radio" name="actif" id="actif_1" value="1" {% if (not menu or menu.actif == 1) %} {{ 'checked' }} {% endif %}>
 
                                 <span>Non :&nbsp;</span>
-                                <input type="radio" name="actif" id="actif_0" value="0" {% if (menu.actif != 1) %} {{ 'checked' }} {% endif %}>
+                                <input type="radio" name="actif" id="actif_0" value="0" {% if (menu and menu.actif != 1) %} {{ 'checked' }} {% endif %}>
                             </div>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
         <div class="card mb-3">
             <div class="card-header">
                 <h4>Composition&emsp;
-                    {% if menu.id > 0 %}
+                    {% if menu and menu.id > 0 %}
                         <a href="{{ path('admin_plat_index', {menu_id: menu.id, comeFrom: 'menu'}) }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un plat
                         </a>

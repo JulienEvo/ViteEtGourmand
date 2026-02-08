@@ -24,13 +24,19 @@
             </div>
             <div class="card-body">
                 <div class="row col-12">
+                    {% set tarif_unitaire = 0 %}
+                    {% set selected = '' %}
 
                     <div class="mb-3 col-12 col-lg-4">
                         <label for="menu_id" class="form-label">Menu</label>
                         <select class="form-select" name="menu_id" id="menu_id" required>
                             <option value="">Choix</option>
                             {% for menu in tabMenu %}
-                                <option value="{{ menu.id }}" {% if (menu.id == (commande.menu_id ?? 0)) %}selected{% endif %}>
+                                {% if (menu.id == (commande.menu_id ?? 0)) %}
+                                    {% set selected = 'selected' %}
+                                    {% set tarif_unitaire = menu.tarif_unitaire %}
+                                {% endif %}
+                                <option value="{{ menu.id }}" {{ selected }}>
                                     {{ menu.libelle ~ ' (' ~ menu.tarif_unitaire ~ ' € par pers.)' }}
                                 </option>
                             {% endfor %}
@@ -104,6 +110,7 @@
                             <thead>
                             <tr>
                                 <th>Quantité</th>
+                                <th>Total menu</th>
                                 <th>Remise</th>
                                 <th>
                                     Tarif livraison
@@ -117,9 +124,10 @@
                             <tbody>
                             <tr>
                                 <td class="text-end">{{ commande.quantite ?? 0 }}</td>
+                                <td class="text-end">{{ (commande.quantite ?? 0) * (tarif_unitaire) }} €</td>
                                 <td class="text-end">{{ commande.remise ?? '' }} %</td>
-                                <td class="text-end">{{ tarif_livraison }} €</td>
-                                <td class="text-end">{{ commande.total_ttc + tarif_livraison ?? 0 }} €</td>
+                                <td class="text-end">{{ total_livraison }} €</td>
+                                <td class="text-end">{{ commande.total_ttc + total_livraison ?? 0 }} €</td>
                             </tr>
                             </tbody>
                         </table>

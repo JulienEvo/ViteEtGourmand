@@ -18,8 +18,8 @@ class CommandeRepository
 
     public function insert(Commande $commande): int|array
     {
-        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, pret_materiel, quantite, remise, total_ttc)
-                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :pret_materiel, :quantite, :remise, :total_ttc)";
+        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, pret_materiel, quantite, remise, total_livraison, total_ttc)
+                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :pret_materiel, :quantite, :remise, :total_livraison, :total_ttc)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
@@ -35,6 +35,7 @@ class CommandeRepository
             'longitude' => $commande->getLongitude(),
             'pret_materiel' => $commande->getPret_materiel(),
             'quantite' => $commande->getQuantite(),
+            'total_livraison' => $commande->getTotal_livraison(),
             'total_ttc' => $commande->getTotal_ttc(),
             'remise' => $commande->getRemise(),
         ]))
@@ -74,11 +75,11 @@ class CommandeRepository
     public function delete(int $commande_id): bool|array
     {
         $sql = "UPDATE commande
-                SET commande_etat_id = 8
+                SET commande_etat_id = :commande_etat_id
                 WHERE id = :commande_id";
         $stmt = $this->pdo->prepare($sql);
 
-        if ($stmt->execute([':commande_id' => $commande_id]))
+        if ($stmt->execute([':commande_id' => $commande_id, ':commande_etat_id' => Commande::ETAT_SUPPRIMEE]))
         {
             return true;
         }
@@ -123,6 +124,7 @@ class CommandeRepository
                 $row->longitude,
                 $row->pret_materiel,
                 $row->quantite,
+                $row->total_livraison,
                 $row->total_ttc,
                 $row->remise,
                 new DateTime($row->created_at),
@@ -161,6 +163,7 @@ class CommandeRepository
                 $row->longitude,
                 $row->pret_materiel,
                 $row->quantite,
+                $row->total_livraison,
                 $row->total_ttc,
                 $row->remise,
                 new DateTime($row->created_at)

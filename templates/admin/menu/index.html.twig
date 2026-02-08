@@ -21,6 +21,7 @@
             <th>Min personne</th>
             <th>Tarif unitaire</th>
             <th>Quantité disponible</th>
+            <th>Prêt matériel</th>
             <th>Actif</th>
             <th>Actions</th>
         </tr>
@@ -36,6 +37,7 @@
                     <td>{{ menu.quantite_min }}</td>
                     <td>{{ menu.tarif_unitaire }} €</td>
                     <td>{{ menu.quantite_disponible }}</td>
+                    <td>{{ (menu.pret_materiel) ? 'Oui':'Non' }}</td>
                     <td>{{ (menu.actif) ? 'Oui':'Non' }}</td>
                     <td>
                         <a href="{{ path('admin_menu_edit', {id: menu.id}) }}" class="btn btn-sm btn-warning">

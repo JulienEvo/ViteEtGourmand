@@ -21,7 +21,7 @@ class MenuThemeRepository
         foreach ($tab_theme as $theme_id)
         {
             $sql = "INSERT INTO menu_theme (menu_id, theme_id)
-                VALUES (:menu_id, :theme_id)";
+                    VALUES (:menu_id, :theme_id)";
             $stmt = $this->pdo->prepare($sql);
 
             $res = $stmt->execute([

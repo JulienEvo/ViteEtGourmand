@@ -109,6 +109,7 @@ class AdminCommandeController extends AbstractController
                 $utilisateur->getLongitude(),
                 $request->request->get('pret_materiel', 0),
                 $request->request->get('quantite', 0),
+                $request->request->get('total_livraison', 0),
                 $request->request->get('total_ttc', 0),
                 $request->request->get('remise', 0),
             );
@@ -173,7 +174,7 @@ class AdminCommandeController extends AbstractController
 
         // Calcule des frais de livraison
         $distance_km = 0;
-        $tarif_livraison = 5;
+        $total_livraison = 5;
         $utilisateur = $this->getUser();
 
         if (!empty($utilisateur->getLatitude()))
@@ -188,7 +189,7 @@ class AdminCommandeController extends AbstractController
                 return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
             }
 
-            $tarif_livraison += round($distance_km * 0.59, 2);
+            $total_livraison += round($distance_km * 0.59, 2);
         }
 
         $commande = $commandeRepository->findById($id);
@@ -204,7 +205,7 @@ class AdminCommandeController extends AbstractController
             'tabMenu' => $tabMenu,
             'tabCommandeEtat' => $tabCommandeEtat,
             'distance_km' => $distance_km,
-            'tarif_livraison' => $tarif_livraison,
+            'total_livraison' => $total_livraison,
         ]);
     }
 
@@ -287,34 +288,37 @@ class AdminCommandeController extends AbstractController
         {
             $total_ttc -= ($total_ttc * $commande->getRemise() / 100);
         }
+        $commande->setTotal_ttc(round($total_ttc, 2));
 
         // Calcule des frais de livraison
         $distance_km = 0;
-        $tarif_livraison = 5;
+        $total_livraison = 5;
         $utilisateur = $this->getUser();
-
-        if (!empty($utilisateur->getLatitude()))
+        if (empty($commande->getTotal_livraison()))
         {
-            $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
 
-            if (!is_float($distance_km))
+            if (!empty($utilisateur->getLatitude()))
             {
-                $data = json_decode($distance_km->getContent(), true);
+                $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
 
-                $this->addFlash('danger', $data['erreur'].$data['message']);
-                return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+                if (!is_float($distance_km))
+                {
+                    $data = json_decode($distance_km->getContent(), true);
+
+                    $this->addFlash('danger', $data['erreur'].$data['message']);
+                    return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+                }
+
+                $total_livraison += round($distance_km * 0.59, 2);
             }
-
-            $tarif_livraison += round($distance_km * 0.59, 2);
+            $commande->setTotal_livraison(round($total_livraison, 2));
         }
 
-        $commande->setTotal_ttc(round($total_ttc, 2));
 
         return $this->render('admin/commande/visualisation.html.twig', [
             'commande' => $commande,
             'menu' => $menu,
             'tabCommande_etat' => $tabCommande_etat,
-            'tarif_livraison' => $tarif_livraison,
             'distance_km' => round($distance_km, 2),
         ]);
     }

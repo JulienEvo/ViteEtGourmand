@@ -24,7 +24,7 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-11">
 
-                <form method="post" id="form_commande" action="{{ path('commande_validation', {commande_id: comande_id ?? 0}) }}">
+            <form method="post" id="form_commande" action="{{ path('commande_validation', {commande_id: comande_id ?? 0}) }}">
                 <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ user.getUserId() }}">
 
                 <div class="card mb-3">
@@ -68,7 +68,7 @@
                             </div>
                             <div class="col-12 col-lg-2">
                                 <label for="utilisateur_telephone" class="form-label">Téléphone</label>
-                                <input type="text" class="form-control" name="utilisateur_telephone" id="utilisateur_telephone" value="{{ utilisateur.telephone }}" readonly>
+                                <input type="text" class="form-control" name="utilisateur_telephone" id="utilisateur_telephone" value="{{ utilisateur.telephone|formatTelFr }}" readonly>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <label for="info_suppl" class="form-label">Information supplémentaire</label>
@@ -101,7 +101,7 @@
                     <div class="card-body">
                         <p class="text-center text-danger d-none" id="p_pers_remise">Une remise de 10% sera appliquée pour une commande à partir de <span id="nb_pers_remise">0</span> personnes</p>
                         <div class="row col-12">
-                            <div class="col-12 col-lg-6">
+                            <div class="col-12 col-lg-4">
                                 <label for="menu_id" class="form-label">Menu</label>
                                 <select class="form-select" name="menu_id" id="menu_id" onchange="loadMenu(this.value)">
                                     <option value="">Choix</option>
@@ -128,8 +128,12 @@
                                 <input type="number" class="form-control" step="0.01" min="0" max="100" name="remise" id="remise" value="{{ remise ?? 0 }}" readonly>
                             </div>
                             <div class="col-12 col-lg-2">
+                                <label for="total_livraison" class="form-label">Frais de livraison</label>
+                                <input type="number" class="form-control" step="0.01" min="0" max="100" name="total_livraison" id="total_livraison" value="{{ total_livraison ?? 0 }}" readonly>
+                            </div>
+                            <div class="col-12 col-lg-2">
                                 {% if menu %}
-                                    {% set total_ttc = (menu.tarif_unitaire * quantite - (menu.tarif_unitaire * quantite * remise ?? 0) / 100) %}
+                                    {% set total_ttc = (menu.tarif_unitaire * quantite %}
                                 {% else %}
                                     {% set total_ttc = 0 %}
                                 {% endif %}
@@ -137,6 +141,7 @@
                                 <label for="total_ttc" class="form-label">Total TTC</label>
                                 <input type="number" class="form-control" step="0.01" min="0" max="100" name="total_ttc" id="total_ttc" value="{{ total_ttc }}" readonly>
                             </div>
+
                         </div>
                         <div class="row col-12 mt-3">
                             <label for="description" class="form-label">Description</label>
@@ -193,8 +198,6 @@
 
                     if (document.getElementById('quantite').value > data.quantite_disponible) {
                         document.getElementById('quantite').value = data.quantite_disponible;
-                    } else {
-                        document.getElementById('quantite').value = data.quantite_min;
                     }
 
                     document.getElementById('tarif_unitaire').value = data.tarif_unitaire;
