@@ -3,12 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Plat;
-use App\Repository\AllergeneRepository;
 use App\Repository\GeneriqueRepository;
 use App\Repository\PlatAllergeneRepository;
 use App\Repository\PlatRepository;
-use App\Repository\PlatTypeRepository;
-use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +21,9 @@ class AdminPlatController extends AbstractController
     {
         $menu_id = $request->query->get('menu_id', 0);
         $comeFrom = $request->query->get('comeFrom', 'zzz');
+        $filtre_type = $request->query->get('filtre_type', '');
 
-        $tabPlat = $platRepository->findAll();
+        $tabPlat = $platRepository->findAll($filtre_type);
 
         return $this->render('admin/plat/index.html.twig', [
             'tabPlat' => $tabPlat,
@@ -38,7 +36,7 @@ class AdminPlatController extends AbstractController
     public function edit(
         int $id,
         PlatRepository $platRepository,
-        PlatTypeRepository $platTypeRepository,
+        GeneriqueRepository $platTypeRepository,
         PlatAllergeneRepository $platAllergeneRepository,
         GeneriqueRepository $generiqueRepository,
         Request $request,
@@ -148,7 +146,7 @@ class AdminPlatController extends AbstractController
         // Récupère le Plat par son ID
         $plat = $platRepository->findById($id);
 
-        $tab_plat_type = $platTypeRepository->findAll();
+        $tab_plat_type = $platTypeRepository->findAll('plat_type');
         $tab_plat_allergene = $platAllergeneRepository->findAllIdByPlatId($id);
         $tab_allergenes = $generiqueRepository->findAll('allergene');
 

@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Generique;
 use App\Repository\GeneriqueRepository;
 use App\Repository\MenuRepository;
 use App\Repository\PlatRepository;
-use App\Repository\PlatTypeRepository;
-use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,13 +46,13 @@ class MenuController extends AbstractController
         MenuRepository $menuRepository,
         PlatRepository $platRepository,
         GeneriqueRepository $generiqueRepository,
-        PlatTypeRepository $platTypeRepository,
+        GeneriqueRepository $platTypeRepository,
     ): Response
     {
         $menu = $menuRepository->findById($id);
 
         $plats = $platRepository->findByMenuId($id);
-        $plat_types = $platTypeRepository->findAll();
+        $plat_types = $platTypeRepository->findAll('plat_type');
 
         $plats_par_type = [];
         foreach ($plat_types as $type)

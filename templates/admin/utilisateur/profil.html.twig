@@ -61,6 +61,8 @@
                             Adresse
                             {% if utilisateur.latitude and utilisateur.longitude %}
                                 <span class='text-success' style="font-size: smaller">&nbsp;(Géolocalisée)</span>
+                            {% else %}
+                                <span class='text-danger' style="font-size: smaller">&nbsp;(Non géolocalisée)</span>
                             {% endif %}
                         </label>
                         <input type="text" class="form-control" name="adresse" id="adresse" value="{{ utilisateur.adresse ?? '' }}" required>

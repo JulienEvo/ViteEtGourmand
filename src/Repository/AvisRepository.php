@@ -20,16 +20,17 @@ class AvisRepository
         $sql = "INSERT INTO avis
                     (utilisateur_id, commande_id, note, commentaire, valide, created_at)
                 VALUES
-                    (:utilisateur_id, commande_id, :note, :commentaire, :valide, :created)";
+                    (:utilisateur_id, :commande_id, :note, :commentaire, :valide, :created_at)";
         $stmt = $this->pdo->prepare($sql);
 
+        $date = new DateTime();
         return $stmt->execute([
-            'utilisateur_id' => $avis->getUtilisateurId(),
-            'commande_id' => $avis->getCommandeId(),
+            'utilisateur_id' => $avis->getUtilisateur_id(),
+            'commande_id' => $avis->getCommande_id(),
             'note' => $avis->getNote(),
             'commentaire' => $avis->getCommentaire(),
             'valide' => $avis->getValide(),
-            'created' => new DateTime()
+            'created_at' => $date->format('Y-m-d H:i:s')
         ]);
     }
 

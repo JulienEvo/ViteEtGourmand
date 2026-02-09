@@ -9,7 +9,6 @@ use App\Repository\GeneriqueRepository;
 use App\Repository\HoraireRepository;
 use App\Repository\MenuRepository;
 use App\Repository\PlatRepository;
-use App\Repository\PlatTypeRepository;
 use App\Repository\UserRepository;
 use App\Service\FonctionsService;
 use DateTime;
@@ -24,7 +23,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use MongoDB\Client;
-use MongoDB\BSON;
 
 #[Route('/commande', name: 'commande_')]
 class CommandeController extends AbstractController
@@ -33,7 +31,7 @@ class CommandeController extends AbstractController
     public function ajout(
         MenuRepository $menuRepository,
         PlatRepository $platRepository,
-        PlatTypeRepository $platTypeRepository,
+        GeneriqueRepository $platTypeRepository,
         Request $request,
         Security $security
     ): Response
@@ -52,7 +50,7 @@ class CommandeController extends AbstractController
         $plats_menu = $platRepository->findByMenuId($menu_id);
 
         $menus = $menuRepository->findAll(true);
-        $plat_types = $platTypeRepository->findAll();
+        $plat_types = $platTypeRepository->findAll('plat_type');
 
         // MODIF : Afficher Frais de livraison
         $distance_km = 0;
@@ -105,8 +103,8 @@ class CommandeController extends AbstractController
         $commande_heure = $request->request->get('commande_heure');
         $info_suppl = $request->request->get('info_suppl');
 
-        $menu_id = $request->request->get('menu_id');
-        $quantite = $request->request->get('quantite');
+        $menu_id = $request->request->getInt('menu_id');
+        $quantite = $request->request->getInt('quantite');
         $remise = $request->request->get('remise');
         $total_ttc = $request->request->get('total_ttc');
 
@@ -283,8 +281,10 @@ class CommandeController extends AbstractController
             'commande_numero' => $commande->getNumero(),
             'utilisateur_id' => $utilisateur_id,
             'menu_id' => $menu_id,
+            'menu_libelle' => $menu->getLibelle(),
             'quantite' => $quantite,
             'total_menu' => $menu_commande->getTarif_unitaire() * $quantite,
+            'total_ttc' => $commande->getTotal_ttc(),
             'created_at' => $commande->getCreated_at()->format('Y-m-d H:i:s'),
         ]);
 
@@ -310,7 +310,7 @@ class CommandeController extends AbstractController
     }
 
         #[Route('/loadMenu/{id}', name: 'load_menu_ajax', methods: ['GET'])]
-    public function loadMenu(int $id, MenuRepository $menuRepository, PlatRepository $platRepository, PlatTypeRepository $platTypeRepository): JsonResponse
+    public function loadMenu(int $id, MenuRepository $menuRepository, PlatRepository $platRepository, GeneriqueRepository $platTypeRepository): JsonResponse
     {
         $menu = $menuRepository->findById($id);
 
@@ -320,7 +320,7 @@ class CommandeController extends AbstractController
         }
 
         $plats_menu = $platRepository->findByMenuId($menu->getId());
-        $plat_types = $platTypeRepository->findAll();
+        $plat_types = $platTypeRepository->findAll('plat_type');
 
         return new JsonResponse([
             'menu' => $menu,

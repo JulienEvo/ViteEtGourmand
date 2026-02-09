@@ -81,7 +81,13 @@
 
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Avis</h4>
+            <h4>Avis
+                {% if tab_avis|length == 0 %}
+                    <a href="{{ path('admin_avis_edit', {id: 0, utilisateur_id: user.getId(), commande_id: commande.id}) }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un avis
+                    </a>
+                {% endif %}
+            </h4>
         </div>
         <div class="card-body">
             <div class="row g-3">

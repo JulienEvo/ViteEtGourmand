@@ -10,7 +10,7 @@
         {% set option = 'disabled' %}
     {% else %}
         {% set titre = 'Ajouter un avis' %}
-        {% set action_path = path('admin_avis_edit', {id: 0}) %}
+        {% set action_path = path('admin_avis_edit', {id: 0, comeFrom: 'historique'}) %}
         {% set option = 'required' %}
     {% endif %}
 
@@ -28,25 +28,27 @@
 
                     <div class="mb-3 col-12 col-lg-4">
                         <label for="utilisateur_id" class="form-label">Utilisateur</label>
-                        <select class="form-select" name="utilisateur_id" id="utilisateur_id" {{ option }}>
+                        <select class="form-select" onchange="setUtilisateurValue(this.value)" disabled>
                             <option value="">Choix</option>
                             {% for utilisateur in tab_utilisateur %}
-                                <option value="{{ utilisateur.getId() }}" {% if (utilisateur.getId() == (avis.getUtilisateur_id() ?? 0)) %}selected{% endif %}>
+                                <option value="{{ utilisateur.getId() }}" {% if (utilisateur.getId() == (avis.getUtilisateur_id() ?? utilisateur_id)) %}selected{% endif %}>
                                     {{ utilisateur.nom ~ ' ' ~ utilisateur.prenom ~ ' (' ~ utilisateur.commune ~ ' ' ~ utilisateur.code_postal ~ ')' }}
                                 </option>
                             {% endfor %}
                         </select>
+                        <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="">
                     </div>
                     <div class="mb-3 col-12 col-lg-4">
                         <label for="commande_id" class="form-label">Commande</label>
-                        <select class="form-select" name="commande_id" id="commande_id" {{ option }}>
+                        <select class="form-select" onchange="setCommandeValue(this.value)" disabled>
                             <option value="">Choix</option>
                             {% for commande in tab_commande %}
-                                <option value="{{ commande.id }}" {% if (commande.id == (avis.getCommande_id() ?? 0)) %}selected{% endif %}>
+                                <option value="{{ commande.id }}" {% if (commande.id == (avis.getCommande_id() ?? commande_id)) %}selected{% endif %}>
                                     {{ commande.numero }}
                                 </option>
                             {% endfor %}
                         </select>
+                        <input type="hidden" name="commande_id" id="commande_id" value="">
                     </div>
                     <div class="mb-3 col-12 col-lg-2">
                         <label for="note" class="form-label">Note</label>
@@ -60,7 +62,7 @@
                     </div>
                     <div class="mb-3 col-12 col-lg-2">
                         <label for="valide" class="form-label">État</label>
-                        <select class="form-select" name="valide" id="valide" required>
+                        <select class="form-select" name="valide" id="valide" {% if utilisateur_id > 0 %}disabled{% else %}required{% endif %}>
                             <option value="" {% if avis.valide ?? '' == '' %}selected{% endif %}>En attente</option>
                             <option value="1" {% if avis.valide ?? '' == 1 %}selected{% endif %}>Validé</option>
                             <option value="0" {% if avis.valide ?? '' == 0 %}selected{% endif %}>Refusé</option>
@@ -84,5 +86,28 @@
             </button>
         </div>
     </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            {% if utilisateur_id %}
+                setUtilisateurValue({{ utilisateur_id }})
+            {% endif %}
+
+            {% if commande_id %}
+            setCommandeValue({{ commande_id }})
+            {% endif %}
+        });
+
+        function setUtilisateurValue(value)
+        {
+            document.getElementById('utilisateur_id').value = value;
+        }
+
+        function setCommandeValue(value)
+        {
+            document.getElementById('commande_id').value = value;
+        }
+
+    </script>
 {% endblock %}
 

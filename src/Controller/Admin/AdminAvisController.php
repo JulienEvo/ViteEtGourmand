@@ -5,8 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Avis;
 use App\Repository\AvisRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\MenuRepository;
 use App\Repository\UserRepository;
 use App\Service\FonctionsService;
+use MongoDB\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,12 +44,16 @@ class AdminAvisController extends AbstractController
         AvisRepository $avisRepository,
         UserRepository $userRepository,
         CommandeRepository $commandeRepository,
+        MenuRepository $menuRepository,
         Request $request,
     ): Response
     {
         $avis = $avisRepository->findById($id);
         $tab_utilisateur = $userRepository->findAll();
         $tab_commande = $commandeRepository->findAll();
+        $utilisateur_id = $request->query->get('utilisateur_id', 0);
+        $commande_id = $request->query->get('commande_id', 0);
+        $comeFrom = $request->query->get('comeFrom', '');
 
         if ($request->isMethod('POST'))
         {
@@ -84,12 +90,41 @@ class AdminAvisController extends AbstractController
                     $this->addFlash('danger', "Échec lors de la modification de l'avis");
                 }
             }
+
+            // Enregistre dans MongoDB pour les stats
+            $client = new Client($_ENV['MONGODB_URL']);
+            $mongo_db = $client->vite_et_gourmand_stats;
+
+            $stats_commande = $mongo_db->avis;
+
+            $created_at = $avis->getCreated_at();
+            $menu = $menuRepository->findByCommandeId($commande_id);
+
+            $stats_commande->insertOne([
+                'id' => $avis->getId(),
+                'utilisateur_id' => $avis->getUtilisateur_id(),
+                'commande_id' => $avis->getCommande_id(),
+                'note' => $avis->getNote(),
+                'commentaire' => $avis->getCommentaire(),
+                'valide' => $avis->getValide(),
+                'created_at' => $created_at->format('Y-m-d H:i:s'),
+                'menu_libelle' => $menu->getLibelle(),
+            ]);
+
+            if ($comeFrom == 'historique')
+            {
+                // on vient de l'historique de commande d'un USER : On retourne à l'historique
+                return $this->redirectToRoute('admin_commande_visualisation', ['id' => $commande_id]);
+            }
         }
+
 
         return $this->render('admin/avis/edit.html.twig', [
             'avis' => $avis,
             'tab_utilisateur' => $tab_utilisateur,
             'tab_commande' => $tab_commande,
+            'utilisateur_id' => $utilisateur_id,
+            'commande_id' => $commande_id,
         ]);
     }
 

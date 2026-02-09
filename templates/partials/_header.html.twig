@@ -26,7 +26,7 @@
                         {% set user = app.user %}
                         {% if user %}
                             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}
-                                <a class="nav-link" href="{{ path('admin_dashboard') }}">Espace de {{ user.prenom|capitalize }}</a>
+                                <a class="nav-link" href="{{ path('admin_tdb_index') }}">Espace de {{ user.prenom|capitalize }}</a>
                             {% else %}
                                 <a class="nav-link" href="{{ path('admin_utilisateur_profil') }}">Espace de {{ user.prenom|capitalize }}</a>
                             {% endif %}

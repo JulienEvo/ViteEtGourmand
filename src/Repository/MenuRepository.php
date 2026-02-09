@@ -184,6 +184,40 @@ class MenuRepository
         return $menu;
     }
 
+    public function findByCommandeId(int $commande_id): ?Menu
+    {
+        $menu = null;
+
+        $sql = "SELECT *
+                FROM menu
+                LEFT OUTER JOIN commande ON commande.menu_id = menu.id
+                WHERE commande.id = :commande_id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':commande_id' => $commande_id]);
+
+        if ($stmt->rowCount() > 0)
+        {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $menu = new Menu(
+                $row['id'],
+                $row['libelle'],
+                $row['description'],
+                $row['conditions'],
+                $row['quantite_min'],
+                $row['tarif_unitaire'],
+                $row['quantite_disponible'],
+                $row['pret_materiel'],
+                $row['actif'],
+                implode($this->menuThemeRepository->findAllIdByMenuId($row['id'])),
+                implode($this->menuRegimeRepository->findAllIdByMenuId($row['id']))
+            );
+        }
+
+        return $menu;
+    }
+
     public function findByFilters(array $filters): array
     {
         $vars = [];

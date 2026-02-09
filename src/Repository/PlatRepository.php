@@ -75,15 +75,39 @@ class PlatRepository
         }
     }
 
-    public function findAll(): array
+    public function findAll(string $filtre_type = ''): array
     {
         $sql = "SELECT plat.*, plat_type.libelle AS type_libelle
                 FROM plat
                 INNER JOIN plat_type ON plat_type.id = plat.type_id
-                ORDER BY type_id, libelle";
+                WHERE 1";
+
+        $vars = [];
+        if ($filtre_type != '')
+        {
+            $sql .= " AND plat.type_id = :filtre_type";
+            $vars[':filtre_type'] = $filtre_type;
+        }
+
+        $sql .= " ORDER BY type_id, libelle";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute($vars);
+
+        $tab_plat = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tab_plat[$row['id']] = new Plat(
+                $row['id'],
+                $row['libelle'],
+                $row['description'],
+                $row['type_id'],
+                $row['image'],
+                $row['actif'],
+            );
+        }
+
+        return $tab_plat;
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
