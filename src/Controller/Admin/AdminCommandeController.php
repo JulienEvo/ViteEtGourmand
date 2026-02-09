@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Commande;
+use App\Entity\Societe;
+use App\Repository\AvisRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\GeneriqueRepository;
 use App\Repository\MenuRepository;
@@ -19,9 +21,6 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-
-const BORDEAUX_LAT = 44.833328;
-const BORDEAUX_LON = -0.56667;
 
 #[Route('/admin/commande', name: 'admin_commande_')]
 class AdminCommandeController extends AbstractController
@@ -177,9 +176,9 @@ class AdminCommandeController extends AbstractController
         $total_livraison = 5;
         $utilisateur = $this->getUser();
 
-        if (!empty($utilisateur->getLatitude()))
+        if (strtoupper($utilisateur->getCommune()) != 'BORDEAUX' && !empty($utilisateur->getLatitude()))
         {
-            $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+            $distance_km = FonctionsService::distanceKm(Societe::BORDEAUX_LAT, Societe::BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
 
             if (!is_float($distance_km))
             {
@@ -268,7 +267,7 @@ class AdminCommandeController extends AbstractController
         MenuRepository $menuRepository,
         GeneriqueRepository $generiqueRepository,
         HttpClientInterface $httpClient,
-        UserRepository $userRepository,
+        AvisRepository $avisRepository,
     ): Response
     {
         $commande = $commandeRepository->findById($id);
@@ -296,10 +295,9 @@ class AdminCommandeController extends AbstractController
         $utilisateur = $this->getUser();
         if (empty($commande->getTotal_livraison()))
         {
-
-            if (!empty($utilisateur->getLatitude()))
+            if (strtoupper($utilisateur->getCommune()) != 'BORDEAUX' && !empty($utilisateur->getLatitude()))
             {
-                $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+                $distance_km = FonctionsService::distanceKm(Societe::BORDEAUX_LAT, Societe::BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
 
                 if (!is_float($distance_km))
                 {
@@ -314,46 +312,17 @@ class AdminCommandeController extends AbstractController
             $commande->setTotal_livraison(round($total_livraison, 2));
         }
 
+        $tab_avis = $avisRepository->findByParam($commande->getUtilisateur_id(), $commande->getId(), true);
+        $tab_utilisateur = [$utilisateur->getId() => $utilisateur];
 
         return $this->render('admin/commande/visualisation.html.twig', [
             'commande' => $commande,
             'menu' => $menu,
             'tabCommande_etat' => $tabCommande_etat,
             'distance_km' => round($distance_km, 2),
+            'tab_avis' => $tab_avis,
+            'tab_utilisateur' => $tab_utilisateur,
         ]);
-    }
-
-    public function distanceKm($lat1, $lon1, $lat2, $lon2, HttpClientInterface $client): float|JsonResponse
-    {
-        try {
-            $response = $client->request(
-                'POST',
-                'https://api.openrouteservice.org/v2/directions/driving-car',
-                [
-                    'headers' => [
-                        'Authorization' => $_ENV['ORS_API_KEY'],
-                    ],
-                    'json' => [
-                        'coordinates' => [
-                            [$lon1, $lat1],
-                            [$lon2, $lat2],
-                        ],
-                    ],
-                    'timeout' => 10,
-                ]
-            );
-
-            $data = $response->toArray();
-
-            // Retourne la distance Km
-            return $data['routes'][0]['segments'][0]['distance'] / 1000;
-
-        } catch (\Exception $e) {
-            return $this->json([
-                'erreur' => 'Erreur lors de l’appel à ORS : ',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
     }
 
 }

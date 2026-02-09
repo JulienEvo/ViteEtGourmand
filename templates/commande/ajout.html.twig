@@ -64,7 +64,7 @@
                             </div>
                             <div class="col-12 col-lg-2">
                                 <label for="commande_heure" class="form-label">Heure souhaitée</label>
-                                <input type="time" class="form-control" name="commande_heure" id="commande_heure" value="{{ commande_heure ?? '' }}">
+                                <input type="time" class="form-control" min="" name="commande_heure" id="commande_heure" value="{{ commande_heure ?? '' }}">
                             </div>
                             <div class="col-12 col-lg-2">
                                 <label for="utilisateur_telephone" class="form-label">Téléphone</label>
@@ -98,6 +98,13 @@
                     <div class="card-header">
                         <h4>COMMANDE</h4>
                     </div>
+                    {% if menu %}
+                        {% set total_menu = (menu.tarif_unitaire * quantite) %}
+                    {% else %}
+                        {% set total_menu = 0 %}
+                    {% endif %}
+
+
                     <div class="card-body">
                         <p class="text-center text-danger d-none" id="p_pers_remise">Une remise de 10% sera appliquée pour une commande à partir de <span id="nb_pers_remise">0</span> personnes</p>
                         <div class="row col-12">
@@ -118,28 +125,26 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-12 col-lg-2">
-                                <label for="quantite" class="form-label">Nombre de pers.</label>
+                            <div class="col-12 col-lg-1">
+                                <label for="quantite" class="form-label">Quantité</label>
                                 <input type="number" class="form-control" step="1" min="{{ menu.quantite_min ?? 0 }}" max="{{ menu.quantite_disponible ?? 1 }}" name="quantite" id="quantite" value="{{ quantite ?? 0 }}" onchange="setRemise()">
-                                <input type="hidden" class="form-control" step="0.01" min="0" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire ?? 0 }}">
+                                <input type="hidden" class="form-control" step="0.01" min="1" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire ?? 0 }}">
+                            </div>
+                            <div class="col-12 col-lg-2">
+                                <label for="total_menu" class="form-label">Total menu</label>
+                                <input type="number" class="form-control" step="0.01" min="0" name="total_menu" id="total_menu" value="{{ menu.tarif_unitaire * quantite }}" readonly>
                             </div>
                             <div class="col-12 col-lg-2">
                                 <label for="remise" class="form-label">Remise (%)</label>
                                 <input type="number" class="form-control" step="0.01" min="0" max="100" name="remise" id="remise" value="{{ remise ?? 0 }}" readonly>
                             </div>
-                            <div class="col-12 col-lg-2">
-                                <label for="total_livraison" class="form-label">Frais de livraison</label>
-                                <input type="number" class="form-control" step="0.01" min="0" max="100" name="total_livraison" id="total_livraison" value="{{ total_livraison ?? 0 }}" readonly>
+                            <div class="col-12 col-lg-1">
+                                <label for="total_livraison" class="form-label">Livraison</label>
+                                <input type="number" class="form-control" step="0.01" min="0" name="total_livraison" id="total_livraison" value="{{ total_livraison ?? 0 }}" readonly>
                             </div>
                             <div class="col-12 col-lg-2">
-                                {% if menu %}
-                                    {% set total_ttc = (menu.tarif_unitaire * quantite %}
-                                {% else %}
-                                    {% set total_ttc = 0 %}
-                                {% endif %}
-
                                 <label for="total_ttc" class="form-label">Total TTC</label>
-                                <input type="number" class="form-control" step="0.01" min="0" max="100" name="total_ttc" id="total_ttc" value="{{ total_ttc }}" readonly>
+                                <input type="number" class="form-control" step="0.01" min="0" name="total_ttc" id="total_ttc" value="{{ total_menu - (total_menu * (remise ?? 0) / 100) + total_livraison }}" readonly>
                             </div>
 
                         </div>
@@ -148,8 +153,8 @@
                             <textarea class="form-control" rows="3" name="description" id="description" readonly>{{ menu.description ?? '' }}</textarea>
                         </div>
                         <div class="row col-12 mt-3">
-                            <label for="conditions" class="form-label text-danger">Conditions</label>
-                            <textarea class="form-control" rows="3" name="conditions" id="conditions" readonly>{{ menu.conditions ?? '' }}</textarea>
+                            <label for="conditions" class="form-label text-danger text-center fw-bold fs-4">*** Conditions ***</label>
+                            <textarea class="form-control text-danger text-center fw-bold" rows="3" name="conditions" id="conditions" readonly>{{ menu.conditions ?? '' }}</textarea>
                         </div>
 
                         <div class="card mt-3" id="composition_menu">
@@ -211,7 +216,9 @@
         function setRemise()
         {
             let input_quantite = document.getElementById('quantite');
+            let input_total_menu = document.getElementById('total_menu');
             let input_remise = document.getElementById('remise');
+            let input_total_livraison = document.getElementById('total_livraison');
             let input_total_ttc = document.getElementById('total_ttc');
 
             if (parseInt(input_quantite.getAttribute('max')) === 0)
@@ -228,7 +235,7 @@
 
             let quantite_remise = parseInt(input_quantite.getAttribute('min')) + 5;
             let tarif_unitaire = document.getElementById('tarif_unitaire').value;
-            let montant_ttc = tarif_unitaire * input_quantite.value;
+            let total_menu = tarif_unitaire * input_quantite.value;
 
             if (input_quantite.value >= quantite_remise)
             {
@@ -239,7 +246,8 @@
                 input_remise.value = 0;
             }
 
-            input_total_ttc.value = montant_ttc - ((montant_ttc * input_remise.value) / 100);
+            input_total_menu.value = total_menu;
+            input_total_ttc.value = total_menu - ((total_menu * input_remise.value) / 100) + parseInt(input_total_livraison.value);
         }
 
     </script>

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Societe;
 use App\Repository\CommandeRepository;
 use App\Repository\GeneriqueRepository;
 use App\Repository\HoraireRepository;
@@ -22,8 +23,8 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use const App\Controller\Admin\BORDEAUX_LAT;
-use const App\Controller\Admin\BORDEAUX_LON;
+use MongoDB\Client;
+use MongoDB\BSON;
 
 #[Route('/commande', name: 'commande_')]
 class CommandeController extends AbstractController
@@ -54,6 +55,23 @@ class CommandeController extends AbstractController
         $plat_types = $platTypeRepository->findAll();
 
         // MODIF : Afficher Frais de livraison
+        $distance_km = 0;
+        $total_livraison = 5;
+        if (strtoupper($utilisateur->getCommune()) != 'BORDEAUX' &&  !empty($utilisateur->getLatitude()))
+        {
+            $distance_km = FonctionsService::distanceKm(Societe::BORDEAUX_LAT, Societe::BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude());
+
+            if (!is_float($distance_km))
+            {
+                $data = json_decode($distance_km->getContent(), true);
+
+                $this->addFlash('danger', $data['erreur'].$data['message']);
+                return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+            }
+
+            $total_livraison += round($distance_km * 0.59, 2);
+
+        }
 
         return $this->render('commande/ajout.html.twig', [
             'utilisateur' => $utilisateur,
@@ -62,7 +80,8 @@ class CommandeController extends AbstractController
             'plats_menu' => $plats_menu,
             'plat_types' => $plat_types,
             'quantite' => $quantite,
-            'total_livraison' => 165,
+            'total_livraison' => $total_livraison,
+            'distance_km' => $distance_km,
         ]);
     }
 
@@ -159,7 +178,7 @@ class CommandeController extends AbstractController
 
         if (!empty($utilisateur->getLatitude()))
         {
-            $distance_km = $this->distanceKm(BORDEAUX_LAT, BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+            $distance_km = $this->distanceKm(Societe::BORDEAUX_LAT, Societe::BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
 
             if (!is_float($distance_km))
             {
@@ -178,7 +197,7 @@ class CommandeController extends AbstractController
         }
 
 
-        // Ajouter la commande en bdd
+        // Création de la commande
         $numero = $commandeRepository->getNumero();
         $commande = new Commande(
             0,
@@ -200,6 +219,7 @@ class CommandeController extends AbstractController
             new DateTime()
         );
 
+        // Enregistrement de la commande en bdd
         $commande_id = $commandeRepository->insert($commande);
 
         if (is_array($commande_id))
@@ -236,6 +256,7 @@ class CommandeController extends AbstractController
                                 <h2>Récapitulatif de la command</h2>
                                 <br>
                                 Date de commande : {$date_commande}<br>
+                                Remise : {$commande->getRemise()}<br>
                                 Date de livraison : {$date_livraison}<br>
                                 Montant total : {$commande->getTotal_ttc()} €<br>
                                 <br>
@@ -251,6 +272,22 @@ class CommandeController extends AbstractController
             );
 
         $mailer->send($email);
+
+        // Enregistrement pour les STATS (MongoDB)
+        $client = new Client($_ENV['MONGODB_URL']);
+        $mongo_db = $client->vite_et_gourmand_stats;
+
+        $stats_commande = $mongo_db->commande;
+        $res = $stats_commande->insertOne([
+            'commande_id' => $commande_id,
+            'commande_numero' => $commande->getNumero(),
+            'utilisateur_id' => $utilisateur_id,
+            'menu_id' => $menu_id,
+            'quantite' => $quantite,
+            'total_menu' => $menu_commande->getTarif_unitaire() * $quantite,
+            'created_at' => $commande->getCreated_at()->format('Y-m-d H:i:s'),
+        ]);
+
 
         $this->addFlash('success', "Commande validée avec succès");
         return $this->redirectToRoute('admin_commande_visualisation', [

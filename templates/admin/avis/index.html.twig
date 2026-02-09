@@ -39,14 +39,14 @@
                     <td class="text-end">{{ item.avis.id }}</td>
                     <td>{{ item.utilisateur.nom~ ' ' ~ item.utilisateur.prenom }}</td>
                     <td>{{ item.commande.numero }}</td>
-                    <td>
+                    <td class="text-primary" style="width: 10%">
                         {% for i in 1..5 %}
-                            {{ i <= item.avis.note ? '⭐' : '☆' }}
+                            {{ i <= item.avis.note ? '★' : '☆' }}
                         {% endfor %}
                     </td>
                     <td>{{ item.avis.commentaire }}</td>
                     <td>{{ item.avis.created_at|date('d/m/Y') }}</td>
-                    <td>
+                    <td style="width: 8%">
                         <a href="{{ path('admin_avis_edit', {id: item.avis.id}) }}" class="btn btn-sm btn-warning">
                             <i class="bi bi-pencil-square"></i>
                         </a>

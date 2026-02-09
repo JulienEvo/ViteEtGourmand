@@ -3,12 +3,14 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Menu;
+use App\Repository\AvisRepository;
 use App\Repository\GeneriqueRepository;
 use App\Repository\MenuPlatRepository;
 use App\Repository\MenuRegimeRepository;
 use App\Repository\MenuRepository;
 use App\Repository\MenuThemeRepository;
 use App\Repository\PlatRepository;
+use App\Repository\UserRepository;
 use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -39,6 +41,8 @@ class AdminMenuController extends AbstractController
         MenuRegimeRepository $menuRegimeRepository,
         PlatRepository $platRepository,
         MenuPlatRepository $menuPlatRepository,
+        AvisRepository $avisRepository,
+        UserRepository $userRepository,
         Request $request
     ): Response
     {
@@ -165,6 +169,12 @@ class AdminMenuController extends AbstractController
         // Récupère la liste de régime => MODIF : ajouter champs Actif
         $tab_regimes = $generiqueRepository->findAll('regime');
 
+        // Récupère la liste des avis clients du menu
+        $tab_avis = $avisRepository->findByMenuId($menu_id);
+
+        // Récupère la liste des utilisateurs
+        $tab_utilisateur = $userRepository->findAll();
+
 
         // Affiche le menu
         return $this->render('admin/menu/edit.html.twig', [
@@ -174,6 +184,8 @@ class AdminMenuController extends AbstractController
             'tab_themes' => $tab_themes,
             'tab_regimes' => $tab_regimes,
             'plats' => $plats,
+            'tab_avis' => $tab_avis,
+            'tab_utilisateur' => $tab_utilisateur,
         ]);
     }
 

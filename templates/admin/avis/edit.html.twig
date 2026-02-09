@@ -7,9 +7,11 @@
     {% if avis %}
         {% set titre = "Modifier l'avis" %}
         {% set action_path = path('admin_avis_edit', {id: avis.id}) %}
+        {% set option = 'disabled' %}
     {% else %}
         {% set titre = 'Ajouter un avis' %}
         {% set action_path = path('admin_avis_edit', {id: 0}) %}
+        {% set option = 'required' %}
     {% endif %}
 
 
@@ -24,23 +26,23 @@
             <div class="card-body">
                 <div class="row col-12">
 
-                    <div class="mb-3 col-12 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-4">
                         <label for="utilisateur_id" class="form-label">Utilisateur</label>
-                        <select class="form-select" name="utilisateur_id" id="utilisateur_id" required>
+                        <select class="form-select" name="utilisateur_id" id="utilisateur_id" {{ option }}>
                             <option value="">Choix</option>
-                            {% for utilisateur in tabUtilisateur %}
-                                <option value="{{ utilisateur.getId() }}" {% if (utilisateur.getId() == (avis.getUtilisateurId() ?? 0)) %}selected{% endif %}>
-                                    {{ utilisateur.nom ~ ' ' ~ utilisateur.prenom }}
+                            {% for utilisateur in tab_utilisateur %}
+                                <option value="{{ utilisateur.getId() }}" {% if (utilisateur.getId() == (avis.getUtilisateur_id() ?? 0)) %}selected{% endif %}>
+                                    {{ utilisateur.nom ~ ' ' ~ utilisateur.prenom ~ ' (' ~ utilisateur.commune ~ ' ' ~ utilisateur.code_postal ~ ')' }}
                                 </option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="mb-3 col-12 col-lg-2">
+                    <div class="mb-3 col-12 col-lg-4">
                         <label for="commande_id" class="form-label">Commande</label>
-                        <select class="form-select" name="commande_id" id="commande_id" required>
+                        <select class="form-select" name="commande_id" id="commande_id" {{ option }}>
                             <option value="">Choix</option>
-                            {% for commande in tabCommande %}
-                                <option value="{{ commande.id }}" {% if (commande.id == (avis.getCommandeId() ?? 0)) %}selected{% endif %}>
+                            {% for commande in tab_commande %}
+                                <option value="{{ commande.id }}" {% if (commande.id == (avis.getCommande_id() ?? 0)) %}selected{% endif %}>
                                     {{ commande.numero }}
                                 </option>
                             {% endfor %}
@@ -48,17 +50,13 @@
                     </div>
                     <div class="mb-3 col-12 col-lg-2">
                         <label for="note" class="form-label">Note</label>
-                        <select class="form-select" name="note" id="note" required>
-                            <option value="1" {% if avis.note ?? 0 == 1 %}selected{% endif %}>⭐☆☆☆☆</option>
-                            <option value="2" {% if avis.note ?? 0 == 2 %}selected{% endif %}>⭐⭐☆☆☆</option>
-                            <option value="3" {% if avis.note ?? 0 == 3 %}selected{% endif %}>⭐⭐⭐☆☆</option>
-                            <option value="4" {% if avis.note ?? 0 == 4 %}selected{% endif %}>⭐⭐⭐⭐☆</option>
-                            <option value="5" {% if avis.note ?? 5 == 5 %}selected{% endif %}>⭐⭐⭐⭐⭐</option>
+                        <select class="form-select text-primary" name="note" id="note" {{ option }}>
+                            <option value="1" {% if avis.note ?? 0 == 1 %}selected{% endif %}>★☆☆☆☆</option>
+                            <option value="2" {% if avis.note ?? 0 == 2 %}selected{% endif %}>★★☆☆☆</option>
+                            <option value="3" {% if avis.note ?? 0 == 3 %}selected{% endif %}>★★★☆☆</option>
+                            <option value="4" {% if avis.note ?? 0 == 4 %}selected{% endif %}>★★★★☆</option>
+                            <option value="5" {% if avis.note ?? 5 == 5 %}selected{% endif %}>★★★★★</option>
                         </select>
-                    </div>
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="commentaire" class="form-label">Commentaire</label>
-                        <textarea class="form-control" rows="2" name="commentaire" id="commentaire" required>{{ avis.commentaire ?? '' }}</textarea>
                     </div>
                     <div class="mb-3 col-12 col-lg-2">
                         <label for="valide" class="form-label">État</label>
@@ -67,6 +65,11 @@
                             <option value="1" {% if avis.valide ?? '' == 1 %}selected{% endif %}>Validé</option>
                             <option value="0" {% if avis.valide ?? '' == 0 %}selected{% endif %}>Refusé</option>
                         </select>
+                    </div>
+
+                    <div class="mb-3 col-12 col-lg-12">
+                        <label for="commentaire" class="form-label">Commentaire</label>
+                        <textarea class="form-control" rows="5" name="commentaire" id="commentaire" {{ option }}>{{ avis.commentaire ?? '' }}</textarea>
                     </div>
                 </div>
             </div>

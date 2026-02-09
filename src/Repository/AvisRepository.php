@@ -107,24 +107,29 @@ class AvisRepository
         return  $avis;
     }
 
-    public function findByParam(int $utilisateur_id = 0, int $commande_id = 0): array
+    public function findByParam(int $utilisateur_id = 0, int $commande_id = 0, bool $valide_only = false): array
     {
         $sql = "SELECT avis.*
                 FROM avis
-                WHERE 1
-                ORDER BY created_at DESC";
+                WHERE 1";
         $vars = [];
 
         if ($utilisateur_id > 0)
         {
-            $sql .= " WHERE utilisateur_id = :utilisateur_id";
+            $sql .= " AND utilisateur_id = :utilisateur_id";
             $vars['utilisateur_id'] = $utilisateur_id;
         }
         if ($commande_id > 0)
         {
-            $sql .= " WHERE commande_id = :commande_id";
+            $sql .= " AND commande_id = :commande_id";
             $vars['commande_id'] = $commande_id;
         }
+        if ($valide_only)
+        {
+            $sql .= " AND valide = 1";
+        }
+
+        $sql .= " ORDER BY created_at DESC";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
@@ -139,7 +144,36 @@ class AvisRepository
                 $row['note'],
                 $row['commentaire'],
                 $row['valide'],
-                $row['created_at']
+                new DateTime($row['created_at'])
+            );
+        }
+
+        return $tabAvis;
+    }
+
+    public function findByMenuId(int $menu_id): array
+    {
+        $sql = "SELECT avis.*
+                FROM avis
+                LEFT OUTER JOIN commande ON commande.id = avis.commande_id
+                LEFT OUTER JOIN menu ON menu.id = commande.menu_id
+                WHERE menu.id = :menu_id
+                ORDER BY created_at DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['menu_id' => $menu_id]);
+
+        $tabAvis = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $tabAvis[$row['id']] = new Avis(
+                $row['id'],
+                $row['utilisateur_id'],
+                $row['commande_id'],
+                $row['note'],
+                $row['commentaire'],
+                $row['valide'],
+                new DateTime($row['created_at'])
             );
         }
 

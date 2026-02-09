@@ -13,14 +13,15 @@
 {% block body %}
 
     <h1 class="mb-4">
-        <i class="bi bi-people-fill"></i>&nbsp;Liste des {{ lib|capitalize }}s : <span class="fs-3">{{ tabUtilisateur|length }} résultat(s)</span>
+        <i class="bi bi-people-fill"></i>
+        &nbsp;Liste des {{ lib|capitalize }}s : <span class="fs-3">{{ tabUtilisateur|length }} résultat{% if tabUtilisateur|length > 1 %}s{% endif %}</span>
     </h1>
 
-    <!--
-    <a href="{{ path('admin_utilisateur_edit', {id: 0, mode: 'ajout', type: type}) }}" class="btn btn-primary mb-3">
-        <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un {{ lib }}
-    </a>
-    -->
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('admin_utilisateur_edit', {id: 0, mode: 'ajout', type: type}) }}" class="btn btn-primary mb-3">
+            <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un {{ lib }}
+        </a>
+    {% endif %}
 
     <div class="table-responsive">
         <table class="table table-striped" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
@@ -46,7 +47,7 @@
                         <td>{{ utilisateur.nom }}</td>
                         <td>{{ utilisateur.prenom }}</td>
                         <td>{{ utilisateur.email }}</td>
-                        <td>{{ utilisateur.telephone }}</td>
+                        <td>{{ utilisateur.telephone|formatTelFr }}</td>
                         <td>{{ utilisateur.adresse }}</td>
                         <td>{{ utilisateur.code_postal }}</td>
                         <td>{{ utilisateur.commune }}</td>

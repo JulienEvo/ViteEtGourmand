@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use DateTime;
-use Symfony\Component\DependencyInjection\Attribute\AsTaggedItem;
 
 class Societe
 {
+    const BORDEAUX_LAT = 44.833328;
+    const BORDEAUX_LON = -0.56667;
+
     private int $id;
     private string $libelle;
     private string $statut;

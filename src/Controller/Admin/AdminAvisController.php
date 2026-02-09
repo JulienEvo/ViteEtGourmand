@@ -23,8 +23,8 @@ class AdminAvisController extends AbstractController
         $tabAvis = [];
         foreach ($listAvis as $avis_id => $avis)
         {
-            $utilisateur = $userRepository->findById($avis->getUtilisateurId());
-            $commande = $commandeRepository->findById($avis->getCommandeId());
+            $utilisateur = $userRepository->findById($avis->getId());
+            $commande = $commandeRepository->findById($avis->getId());
 
             $tabAvis[$avis_id]['avis'] = $avis;
             $tabAvis[$avis_id]['utilisateur'] = $utilisateur;
@@ -46,8 +46,8 @@ class AdminAvisController extends AbstractController
     ): Response
     {
         $avis = $avisRepository->findById($id);
-        $tabUtilisateur = $userRepository->findAll();
-        $tabCommande = $commandeRepository->findAll();
+        $tab_utilisateur = $userRepository->findAll();
+        $tab_commande = $commandeRepository->findAll();
 
         if ($request->isMethod('POST'))
         {
@@ -88,8 +88,8 @@ class AdminAvisController extends AbstractController
 
         return $this->render('admin/avis/edit.html.twig', [
             'avis' => $avis,
-            'tabUtilisateur' => $tabUtilisateur,
-            'tabCommande' => $tabCommande,
+            'tab_utilisateur' => $tab_utilisateur,
+            'tab_commande' => $tab_commande,
         ]);
     }
 
