@@ -120,6 +120,8 @@
                         <a href="{{ path('admin_plat_index', {menu_id: menu.id, comeFrom: 'menu'}) }}" class="btn btn-primary">
                             <i class="bi bi-plus-circle"></i>&nbsp;Ajouter un plat
                         </a>
+                    {% else %}
+                        <p style="display: inline-block; color: #4A4A4A; font-size: small">Enregistrer le menu pour ajouter des plats</p>
                     {% endif %}
                 </h4>
             </div>

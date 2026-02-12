@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Avis;
+use App\Entity\Commande;
 use PDO;
 use DateTime;
 
@@ -49,23 +50,34 @@ class AvisRepository
         ]);
     }
 
-    public function findAll(bool $valide_only = false): array
+    public function findAll(bool $valide_only = false, int $limite = 0): array
     {
+        $tabAvis = [];
+
+        $vars = [];
         $sql = "SELECT *
                 FROM avis
                 WHERE 1";
 
         if ($valide_only)
         {
-            $sql .= " AND valide = 1";
+            $sql .= " AND valide = :statut_valide";
+            $vars['statut_valide'] = Avis::STATUT_VALIDE;
         }
+
         $sql .= " ORDER BY created_at DESC";
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        if ($limite > 0)
+        {
+            $sql .= " LIMIT ".$limite;
+        }
 
-        $tabAvis = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($vars);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($rows as $row)
         {
             $tabAvis[$row['id']] = new Avis(
                 $row['id'],
@@ -127,7 +139,8 @@ class AvisRepository
         }
         if ($valide_only)
         {
-            $sql .= " AND valide = 1";
+            $sql .= " AND valide = :statut-valide";
+            $vars['statut-valide'] = Avis::STATUT_VALIDE;
         }
 
         $sql .= " ORDER BY created_at DESC";
@@ -135,8 +148,10 @@ class AvisRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tabAvis = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $tabAvis[$row['id']] = new Avis(
                 $row['id'],
@@ -164,8 +179,10 @@ class AvisRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['menu_id' => $menu_id]);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tabAvis = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $tabAvis[$row['id']] = new Avis(
                 $row['id'],
@@ -195,6 +212,36 @@ class AvisRepository
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getStatAvis(): array
+    {
+    $sql = "SELECT menu.id AS menu_id,
+                menu.libelle AS menu_libelle,
+                AVG(avis.note) AS note_moyenne
+            FROM avis
+            INNER JOIN commande ON commande.id = avis.commande_id
+            INNER JOIN menu ON menu.id = commande.menu_id
+            WHERE avis.valide = 1
+            GROUP BY menu.id, menu.libelle
+            ORDER BY note_moyenne DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stat_avis = [];
+        foreach ($rows as $row)
+        {
+            $stat_avis[] = [
+                'menu_id' => $row['menu_id'],
+                'menu_libelle' => $row['menu_libelle'],
+                'note_moyenne' => $row['note_moyenne'],
+            ];
+        }
+
+        return $stat_avis;
     }
 
 }

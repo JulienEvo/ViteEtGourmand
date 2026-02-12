@@ -18,19 +18,30 @@ use Symfony\Component\Routing\Attribute\Route;
 class AdminAvisController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(AvisRepository $avisRepository, UserRepository $userRepository, CommandeRepository $commandeRepository): Response
+    public function index(AvisRepository $avisRepository, UserRepository $userRepository, CommandeRepository $commandeRepository, Request $request): Response
     {
+        $filtre_avis = $request->query->get('filtre_avis', '');
+
         $listAvis = $avisRepository->findAll();
 
         $tabAvis = [];
         foreach ($listAvis as $avis_id => $avis)
         {
-            $utilisateur = $userRepository->findById($avis->getId());
-            $commande = $commandeRepository->findById($avis->getId());
+            switch ($avis->getValide()) {
+                case 0: $etat_avis = 'En attente'; break;
+                case 1: $etat_avis = 'Validé'; break;
+                case 2: $etat_avis = 'Refusé'; break;
+                default: $etat_avis = ''; break;
+            }
 
-            $tabAvis[$avis_id]['avis'] = $avis;
-            $tabAvis[$avis_id]['utilisateur'] = $utilisateur;
-            $tabAvis[$avis_id]['commande'] = $commande;
+            if ($filtre_avis == '' || $filtre_avis == $etat_avis) {
+                $utilisateur = $userRepository->findById($avis->getId());
+                $commande = $commandeRepository->findById($avis->getId());
+
+                $tabAvis[$avis_id]['avis'] = $avis;
+                $tabAvis[$avis_id]['utilisateur'] = $utilisateur;
+                $tabAvis[$avis_id]['commande'] = $commande;
+            }
         }
 
         return $this->render('admin/avis/index.html.twig', [
@@ -66,7 +77,7 @@ class AdminAvisController extends AbstractController
             $avis->setCommande_id($request->request->get('commande_id'));
             $avis->setNote($request->request->get('note'));
             $avis->setCommentaire($request->request->get('commentaire'));
-            $avis->setValide(($request->request->get('valide') == '') ? null:$request->request->get('valide'));
+            $avis->setValide(($request->request->get('valide') == '') ? 0:$request->request->get('valide'));
 
             if ($avis->getId() == 0)
             {
@@ -92,24 +103,27 @@ class AdminAvisController extends AbstractController
             }
 
             // Enregistre dans MongoDB pour les stats
-            $client = new Client($_ENV['MONGODB_URL']);
-            $mongo_db = $client->vite_et_gourmand_stats;
+            if (extension_loaded('mongodb'))
+            {
+                $client = new Client($_ENV['MONGODB_URL']);
+                $mongo_db = $client->vite_et_gourmand_stats;
 
-            $stats_commande = $mongo_db->avis;
+                $stats_commande = $mongo_db->avis;
 
-            $created_at = $avis->getCreated_at();
-            $menu = $menuRepository->findByCommandeId($commande_id);
+                $created_at = $avis->getCreated_at();
+                $menu = $menuRepository->findByCommandeId($commande_id);
 
-            $stats_commande->insertOne([
-                'id' => $avis->getId(),
-                'utilisateur_id' => $avis->getUtilisateur_id(),
-                'commande_id' => $avis->getCommande_id(),
-                'note' => $avis->getNote(),
-                'commentaire' => $avis->getCommentaire(),
-                'valide' => $avis->getValide(),
-                'created_at' => $created_at->format('Y-m-d H:i:s'),
-                'menu_libelle' => $menu->getLibelle(),
-            ]);
+                $stats_commande->insertOne([
+                    'id' => $avis->getId(),
+                    'utilisateur_id' => $avis->getUtilisateur_id(),
+                    'commande_id' => $avis->getCommande_id(),
+                    'note' => $avis->getNote(),
+                    'commentaire' => $avis->getCommentaire(),
+                    'valide' => $avis->getValide(),
+                    'created_at' => $created_at->format('Y-m-d H:i:s'),
+                    'menu_libelle' => $menu->getLibelle(),
+                ]);
+            }
 
             if ($comeFrom == 'historique')
             {

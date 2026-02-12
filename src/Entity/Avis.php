@@ -5,12 +5,16 @@ namespace App\Entity;
 use DateTime;
 class Avis
 {
+    const STATUT_EN_ATTENTE = 0;
+    const STATUT_VALIDE = 1;
+    const STATUT_REFUSE = 2;
+
     private int $id;
     private int $utilisateur_id;
     private int $commande_id;
     private int $note;
     private string $commentaire;
-    private ?bool $valide;
+    private ?int $valide;
     private DateTime $created_at;
 
     public function __construct(
@@ -19,7 +23,7 @@ class Avis
         int $commande_id = 0,
         int $note = 5,
         string $commentaire = '',
-        ?bool $valide = null,
+        ?int $valide = 0,
         DateTime $created_at = new DateTime
     )
     {
@@ -52,7 +56,7 @@ class Avis
     {
         return $this->commentaire;
     }
-    public function getValide(): ?bool
+    public function getValide(): ?int
     {
         return $this->valide;
     }
@@ -81,7 +85,7 @@ class Avis
     {
         $this->commentaire = $commentaire;
     }
-    public function setValide(?bool $valide): void
+    public function setValide(?int $valide): void
     {
         $this->valide = $valide;
     }

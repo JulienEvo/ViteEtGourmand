@@ -23,7 +23,7 @@ final class HomeController extends AbstractController
     {
         $societe = $societeRepository->findById(1);
         $plat_type = $generiqueRepository->findAll('plat_type');
-        $tab_avis = $avisRepository->findAll(true);
+        $tab_avis = $avisRepository->findAll(true, 3);
         $tab_utilisateur = $userRepository->findAll();
 
         return $this->render('home/index.html.twig', [

@@ -128,8 +128,10 @@ class MenuRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tabMenus = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $tabMenus[$row['id']] = new Menu(
                 $row['id'],
@@ -275,8 +277,10 @@ class MenuRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $menus = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $menus[$row['id']] = $row;
             $menus[$row['id']]['themes'] = $this->menuThemeRepository->findAllLibelleByMenuId($row['id']);

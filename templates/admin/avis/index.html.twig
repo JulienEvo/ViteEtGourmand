@@ -26,11 +26,11 @@
                 {% if item.avis.valide == 1 %}
                     {% set bg = 'bg-success text-white' %}
                     {% set etat = 'Validé' %}
-                {% elseif item.avis.valide == 0 %}
+                {% elseif item.avis.valide == 2 %}
                     {% set bg = 'bg-danger text-white' %}
                     {% set etat = 'Refusé' %}
                 {% else %}
-                    {% set bg = '' %}
+                    {% set bg = 0 %}
                     {% set etat = 'En attente' %}
                 {% endif %}
 

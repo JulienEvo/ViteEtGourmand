@@ -17,7 +17,7 @@
                 </div>
                 <div class="card-body">
                     {% for plat_type in tab_plat_type %}
-                        <a class="text-decoration-none" href="{{ path('admin_commande_index', {filtre_type:plat_type.id }) }}">
+                        <a class="text-decoration-none" href="{{ path('admin_plat_index', {filtre_type:plat_type.id }) }}">
                             <div class="d-flex justify-content-between align-items-center text-black py-2">
                                 <span class="fw-semibold">{{ plat_type.libelle }}</span>
                                 <span class="badge bg-primary fs-6">
@@ -57,49 +57,53 @@
                 </div>
                 <div class="card-body">
                     {% for avis_libelle, avis_valide in tab_avis_valide %}
-                        <div class="d-flex justify-content-between align-items-center text-black py-2">
-                            <span class="fw-semibold">{{ avis_libelle }}</span>
-                            <span class="badge bg-primary fs-6">
-                                {{ avis_valide }}
-                            </span>
-                        </div>
+                        <a class="text-decoration-none" href="{{ path('admin_avis_index', {filtre_avis:avis_libelle }) }}">
+                            <div class="d-flex justify-content-between align-items-center text-black py-2">
+                                <span class="fw-semibold">{{ avis_libelle }}</span>
+                                <span class="badge bg-primary fs-6">
+                                    {{ avis_valide }}
+                                </span>
+                            </div>
+                        </a>
                     {% endfor %}
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4 mt-3">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5>Statistiques du chiffre d'affaires</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="stat_ca"></canvas>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="col-md-4 mt-3">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5>Statistiques du chiffre d'affaires</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="stat_ca"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4 mt-3 mt-3">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5>Statistiques de commandes</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="stat_commande"></canvas>
+            <div class="col-md-4 mt-3 mt-3">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5>Statistiques de commandes</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="stat_commande"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4 mt-3">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h5>Statistiques des avis clients</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="stat_avis"></canvas>
+            <div class="col-md-4 mt-3">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5>Statistiques des avis clients</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="stat_avis"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 
 

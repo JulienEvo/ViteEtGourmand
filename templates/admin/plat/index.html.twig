@@ -47,7 +47,7 @@
                         </div>
                     </td>
                     <td>{{ plat.libelle }}</td>
-                    <td>{{ plat.type_libelle }}</td>
+                    <td>{{ tabPlatType[plat.type_id].libelle }}</td>
                     {% if (comeFrom == 'plat') %}
                         <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
                     {% endif %}

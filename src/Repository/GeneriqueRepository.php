@@ -27,8 +27,10 @@ class GeneriqueRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tabRetour = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $tabRetour[$row['id']] = $row;
         }

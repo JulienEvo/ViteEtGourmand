@@ -56,8 +56,10 @@ class HoraireRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':societe_id' => $societe_id]);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tabHoraire = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $tabHoraire[$row['id']] = new Horaire(
                 $row['id'],

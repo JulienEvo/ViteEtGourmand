@@ -195,4 +195,35 @@ class CommandeRepository
         return $retour;
     }
 
+    public function getStatCommande(): array
+    {
+        $sql = "SELECT menu.id AS menu_id,
+                    menu.libelle AS menu_libelle,
+                    SUM(commande.quantite * menu.tarif_unitaire) AS ca,
+                    SUM(commande.quantite) AS total
+                FROM commande
+                INNER JOIN menu ON menu.id = commande.menu_id
+                WHERE 1
+                GROUP BY menu.id, menu.libelle
+                ORDER BY ca DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stat_ca = [];
+        foreach ($rows as $row)
+        {
+            $stat_ca[] = [
+                'menu_id' => $row['menu_id'],
+                'menu_libelle' => $row['menu_libelle'],
+                'ca' => $row['ca'],
+                'total' => $row['total'],
+            ];
+        }
+
+        return $stat_ca;
+    }
+
 }

@@ -17,16 +17,18 @@ class AdminPlatController extends AbstractController
 {
 
     #[Route('/', name: 'index', )]
-    public function index(Request $request, PlatRepository $platRepository): Response
+    public function index(Request $request, PlatRepository $platRepository, GeneriqueRepository $generiqueRepository): Response
     {
         $menu_id = $request->query->get('menu_id', 0);
         $comeFrom = $request->query->get('comeFrom', 'zzz');
         $filtre_type = $request->query->get('filtre_type', '');
 
         $tabPlat = $platRepository->findAll($filtre_type);
+        $tabPlatType = $generiqueRepository->findAll('plat_type');
 
         return $this->render('admin/plat/index.html.twig', [
             'tabPlat' => $tabPlat,
+            'tabPlatType' => $tabPlatType,
             'menu_id' => $menu_id,
             'comeFrom' => $comeFrom,
         ]);

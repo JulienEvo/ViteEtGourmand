@@ -94,8 +94,10 @@ class PlatRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tab_plat = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
             $tab_plat[$row['id']] = new Plat(
                 $row['id'],
@@ -108,8 +110,6 @@ class PlatRepository
         }
 
         return $tab_plat;
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findById(int $id): Plat
@@ -150,10 +150,12 @@ class PlatRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':menu_id' => $menu_id]);
 
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $tab_plat = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        foreach ($rows as $row)
         {
-            $plat = array (
+            $plat = array(
                 'id' => $row['id'],
                 'libelle' => $row['libelle'],
                 'description' => $row['description'],
