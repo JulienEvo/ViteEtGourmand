@@ -132,21 +132,20 @@
                             </div>
                             <div class="col-12 col-lg-2">
                                 <label for="total_menu" class="form-label">Total menu</label>
-                                <input type="number" class="form-control" step="0.01" min="0" name="total_menu" id="total_menu" value="{{ menu.tarif_unitaire * quantite }}" readonly>
-                            </div>
-                            <div class="col-12 col-lg-2">
-                                <label for="remise" class="form-label">Remise (%)</label>
-                                <input type="number" class="form-control" step="0.01" min="0" max="100" name="remise" id="remise" value="{{ remise ?? 0 }}" readonly>
+                                <input type="number" class="form-control" step="0.01" min="0" name="total_menu" id="total_menu" value="{{ menu.tarif_unitaire ?? 0 * quantite }}" readonly>
                             </div>
                             <div class="col-12 col-lg-1">
+                                <label for="remise" class="form-label">Remise (%)</label>
+                                <input type="number" class="form-control" step="0.001" min="0" max="100" name="remise" id="remise" value="{{ remise ?? 0 }}" readonly>
+                            </div>
+                            <div class="col-12 col-lg-2">
                                 <label for="total_livraison" class="form-label">Livraison</label>
-                                <input type="number" class="form-control" step="0.01" min="0" name="total_livraison" id="total_livraison" value="{{ total_livraison ?? 0 }}" readonly>
+                                <input type="number" class="form-control" step="0.001" min="0" name="total_livraison" id="total_livraison" value="{{ total_livraison ?? 0 }}" readonly>
                             </div>
                             <div class="col-12 col-lg-2">
                                 <label for="total_ttc" class="form-label">Total TTC</label>
-                                <input type="number" class="form-control" step="0.01" min="0" name="total_ttc" id="total_ttc" value="{{ total_menu - (total_menu * (remise ?? 0) / 100) + total_livraison }}" readonly>
+                                <input type="number" class="form-control" step="0.001" min="0" name="total_ttc" id="total_ttc" value="{{ total_menu - (total_menu * (remise ?? 0) / 100) + total_livraison }}" readonly>
                             </div>
-
                         </div>
                         <div class="row col-12 mt-3">
                             <label for="description" class="form-label">Description</label>
@@ -247,7 +246,7 @@
             }
 
             input_total_menu.value = total_menu;
-            input_total_ttc.value = total_menu - ((total_menu * input_remise.value) / 100) + parseInt(input_total_livraison.value);
+            input_total_ttc.value = total_menu - ((total_menu * input_remise.value) / 100) + parseFloat(input_total_livraison.value);
         }
 
     </script>

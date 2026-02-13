@@ -38,7 +38,7 @@
                         <input type="email" class="form-control" name="email" id="email" value="{{ utilisateur.email ?? '' }}" required>
                     </div>
 
-                    {% if not utilisateur %}
+                    {% if not utilisateur and type != 'employe' and mode != 'ajout' %}
                         {% set input_type = 'text' %}
                         {% set disabled = ' disabled' %}
                         {% set placeholder = 'Auto : nom-prénom' %}
@@ -81,7 +81,7 @@
                         <label for="nom" class="form-label">Nom</label>
                         <input type="text" class="form-control" name="nom" id="nom"
                                value="{{ utilisateur.nom ?? '' }}"
-                               {% if not utilisateur %}onkeyup="setPassAuto()" {% endif %}
+                               {% if not utilisateur and type != 'employe' and mode != 'ajout' %}onkeyup="setPassAuto()" {% endif %}
                                required>
                     </div>
 
@@ -89,7 +89,7 @@
                         <label for="prenom" class="form-label">Prénom</label>
                         <input type="text" class="form-control" name="prenom" id="prenom"
                                value="{{ utilisateur.prenom ?? '' }}"
-                               {% if not utilisateur %}onkeyup="setPassAuto()" {% endif %}
+                               {% if not utilisateur and type != 'employe' and mode != 'ajout' %}onkeyup="setPassAuto()" {% endif %}
                                required>
                     </div>
 
@@ -97,10 +97,12 @@
                         <label for="telephone" class="form-label">Téléphone</label>
                         <input type="tel" class="form-control" name="telephone" id="telephone" value="{{ utilisateur.telephone ?? '' }}" required>
                     </div>
-                    <div class="mb-3 col-12 col-lg-3">
-                        <label for="poste" class="form-label">Poste</label>
-                        <input type="text" class="form-control" name="poste" id="poste" value="{{ utilisateur.poste ?? '' }}">
-                    </div>
+                    {% if is_granted('ROLE_ADMIN') and type == 'employe' %}
+                        <div class="mb-3 col-12 col-lg-3">
+                            <label for="poste" class="form-label">Poste</label>
+                            <input type="text" class="form-control" name="poste" id="poste" value="{{ utilisateur.poste ?? '' }}">
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="row col-12">
                     <div class="mb-3 col-12 col-lg-3">

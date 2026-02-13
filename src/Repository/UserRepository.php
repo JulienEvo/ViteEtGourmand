@@ -314,6 +314,7 @@ class UserRepository
 
             if ($confirmPass != $utilisateur->getPassword())
             {
+                echo "TEST : " . $confirmPass . ' - ' . $utilisateur->getPassword(); exit;
                 return "Les mots de passe ne correspondent pas";
             }
         }

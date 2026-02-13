@@ -95,7 +95,7 @@ class AdminUtilisateurController extends AbstractController
                 $id,
                 $roles,
                 $email,
-                password_hash($password, PASSWORD_DEFAULT),
+                $password,
                 $prenom,
                 $nom,
                 htmlspecialchars(trim($request->request->get('telephone'))),
@@ -127,6 +127,7 @@ class AdminUtilisateurController extends AbstractController
                     ]);
                 }
 
+                $utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
                 $ret = $userRepository->insert($utilisateur);
 
                 if (!is_array($ret) )
@@ -203,7 +204,6 @@ class AdminUtilisateurController extends AbstractController
     #[Route('/{id}/delete', name: 'delete')]
     public function delete(int $id, UserRepository $userRepository, Request $request): Response
     {
-        //= À TESTER avec erreur
         $ret = $userRepository->delete($id);
 
         if ($ret)
@@ -217,7 +217,7 @@ class AdminUtilisateurController extends AbstractController
 
         $type = $request->query->get('type', '');
 
-        return $this->render('admin_utilisateur_index', [
+        return $this->redirectToRoute('admin_utilisateur_index', [
             'type' => $type
         ]);
     }
@@ -279,8 +279,10 @@ class AdminUtilisateurController extends AbstractController
             $utilisateur->setLongitude($longitude);
             $utilisateur->setPoste(htmlspecialchars(trim($request->request->get('poste'))));
             $utilisateur->setActif($request->request->get('actif') ?? true);
-            $utilisateur->setPassword(htmlspecialchars(trim($request->request->get('password'))));
+
+            $password = htmlspecialchars(trim($request->request->get('password')));
             $confirm = htmlspecialchars(trim($request->request->get('confirm')));
+            $utilisateur->setPassword($password);
 
             $save_pass = ($utilisateur->getPassword() != "");
 
@@ -296,6 +298,7 @@ class AdminUtilisateurController extends AbstractController
                 }
             }
 
+            $utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
             if ($userRepository->update($utilisateur, $save_pass))
             {
                 if ($save_pass)
