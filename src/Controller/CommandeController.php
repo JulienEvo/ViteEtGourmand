@@ -276,7 +276,7 @@ class CommandeController extends AbstractController
         $mongo_db = $client->vite_et_gourmand_stats;
 
         $stats_commande = $mongo_db->commande;
-        $res = $stats_commande->insertOne([
+    $res = $stats_commande->insertOne([
             'commande_id' => $commande_id,
             'commande_numero' => $commande->getNumero(),
             'utilisateur_id' => $utilisateur_id,
