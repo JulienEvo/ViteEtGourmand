@@ -211,16 +211,18 @@ class AdminCommandeController extends AbstractController
     #[Route('/{id}/delete', name: 'delete')]
     public function delete(int $id, CommandeRepository $commandeRepository, Request $request): Response
     {
-        $definitif = $request->query->get('definitif', false);
+        $supprimer = $request->query->get('supprimer', false);
         $fromUser = $request->query->get('fromUser', 0);
 
         $mode = 'supprimée';
-        if ($definitif)
+        if ($supprimer)
         {
+            // Supprime la commande
             $ret = $commandeRepository->delete($id);
         }
         else
         {
+            // Annule la commande
             $ret = ['error' => "Commande introuvable ({$id})"];
             $mode = 'annulée';
 
@@ -233,7 +235,7 @@ class AdminCommandeController extends AbstractController
             }
         }
 
-        if (is_int($ret))
+        if (is_int($ret) || is_bool($ret))
         {
             $this->addFlash('success', "Commande {$mode} avec succès");
         }

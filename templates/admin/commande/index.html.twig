@@ -50,7 +50,7 @@
                                 <a href="{{ lien_cmd }}" class="btn btn-sm btn-warning" title="Voir la commande">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a href="{{ path('admin_commande_delete', {id: item.commande.id}) }}" class="btn btn-sm btn-danger" title="Supprimer la commande" onclick="return confirm('Êtes-vous sûr de vouloir supprimer la commande ?')">
+                                <a href="{{ path('admin_commande_delete', {id: item.commande.id, supprimer: 1}) }}" class="btn btn-sm btn-danger" title="Supprimer la commande" onclick="return confirm('Êtes-vous sûr de vouloir supprimer la commande ?')">
                                     <i class="bi bi-trash3-fill"></i>
                                 </a>
                             </div>
