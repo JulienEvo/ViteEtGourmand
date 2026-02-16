@@ -32,17 +32,17 @@ class AdminSocieteController extends AbstractController
 
         if ($request->isMethod('POST')) {
             // Récupère les données du formulaire
-            $societe->setLibelle(htmlspecialchars(trim($request->request->get('libelle'))));
-            $societe->setStatut(htmlspecialchars(trim($request->request->get('statut'))));
+            $societe->setLibelle(trim($request->request->get('libelle')));
+            $societe->setStatut(trim($request->request->get('statut')));
             $societe->setCapital($request->request->get('capital'));
-            $societe->setRcs(htmlspecialchars(trim($request->request->get('rcs'))));
-            $societe->setTva(htmlspecialchars(trim($request->request->get('tva'))));
-            $societe->setTelephone(htmlspecialchars(trim($request->request->get('telephone'))));
-            $societe->setEmail(htmlspecialchars(trim($request->request->get('email'))));
-            $societe->setAdresse(htmlspecialchars(trim($request->request->get('adresse'))));
-            $societe->setCode_postal(htmlspecialchars(trim($request->request->get('code_postal'))));
-            $societe->setCommune(htmlspecialchars(trim($request->request->get('commune'))));
-            $societe->setPays(htmlspecialchars(trim($request->request->get('pays'))));
+            $societe->setRcs(trim($request->request->get('rcs')));
+            $societe->setTva(trim($request->request->get('tva')));
+            $societe->setTelephone(trim($request->request->get('telephone')));
+            $societe->setEmail(trim($request->request->get('email')));
+            $societe->setAdresse(trim($request->request->get('adresse')));
+            $societe->setCode_postal(trim($request->request->get('code_postal')));
+            $societe->setCommune(trim($request->request->get('commune')));
+            $societe->setPays(trim($request->request->get('pays')));
             $societe->setActif($request->request->get('actif') ?? true);
 
             // HORAIRES
@@ -86,9 +86,9 @@ class AdminSocieteController extends AbstractController
         $societe = $societeRepository->findById(1);
 
         if ($request->isMethod('POST')) {
-            $titre = htmlspecialchars(trim($request->request->get('titre')));
-            $email = htmlspecialchars(trim($request->request->get('email')));
-            $message = htmlspecialchars(trim($request->request->get('message')));
+            $titre = trim($request->request->get('titre'));
+            $email = trim($request->request->get('email'));
+            $message = trim($request->request->get('message'));
 
             // Envoie email à l'administrateur
             $lien_repondre = "mailto:".$email;

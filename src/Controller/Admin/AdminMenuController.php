@@ -62,9 +62,9 @@ class AdminMenuController extends AbstractController
 
                     $menu = new Menu(
                         $id,
-                        htmlspecialchars(trim($request->request->get('libelle'))),
-                        htmlspecialchars(trim($request->request->get('description'))),
-                        htmlspecialchars(trim($request->request->get('conditions'))),
+                        trim($request->request->get('libelle')),
+                        trim($request->request->get('description')),
+                        trim($request->request->get('conditions')),
                         $request->request->get('quantite_min'),
                         $request->request->get('tarif_unitaire'),
                         $request->request->get('quantite_disponible'),

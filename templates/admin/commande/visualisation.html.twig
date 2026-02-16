@@ -55,7 +55,7 @@
                     <p>{{ commande.quantite }}</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
-                    <label class="form-label">Total TTC</label>
+                    <label class="form-label">Total menus</label>
                     <p>{{ commande.total_ttc }} €</p>
                 </div>
                 <div class="mb-3 col-12 col-lg-2">
@@ -136,7 +136,7 @@
     {% endif %}
 
     {% if is_granted('ROLE_USER') %}
-        {% set retour = path('admin_commande_historique', {id: app.user.id}) %}
+        {% set retour = path('admin_commande_historique') %}
     {% else %}
         {% set retour = path('admin_commande_index') %}
     {% endif %}
@@ -145,6 +145,13 @@
         <a href="{{ retour }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
         </a>
+
+        <!-- Le client peut annuler sa commande tant que l'état n'est pas "Acceptée" -->
+        {% if commande.commande_etat_id == 1 %}
+            <a href="{{ path('admin_commande_delete', {id: commande.id, fromUser: 1}) }}" class="btn btn-danger">
+                <i class="bi bi-trash"></i>&nbsp;Annuler la commande
+            </a>
+        {% endif %}
     </div>
 
     <script src="{{ asset('js/image.js') }}"></script>

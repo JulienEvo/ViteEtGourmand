@@ -57,13 +57,13 @@ class AdminUtilisateurController extends AbstractController
         if ($request->isMethod('POST')) {
 
             $roles = [$request->request->get('role')];
-            $nom = htmlspecialchars(trim($request->request->get('nom')));
-            $prenom = htmlspecialchars(trim($request->request->get('prenom')));
-            $email = htmlspecialchars(trim($request->request->get('email')));
-            $password = htmlspecialchars(trim($request->request->get('password')));
-            $confirm = htmlspecialchars(trim($request->request->get('confirm')));
-            $adresse = htmlspecialchars(trim($request->request->get('adresse')));
-            $commune = htmlspecialchars(trim($request->request->get('commune')));
+            $nom = trim($request->request->get('nom'));
+            $prenom = trim($request->request->get('prenom'));
+            $email = trim($request->request->get('email'));
+            $password = trim($request->request->get('password'));
+            $confirm = trim($request->request->get('confirm'));
+            $adresse = trim($request->request->get('adresse'));
+            $commune = trim($request->request->get('commune'));
 
             $latitude = null;
             $longitude = null;
@@ -99,14 +99,14 @@ class AdminUtilisateurController extends AbstractController
                 $password,
                 $prenom,
                 $nom,
-                htmlspecialchars(trim($request->request->get('telephone'))),
+                trim($request->request->get('telephone')),
                 $adresse,
-                htmlspecialchars(trim($request->request->get('code_postal'))),
+                trim($request->request->get('code_postal')),
                 $commune,
-                htmlspecialchars(trim($request->request->get('pays'))),
+                trim($request->request->get('pays')),
                 $latitude,
                 $longitude,
-                htmlspecialchars(trim($request->request->get('poste'))),
+                trim($request->request->get('poste')),
                 $request->request->get('actif'),
                 new DateTime(),
                 new DateTime(),
@@ -238,8 +238,8 @@ class AdminUtilisateurController extends AbstractController
 
         if ($request->isMethod('POST'))
         {
-            $adresse = htmlspecialchars(trim($request->request->get('adresse')));
-            $commune = htmlspecialchars(trim($request->request->get('commune')));
+            $adresse = trim($request->request->get('adresse'));
+            $commune = trim($request->request->get('commune'));
 
             $latitude = $request->request->get('latitude');
             $longitude = $request->request->get('longitude');
@@ -271,20 +271,20 @@ class AdminUtilisateurController extends AbstractController
 
 
             // Récupère les données du formulaire
-            $utilisateur->setNom(htmlspecialchars(trim($request->request->get('nom'))));
-            $utilisateur->setPrenom(htmlspecialchars(trim($request->request->get('prenom'))));
-            $utilisateur->setTelephone(htmlspecialchars(trim($request->request->get('telephone'))));
-            $utilisateur->setAdresse(htmlspecialchars(trim($request->request->get('adresse'))));
-            $utilisateur->setCode_postal(htmlspecialchars(trim($request->request->get('code_postal'))));
-            $utilisateur->setCommune(htmlspecialchars(trim($request->request->get('commune'))));
-            $utilisateur->setPays(htmlspecialchars(trim($request->request->get('pays'))));
+            $utilisateur->setNom(trim($request->request->get('nom')));
+            $utilisateur->setPrenom(trim($request->request->get('prenom')));
+            $utilisateur->setTelephone(trim($request->request->get('telephone')));
+            $utilisateur->setAdresse(trim($request->request->get('adresse')));
+            $utilisateur->setCode_postal(trim($request->request->get('code_postal')));
+            $utilisateur->setCommune(trim($request->request->get('commune')));
+            $utilisateur->setPays(trim($request->request->get('pays')));
             $utilisateur->setLatitude($latitude);
             $utilisateur->setLongitude($longitude);
-            $utilisateur->setPoste(htmlspecialchars(trim($request->request->get('poste'))));
+            $utilisateur->setPoste(trim($request->request->get('poste')));
             $utilisateur->setActif($request->request->get('actif') ?? true);
 
-            $password = htmlspecialchars(trim($request->request->get('password')));
-            $confirm = htmlspecialchars(trim($request->request->get('confirm')));
+            $password = trim($request->request->get('password'));
+            $confirm = trim($request->request->get('confirm'));
             $utilisateur->setPassword($password);
 
             $save_pass = ($utilisateur->getPassword() != "");

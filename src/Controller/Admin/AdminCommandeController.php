@@ -209,25 +209,51 @@ class AdminCommandeController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete')]
-    public function delete(int $id, CommandeRepository $commandeRepository): Response
+    public function delete(int $id, CommandeRepository $commandeRepository, Request $request): Response
     {
-        $ret = $commandeRepository->delete($id);
+        $definitif = $request->query->get('definitif', false);
+        $fromUser = $request->query->get('fromUser', 0);
 
-        if ($ret)
+        $mode = 'supprimée';
+        if ($definitif)
         {
-            $this->addFlash('success', 'Commande supprimée avec succès');
+            $ret = $commandeRepository->delete($id);
         }
         else
         {
-            $this->addFlash('danger', 'Une erreur est survenue lors de la suppression de la commande : '.$ret);
+            $ret = ['error' => "Commande introuvable ({$id})"];
+            $mode = 'annulée';
+
+            $commande = $commandeRepository->findById($id);
+            if (isset($commande))
+            {
+                $commande->setCommande_etat_id(Commande::ETAT_ANNULEE);
+
+                $ret = $commandeRepository->update($commande);
+            }
         }
 
-        return $this->redirectToRoute('admin_commande_index');
+        if (is_int($ret))
+        {
+            $this->addFlash('success', "Commande {$mode} avec succès");
+        }
+        else
+        {
+            $this->addFlash('danger', 'Une erreur est survenue : '.$ret['error']);
+        }
+
+        if ($fromUser == 1)
+        {
+            return $this->redirectToRoute('admin_commande_historique');
+        }
+        else
+        {
+            return $this->redirectToRoute('admin_commande_index');
+        }
     }
 
-    #[Route('/{id}/historique', name: 'historique')]
+    #[Route('/historique', name: 'historique')]
     public function historique(
-        int $id,
         Security $security,
         CommandeRepository $commandeRepository,
         GeneriqueRepository $generiqueRepository,
@@ -287,7 +313,6 @@ class AdminCommandeController extends AbstractController
         {
             $total_ttc -= ($total_ttc * $commande->getRemise() / 100);
         }
-        $commande->setTotal_ttc(round($total_ttc, 2));
 
         // Calcule des frais de livraison
         $distance_km = 0;
@@ -308,9 +333,12 @@ class AdminCommandeController extends AbstractController
                 }
 
                 $total_livraison += round($distance_km * 0.59, 2);
+                $total_ttc += $total_livraison;
             }
             $commande->setTotal_livraison(round($total_livraison, 2));
         }
+
+        $commande->setTotal_ttc(round($total_ttc, 2));
 
         $tab_avis = $avisRepository->findByParam($commande->getUtilisateur_id(), $commande->getId(), true);
         $tab_utilisateur = [$utilisateur->getId() => $utilisateur];

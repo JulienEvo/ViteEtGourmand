@@ -105,7 +105,9 @@ class CommandeController extends AbstractController
 
         $menu_id = $request->request->getInt('menu_id');
         $quantite = $request->request->getInt('quantite');
+        $total_menu = $request->request->get('total_menu');
         $remise = $request->request->get('remise');
+        $total_livraison = $request->request->get('total_livraison');
         $total_ttc = $request->request->get('total_ttc');
 
         // Vérifie l'utilisateur connecté
@@ -171,6 +173,7 @@ class CommandeController extends AbstractController
         }
 
         // Calcule des frais de livraison
+        /*
         $total_livraison = 5;
         $utilisateur = $this->getUser();
 
@@ -193,7 +196,7 @@ class CommandeController extends AbstractController
 
             $total_livraison += round($distance_km * 0.59, 2);
         }
-
+        */
 
         // Création de la commande
         $numero = $commandeRepository->getNumero();
@@ -239,6 +242,12 @@ class CommandeController extends AbstractController
         $date_livraison = $commande->getDate()->format('d/m/Y');
         $lienContact = $this->generateUrl('contact', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
+        $cmd_remise = '';
+        if ($commande->getRemise() > 0)
+        {
+            $cmd_remise = 'Remise de '.$commande->getRemise().' %<br>';
+        }
+
         $email = (new Email())
             ->from('no-reply@vite-et-gourmand.fr')
             ->to($utilisateur->getEmail())
@@ -251,18 +260,21 @@ class CommandeController extends AbstractController
                                 <br>
                                 Nous vous confirmons que votre commande n°{$commande->getNumero()} a bien été prise en compte et est actuellement en cours de traitement.
                                 <br>
-                                <h2>Récapitulatif de la command</h2>
-                                <br>
+                                <h2>Récapitulatif de la commande</h2>
                                 Date de commande : {$date_commande}<br>
-                                Remise : {$commande->getRemise()}<br>
                                 Date de livraison : {$date_livraison}<br>
+                                Prix unitaire du menu : {$menu->getTarif_unitaire()} €<br>
+                                Nombre de personnes : {$commande->getQuantite()} €<br>
+                                Total menu : {$total_menu} €<br>
+                                {$cmd_remise}
+                                Frais de livraison : {$commande->getTotal_livraison()} €<br>
                                 Montant total : {$commande->getTotal_ttc()} €<br>
                                 <br>
                                 Si vous avez la moindre question, notre équipe reste à votre disposition via le formulaire de contact :
                                 <a href='{$lienContact}'>Formulaire de contact</a>
                                 <br>
                                 Nous vous remercions pour votre confiance et espérons vous revoir très bientôt.
-                                <br>
+                                <br><br>
                                 Cordialement,<br>
                                 L’équipe <b>Vite & Gourmand</b>
                             </p>
@@ -276,7 +288,7 @@ class CommandeController extends AbstractController
         $mongo_db = $client->vite_et_gourmand_stats;
 
         $stats_commande = $mongo_db->commande;
-    $res = $stats_commande->insertOne([
+        $res = $stats_commande->insertOne([
             'commande_id' => $commande_id,
             'commande_numero' => $commande->getNumero(),
             'utilisateur_id' => $utilisateur_id,
@@ -289,6 +301,7 @@ class CommandeController extends AbstractController
         ]);
 
 
+        // Commande validée : Page de visualisation de la commande
         $this->addFlash('success', "Commande validée avec succès");
         return $this->redirectToRoute('admin_commande_visualisation', [
             'id' => $commande_id,

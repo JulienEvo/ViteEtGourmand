@@ -124,8 +124,8 @@ class CommandeRepository
                 $row->longitude,
                 $row->pret_materiel,
                 $row->quantite,
-                $row->total_livraison,
-                $row->total_ttc,
+                round($row->total_livraison, 2),
+                round($row->total_ttc, 2),
                 $row->remise,
                 new DateTime($row->created_at),
             );
@@ -163,8 +163,8 @@ class CommandeRepository
                 $row->longitude,
                 $row->pret_materiel,
                 $row->quantite,
-                $row->total_livraison,
-                $row->total_ttc,
+                round($row->total_livraison, 2),
+                round($row->total_ttc, 2),
                 $row->remise,
                 new DateTime($row->created_at)
             );

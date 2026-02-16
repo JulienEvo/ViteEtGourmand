@@ -78,7 +78,7 @@
 
         {% if not is_granted('ROLE_ADMIN') and not is_granted('ROLE_EMPLOYE') %}
             <li class="nav-item">
-                <a href="{{ path('admin_commande_historique', {id: 0}) }}"
+                <a href="{{ path('admin_commande_historique') }}"
                    class="nav-link {{ app.request.get('_route') starts with 'admin_commande_historique' ? 'active' : 'text-white' }}">
                     <i class="bi bi-bag-fill"></i><span class="nav-text" title="Historique">&emsp;Historique</span>
                 </a>

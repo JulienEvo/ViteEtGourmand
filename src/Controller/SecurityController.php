@@ -60,25 +60,25 @@ class SecurityController extends AbstractController
         if ($request->isMethod('POST')) {
 
             $token = new CsrfToken('register', $request->request->get('_csrf_token'));
-            $email = htmlspecialchars(trim($request->request->get('email')));
-            $password = htmlspecialchars(trim($request->request->get('password')));
-            $confirm_password = htmlspecialchars(trim($request->request->get('confirm_password')));
+            $email = trim($request->request->get('email'));
+            $password = trim($request->request->get('password'));
+            $confirm_password = trim($request->request->get('confirm_password'));
 
             $utilisateur = new User(
                 0,
                 [$request->request->get('roles', 'ROLE_USER')],
                 $email,
                 $password,
-                htmlspecialchars(trim($request->request->get('prenom'))),
-                htmlspecialchars(trim($request->request->get('nom'))),
-                htmlspecialchars(trim($request->request->get('telephone'))),
-                htmlspecialchars(trim($request->request->get('adresse'))),
-                htmlspecialchars(trim($request->request->get('code_postal'))),
-                htmlspecialchars(trim($request->request->get('commune'))),
-                htmlspecialchars(trim($request->request->get('pays'))),
+                trim($request->request->get('prenom')),
+                trim($request->request->get('nom')),
+                trim($request->request->get('telephone')),
+                trim($request->request->get('adresse')),
+                trim($request->request->get('code_postal')),
+                trim($request->request->get('commune')),
+                trim($request->request->get('pays')),
                 $request->request->get('latitude'),
                 $request->request->get('longitude'),
-                (htmlspecialchars(trim($request->request->get('poste'))) ?? '')
+                trim($request->request->get('poste')) ?? ''
             );
 
             if (!$csrfTokenManager->isTokenValid($token)) {

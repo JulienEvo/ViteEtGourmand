@@ -99,8 +99,8 @@ class AdminPlatController extends AbstractController
             // PLAT
             $plat = new Plat(
                 $id,
-                htmlspecialchars(trim($request->request->get('libelle'))),
-                htmlspecialchars(trim($request->request->get('description'))),
+                trim($request->request->get('libelle')),
+                trim($request->request->get('description')),
                 $request->request->get('type_id'),
                 $image,
                 $request->request->get('actif'),

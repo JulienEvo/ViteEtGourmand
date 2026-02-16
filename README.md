@@ -88,39 +88,37 @@ Pour ce projet, l'environnement de travail a été configuré de manière à per
 déploiement sécurisé en production.
 
 ### 1. Développement local :
-- Serveur : Symfony Server ou VirtualHost Apache pointant vers `public/`
-- Justification : assure que les fichiers sensibles restent protégés et que le routage Symfony fonctionne correctement.
+- Serveur : Apache avec VirtualHost pointant vers le dossier `public/`
+- Objectif recherché : assure que les fichiers sensibles restent protégés et que le routage Symfony fonctionne correctement.
 
 ### 2. PHP & Composer :
 - PHP 8.2
 - Composer pour gérer les dépendances
-- Justification : compatibilité avec Symfony 6 et les bundles utilisés.
+- Atouts : compatibilité avec Symfony 7.4 et les bundles utilisés.
 
 ### 3. Base de données :
 - MariaDB (MySQL)
-- Création via script SQL `CREATE DATABASE IF NOT EXISTS vite_et_gourmand`
-- Justification : assure que la base peut être créée même si elle existe déjà, facilitant les tests et réinitialisations.
+- Création des tables de la base de données et insertions de données fonctionnelles via un script SQL.
+- Objectifs recherchés : Avoir une base de données relationnelle performante et fiable, facilement évolutive et reproductible.
 
 ### 4. Variables d'environnement :
-- `.env` : valeurs par défaut commit
+- `.env` : valeurs par défaut
 - `.env.local` : secrets locaux (APP_SECRET, mot de passe BDD)
-- Justification : sécurise les informations sensibles tout en permettant la portabilité entre environnements.
+- Avantages : sécurise les informations sensibles tout en permettant la portabilité entre environnements.
 
 ### 5. Déploiement en production :
-- Hébergeur : Alwaysdata
+- Hébergeur : AlwaysData (https://www.alwaysdata.com/fr/)
 - Répertoire racine : `public/`
 - Variables d'environnement configurées dans les paramètres avancés
-- Justification : permet de déployer le site sans exposer les secrets dans le dépôt Git et en respectant les bonnes pratiques Symfony.
-
-Cet environnement permet de développer, tester et déployer le projet de manière sécurisée, organisée et conforme aux bonnes pratiques.
+- Objectif recherché : permettre de déployer le site sans exposer les informations sensibles dans le dépôt Git en respectant les bonnes pratiques Symfony.
 
 ---
 
 ## Sécurité
 
 - Les informations sensibles ne sont pas versionnées
-- Les accès sont protégés par le système de sécurité Symfony
-- Les requêtes sont sécurisées via le composant PDO
+- Les accès sont protégés par le système de sécurité Symfony (rôles)
+- Les requêtes sont sécurisées via PDO
 
 ---
 
@@ -129,24 +127,25 @@ Cet environnement permet de développer, tester et déployer le projet de maniè
 Le site est déployé sur un serveur distant via **AlwaysData**.
 
 - Hébergement PHP
-- Base de données **MariaDB**
+- Base de données relationnelle **MariaDB**
+- Base de données non relationnelle **MongoDB** (non par défaut)
 - Accès distant via **SSH/SFTP**
 - Domaine public fourni par l’hébergeur
 
 ---
 
-## Comptes de test
+## Comptes de tests
 
 Administrateur
-- Email : admin@test.fr
-- Mot de passe : Admin123+
+- Email : jose@vite-et-gourmand.fr
+- Mot de passe : Administrateur123+
 
 Employé
-- Email : employe@test.fr
+- Email : employe1@vite-et-gourmand.fr
 - Mot de passe : Employe123+
 
 Utilisateur
-- Email : utilisateur@test.fr
+- Email : utilisateur1@studi.fr
 - Mot de passe : Utilisateur123+
 
 ---

@@ -87,10 +87,10 @@
                         <label for="pret_materiel_1" class="form-label">Prêt materiel</label>
                         <div>
                             <span>Oui :&nbsp;</span>
-                            <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (commande.pret_materiel == 1) %} {{ 'checked' }} {% endif %} readonly>
+                            <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (commande.pret_materiel ?? 0 == 1) %} {{ 'checked' }} {% endif %} readonly>
 
                             <span>Non :&nbsp;</span>
-                            <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (commande.pret_materiel == 0) %} {{ 'checked' }} {% endif %} readonly>
+                            <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (commande.pret_materiel ?? 0 == 0) %} {{ 'checked' }} {% endif %} readonly>
                         </div>
                     </div>
 
@@ -127,7 +127,7 @@
                                 <td class="text-end">{{ (commande.quantite ?? 0) * (tarif_unitaire) }} €</td>
                                 <td class="text-end">{{ commande.remise ?? '' }} %</td>
                                 <td class="text-end">{{ total_livraison }} €</td>
-                                <td class="text-end">{{ commande.total_ttc + total_livraison ?? 0 }} €</td>
+                                <td class="text-end">{{ commande.total_ttc ?? 0 + total_livraison ?? 0 }} €</td>
                             </tr>
                             </tbody>
                         </table>

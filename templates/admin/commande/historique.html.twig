@@ -16,6 +16,7 @@
             <th>Menu</th>
             <th>Quantité</th>
             <th>Montant</th>
+            <th>Prêt matériel</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -28,7 +29,8 @@
                     <td>{{ commande.date|date('d/m/Y') }}</td>
                     <td>{{ tabMenu[commande.menu_id].libelle }}</td>
                     <td>{{ commande.quantite }}</td>
-                    <td>{{ commande.total_ttc - ((commande.total_ttc * commande.remise) / 100) + commande.total_livraison }} €</td>
+                    <td>{{ commande.total_ttc }} €</td>
+                    <td>{{ commande.pret_materiel ? '<span class="text-danger fw-bold">Oui<span>':'Non' }}</td>
                     <td>
                         <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning" title="Voir la commande">
                             <i class="bi bi-pencil-square"></i>

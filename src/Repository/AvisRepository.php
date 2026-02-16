@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Avis;
 use App\Entity\Commande;
+use App\Service\FonctionsService;
 use PDO;
 use DateTime;
 
@@ -122,25 +123,25 @@ class AvisRepository
 
     public function findByParam(int $utilisateur_id = 0, int $commande_id = 0, bool $valide_only = false): array
     {
+        $vars = [];
         $sql = "SELECT avis.*
                 FROM avis
                 WHERE 1";
-        $vars = [];
 
         if ($utilisateur_id > 0)
         {
             $sql .= " AND utilisateur_id = :utilisateur_id";
-            $vars['utilisateur_id'] = $utilisateur_id;
+            $vars[':utilisateur_id'] = $utilisateur_id;
         }
         if ($commande_id > 0)
         {
             $sql .= " AND commande_id = :commande_id";
-            $vars['commande_id'] = $commande_id;
+            $vars[':commande_id'] = $commande_id;
         }
         if ($valide_only)
         {
-            $sql .= " AND valide = :statut-valide";
-            $vars['statut-valide'] = Avis::STATUT_VALIDE;
+            $sql .= " AND valide = :statut_valide";
+            $vars[':statut_valide'] = Avis::STATUT_VALIDE;
         }
 
         $sql .= " ORDER BY created_at DESC";

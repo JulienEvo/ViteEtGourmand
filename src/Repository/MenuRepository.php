@@ -118,12 +118,15 @@ class MenuRepository
                         JOIN regime ON regime.id = menu_regime.regime_id
                         WHERE menu_regime.menu_id = menu.id
                     ), '') AS regimes
-                FROM menu";
+                FROM menu
+                WHERE 1";
 
         if ($only_actif)
         {
-            $sql .= " WHERE actif = 1";
+            $sql .= " AND menu.actif = 1";
         }
+
+        $sql .= " ORDER BY menu.libelle";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
@@ -193,7 +196,8 @@ class MenuRepository
         $sql = "SELECT *
                 FROM menu
                 LEFT OUTER JOIN commande ON commande.menu_id = menu.id
-                WHERE commande.id = :commande_id";
+                WHERE commande.id = :commande_id
+                ORDER BY commande.created_at DESC";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':commande_id' => $commande_id]);
@@ -272,7 +276,8 @@ class MenuRepository
             $sql .= " AND menu.actif = 1 AND menu.quantite_disponible > 0";
         }
 
-        $sql .= " GROUP BY menu.id";
+        $sql .= " GROUP BY menu.id
+                  ORDER BY menu.libelle";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($vars);

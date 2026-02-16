@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <!-- BOUTONS HEADER -->
     <div class="d-flex justify-content-between ms-3 mt-3">
         <a href="{{ path('menu_index') }}" class="btn btn-secondary" title="Retour">
             <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
@@ -110,10 +109,13 @@
             </div>
         </div>
 
-        <!-- BOUTONS FOOTER -->
-        <div class="d-flex justify-content-between ms-3 mb-3">
+        <div class="d-flex justify-content-between ms-3 mb-3 me-3">
             <a href="{{ path('menu_index') }}" class="btn btn-secondary" title="Retour">
                 <i class="bi bi-arrow-left-square"></i>&nbsp;Retour
+            </a>
+
+            <a href="{{ path('commande_ajout', {menu_id: menu.id, quantite: menu.quantite_min}) }}" class="btn btn-success" title="Commander">
+                <i class="bi bi-cart"></i>&nbsp;Commander
             </a>
         </div>
     </div>
