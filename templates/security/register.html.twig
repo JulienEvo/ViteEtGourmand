@@ -26,7 +26,7 @@
 
             <form method="post" action="{{ path('register') }}">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
-                <input type="hidden" name="roles" value="'ROLE_USER'">
+                <input type="hidden" name="roles" value="ROLE_USER">
 
                 <div class="card mb-3">
                     <div class="card-header">

@@ -2,11 +2,13 @@
 
 namespace App\Repository;
 
+use App\Controller\Admin\AdminUtilisateurController;
 use App\Entity\User;
 use App\Service\FonctionsService;
 use PDO;
 use DateTime;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class UserRepository
 {
@@ -17,7 +19,7 @@ class UserRepository
         $this->pdo = $pdo;
     }
 
-    public function insert(User $user): int|array
+    public function insert(User $user, HttpClientInterface $httpClient, AdminUtilisateurController $adminUtilisateurController): int|array
     {
         $vars = [
             'roles' => json_encode($user->getRoles()),
@@ -30,26 +32,39 @@ class UserRepository
             'code_postal' => $user->getCode_postal(),
             'commune' => $user->getCommune(),
             'pays' => $user->getPays(),
+            'latitude' => 0,
+            'longitude' => 0,
             'poste' => $user->getPoste(),
             'created_at' => date('Y-m-d H:i:s')
         ];
 
-        $sql_ins = '';
-        $sql_val = '';
-        $latitude = $user->getLatitude();
-        $longitude = $user->getLongitude();
-        if (isset($latitude) && isset($longitude))
+        // Géolocalise l'adresse
+        $geocode = $adminUtilisateurController->geocode($user->getAdresse(), $user->getCommune(), $httpClient);
+        $data = json_decode($geocode->getContent(), true);
+
+        if (isset($data['erreur']))
         {
-            $sql_ins = "latitude, longitude, ";
-            $sql_val = ":latitude, :longitude, ";
+            return "Erreur de géolocalisation : ".$data['erreur'];
+        }
+        else
+        {
+            $user->setLatitude($data['latitude']);
+            $user->setLongitude($data['longitude']);
+            $ville = $data['ville'];
+
+            if ($ville != "" && strtoupper($ville) != strtoupper($user->getCommune())) {
+                $user->setCommune($ville);
+            }
+
             $vars['latitude'] = $user->getLatitude();
             $vars['longitude'] = $user->getLongitude();
         }
 
+        // Requête d'insertion
         $sql = "INSERT INTO utilisateur
-                    (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, {$sql_ins} poste, created_at)
+                    (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, latitude, longitude, poste, created_at)
                 VALUES
-                    (:roles, :email, :password, :prenom, :nom, :telephone, :adresse, :code_postal, :commune, :pays, {$sql_val} :poste, :created_at)";
+                    (:roles, :email, :password, :prenom, :nom, :telephone, :adresse, :code_postal, :commune, :pays, :latitude, :longitude, :poste, :created_at)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute($vars))
@@ -61,8 +76,7 @@ class UserRepository
         }
     }
 
-    public function update(UserInterface $user, bool $save_pass): bool|array
-
+    public function update(UserInterface $user, bool $save_pass, HttpClientInterface $httpClient, AdminUtilisateurController $adminUtilisateurController): bool|array
     {
         $vars = [
             ':roles' => json_encode($user->getRoles()),
@@ -74,12 +88,15 @@ class UserRepository
             ':code_postal' => $user->getCode_postal(),
             ':commune' => $user->getCommune(),
             ':pays' => $user->getPays(),
+            ':latitude' => $user->getLatitude(),
+            ':longitude' => $user->getLongitude(),
             ':poste' => $user->getPoste(),
             ':actif' => $user->getActif(),
             ':updated' => date('Y-m-d'),
             ':id' => $user->getUserId(),
         ];
 
+        // Modification du mot de passe
         $password = "";
         if ($save_pass)
         {
@@ -87,19 +104,29 @@ class UserRepository
             $password = "password=:password,";
         }
 
-        $sql_upl = "";
-        $latitude = $user->getLatitude();
-        $longitude = $user->getLongitude();
-        if (isset($latitude) && $latitude != '' && isset($longitude) && $longitude != '')
+        // Géolocalise l'adresse
+        $geocode = $adminUtilisateurController->geocode($user->getAdresse(), $user->getCommune(), $httpClient);
+        $data = json_decode($geocode->getContent(), true);
+
+        if (!isset($data['erreur']))
         {
-            $sql_upl = "latitude=:latitude, longitude=:longitude, ";
+            $user->setLatitude($data['latitude']);
+            $user->setLongitude($data['longitude']);
+            $ville = $data['ville'];
+
+            if ($ville != "" && strtoupper($ville) != strtoupper($user->getCommune())) {
+                $user->setCommune($ville);
+            }
+
             $vars['latitude'] = $user->getLatitude();
             $vars['longitude'] = $user->getLongitude();
         }
 
+        // Requête de modification
         $sql = "UPDATE utilisateur
                 SET roles=:roles, email=:email, {$password} prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
-                    code_postal=:code_postal, commune=:commune, pays=:pays, {$sql_upl} poste=:poste, actif=:actif, updated_at=:updated
+                    code_postal=:code_postal, commune=:commune, pays=:pays, latitude=:latitude, longitude=:longitude,
+                    poste=:poste, actif=:actif, updated_at=:updated
                 WHERE id = :id";
 
         $stmt = $this->pdo->prepare($sql);
@@ -314,7 +341,6 @@ class UserRepository
 
             if ($confirmPass != $utilisateur->getPassword())
             {
-                echo "TEST : " . $confirmPass . ' - ' . $utilisateur->getPassword(); exit;
                 return "Les mots de passe ne correspondent pas";
             }
         }

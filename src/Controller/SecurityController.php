@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Admin\AdminUtilisateurController;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\FonctionsService;
@@ -15,6 +16,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Config\Security\FirewallConfig\AccessToken\TokenHandler\Oidc\EncryptionConfig;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SecurityController extends AbstractController
 {
@@ -28,9 +30,12 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
-    public function login(AuthenticationUtils $authUtils, UserRepository $userRepository, Request $request): Response
+    public function login(AuthenticationUtils $authenticationUtils, UserRepository $userRepository, Request $request): Response
     {
         $redirect = $request->query->get('redirect', 'home');
+
+        $error = $authenticationUtils->getLastAuthenticationError();
+        $lastUsername = $authenticationUtils->getLastUsername();
 
         if ($this->getUser()) {
             $this->addFlash('success', "Bienvenue " . $this->getUser()->getPrenom());
@@ -38,8 +43,8 @@ class SecurityController extends AbstractController
         }
 
         return $this->render('security/login.html.twig', [
-            'last_username' => $authUtils->getLastUsername(),
-            'error' => $authUtils->getLastAuthenticationError()
+            'last_username' => $lastUsername,
+            'error' => $error,
         ]);
     }
 
@@ -48,7 +53,7 @@ class SecurityController extends AbstractController
     {}
 
     #[Route('/register', name: 'register')]
-    public function register(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function register(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager, HttpClientInterface $httpClient, AdminUtilisateurController $adminUtilisateurController): Response
     {
 
         if ($request->isMethod('POST')) {
@@ -87,10 +92,10 @@ class SecurityController extends AbstractController
                 return $this->render('security/register.html.twig', ['utilisateur' => $utilisateur]);
             }
 
-            if ($userRepository->insert($utilisateur))
+            if ($userRepository->insert($utilisateur, $httpClient, $adminUtilisateurController))
             {
                 $this->addFlash('success', 'Compte créé avec succès');
-                return $this->render('security/login.html.twig', ['last_username' => $email]);
+                return $this->redirectToRoute('login', ['last_username' => $email]);
             }
             else
             {

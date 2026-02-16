@@ -42,7 +42,8 @@ class AdminUtilisateurController extends AbstractController
         UserRepository $userRepository,
         Request $request,
         MailerInterface $mailer,
-        HttpClientInterface $httpClient
+        HttpClientInterface $httpClient,
+        AdminUtilisateurController $adminUtilisateurController,
     ): Response
     {
         // Récupère l'employé par son ID
@@ -69,7 +70,7 @@ class AdminUtilisateurController extends AbstractController
             if (!isset($utilisateur) || $utilisateur->getAdresse() != $adresse || $utilisateur->getCommune() != $commune)
             {
                 // Géolocalise l'adresse
-                $geocode = $this->geocode($adresse, $commune, $httpClient);
+            $geocode = $this->geocode($adresse, $commune, $httpClient);
 
                 $data = json_decode($geocode->getContent(), true);
 
@@ -128,7 +129,7 @@ class AdminUtilisateurController extends AbstractController
                 }
 
                 $utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
-                $ret = $userRepository->insert($utilisateur);
+                $ret = $userRepository->insert($utilisateur, $httpClient, $adminUtilisateurController);
 
                 if (!is_array($ret) )
                 {
@@ -180,8 +181,7 @@ class AdminUtilisateurController extends AbstractController
             else
             {
                 //*** UPDATE ***//
-
-                $ret = $userRepository->update($utilisateur, $password != "");
+                $ret = $userRepository->update($utilisateur, $password != "", $httpClient, $adminUtilisateurController);
                 if ($ret === true)
                 {
                     $this->addFlash('success', 'Employé modifié avec succès');
@@ -227,6 +227,7 @@ class AdminUtilisateurController extends AbstractController
         Security $security,
         UserRepository $userRepository,
         HttpClientInterface $httpClient,
+        AdminUtilisateurController $adminUtilisateurController,
         Request $request): Response
     {
         $comeFrom = $request->query->get('comeFrom', '');
@@ -299,7 +300,7 @@ class AdminUtilisateurController extends AbstractController
             }
 
             $utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
-            if ($userRepository->update($utilisateur, $save_pass))
+            if ($userRepository->update($utilisateur, $save_pass, $httpClient, $adminUtilisateurController))
             {
                 if ($save_pass)
                 {
