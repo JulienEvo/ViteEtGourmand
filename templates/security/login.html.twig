@@ -49,10 +49,8 @@
                                 </button>
                             </div>
                             <div class="text-center mt-3">
-                                    <!--
-                                    <a href="#" class="small">Mot de passe oublié ?</a><br>
-                                    -->
-                                    <a href="/register" class="small">Créer un compte ?</a>
+                                    <a href="{{ path('reinit_pass', {last_username: last_username})  }}" class="small">Mot de passe oublié ?</a><br>
+                                    <a href="{{ path('register', {last_username: last_username}) }}" class="small">Créer un compte ?</a>
                                 </div>
                         </form>
                     </div>

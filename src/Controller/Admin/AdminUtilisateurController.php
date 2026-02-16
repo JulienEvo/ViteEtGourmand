@@ -128,7 +128,7 @@ class AdminUtilisateurController extends AbstractController
                     ]);
                 }
 
-                $utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
+                //$utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
                 $ret = $userRepository->insert($utilisateur, $httpClient, $adminUtilisateurController);
 
                 if (!is_array($ret) )
@@ -137,6 +137,7 @@ class AdminUtilisateurController extends AbstractController
 
                     // Envoi d'un mail à l'utilisateur
                     $lienConnexion = $this->generateUrl('login', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                    $lienContact = $this->generateUrl('contact', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
                     $email = (new Email())
                         ->from('no-reply@vite-et-gourmand.fr')
@@ -160,7 +161,8 @@ class AdminUtilisateurController extends AbstractController
                                 Pour accéder à votre espace client :
                                 <a href='{$lienConnexion}'>Se connecter</a>
                                 <br><br>
-                                Si vous avez la moindre question ou besoin d’aide, notre équipe reste à votre disposition via le formulaire de contact du site.
+                                Si vous avez la moindre question, notre équipe reste à votre disposition via le formulaire de contact :
+                                <a href='{$lienContact}'>Formulaire de contact</a>
                                 <br><br>
                                 Nous vous remercions pour votre confiance et vous souhaitons une excellente expérience culinaire.
                                 <br><br>
@@ -299,7 +301,7 @@ class AdminUtilisateurController extends AbstractController
                 }
             }
 
-            $utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
+            //$utilisateur->setPassword(password_hash($password, PASSWORD_DEFAULT));
             if ($userRepository->update($utilisateur, $save_pass, $httpClient, $adminUtilisateurController))
             {
                 if ($save_pass)

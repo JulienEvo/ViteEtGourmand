@@ -9,13 +9,14 @@ use App\Service\FonctionsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
-use Symfony\Config\Security\FirewallConfig\AccessToken\TokenHandler\Oidc\EncryptionConfig;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SecurityController extends AbstractController
@@ -103,7 +104,104 @@ class SecurityController extends AbstractController
             }
         }
 
-        return $this->render('security/register.html.twig');
+        $last_username = $request->query->get('lastUsername', '');
+        return $this->render('security/register.html.twig', ['last_username' => $last_username]);
+    }
+
+    #[Route('/reinit_pass', name: 'reinit_pass')]
+    public function reinit_pass(
+        Request $request,
+        UserRepository $userRepository,
+        MailerInterface $mailer,
+        HttpClientInterface $httpClient,
+        AdminUtilisateurController $adminUtilisateurController,
+    ): Response
+    {
+        $last_username = $request->query->get('last_username', '');
+        $fromUser = $request->query->get('fromUser', 0);
+
+        if ($request->isMethod('POST'))
+        {
+            $email = $request->request->get('email', '');
+
+            $utilisateur = $userRepository->findByEmail($email);
+
+            // Vérifie si le compte existe en bdd avec cet email
+            if (!isset($utilisateur))
+            {
+                $this->addFlash('danger', "Le compte n'existe pas");
+                return $this->redirectToRoute('register', ['last_username' => $email]);
+            }
+
+            if (!$fromUser)
+            {
+                //*** DEMANDE DE REINITIALISATION DU MOT DE PASSE ***//
+
+                // Envoi un lien par mail pour réinitialiser le mot de passe
+                $lien_reinit = $this->generateUrl('reinit_pass', ['last_username' => $email, 'fromUser' => 1], UrlGeneratorInterface::ABSOLUTE_URL);
+                $lien_contact = $this->generateUrl('admin_societe_contact', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $email = (new Email())
+                    ->from('no-reply@vite-et-gourmand.fr')
+                    ->to($email)
+                    ->subject('Vite & Gourmand - Réinitialisation du mot de passe')
+                    ->html("
+                            <p>
+                                Bonjour {$utilisateur->getPrenom()},
+                                <br><br>
+                                Veuillez suivre le lien ci-dessous afin de réinitilaiser votre mot de pass :
+                                <a href='{$lien_reinit}'>Réinitiliser mon mot de passe</a>
+                                <br><br>
+                                Si vous avez la moindre question ou besoin d’aide, notre équipe reste à votre disposition via le formulaire de contact du site :
+                                <a href='{$lien_contact}'>Poser une question</a>
+                                <br><br>
+                                Nous vous remercions pour votre confiance et vous souhaitons une excellente expérience culinaire.
+                                <br><br>
+                                Cordialement,<br>
+                                <b>L’équipe Vite & Gourmand</b>
+                            </p>
+                        "
+                    );
+                $mailer->send($email);
+
+                $this->addFlash('success', 'Demande de réinitialisation de mot de passe envoyée avec succès');
+                return $this->redirectToRoute('login', ['last_username' => $email]);
+            }
+            else
+            {
+                //*** REINITIALISATION DU MOT DE PASSE ***//
+
+                $password = $request->request->get('password', '');
+                $confirm = $request->request->get('confirm', '');
+                $utilisateur->setPassword($password);
+
+                $ret = $userRepository->isValidUtilisateur($utilisateur, false, true, $confirm);
+                if ($ret !== true)
+                {
+                    $this->addFlash('danger', $ret );
+                    return $this->render('security/reinit_pass.html.twig', [
+                        'last_username' => $email,
+                        'fromUser' => 1
+                    ]);
+                }
+
+                $ret = $userRepository->update($utilisateur, true, $httpClient, $adminUtilisateurController);
+                if ($ret === true)
+                {
+                    $this->addFlash('success', 'Mot de passe réinitialisé avec succès');
+                    return $this->redirectToRoute('login', ['last_username' => $email]);
+                }
+                else
+                {
+                    $this->addFlash('danger', "Erreur lors de la réinitialisation du mot de passe : ".$ret['message'] );
+                }
+            }
+        }
+
+        return $this->render('security/reinit_pass.html.twig', [
+            'last_username' => $last_username,
+            'fromUser' => $fromUser
+        ]);
     }
 
 }
