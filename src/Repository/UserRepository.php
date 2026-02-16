@@ -92,7 +92,7 @@ class UserRepository
             ':longitude' => $user->getLongitude(),
             ':poste' => $user->getPoste(),
             ':actif' => $user->getActif(),
-            ':updated' => date('Y-m-d'),
+            ':updated_at' => (new DateTime())->format('Y-m-d H:i:s'),
             ':id' => $user->getUserId(),
         ];
 
@@ -126,7 +126,7 @@ class UserRepository
         $sql = "UPDATE utilisateur
                 SET roles=:roles, email=:email, {$password} prenom=:prenom, nom=:nom, telephone=:telephone, adresse=:adresse,
                     code_postal=:code_postal, commune=:commune, pays=:pays, latitude=:latitude, longitude=:longitude,
-                    poste=:poste, actif=:actif, updated_at=:updated
+                    poste=:poste, actif=:actif, updated_at=:updated_at
                 WHERE id = :id";
 
         $stmt = $this->pdo->prepare($sql);

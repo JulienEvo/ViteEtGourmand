@@ -18,8 +18,8 @@ class CommandeRepository
 
     public function insert(Commande $commande): int|array
     {
-        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, pret_materiel, quantite, remise, total_livraison, total_ttc)
-                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :pret_materiel, :quantite, :remise, :total_livraison, :total_ttc)";
+        $sql = "INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, pret_materiel, quantite, remise, total_livraison, total_ttc, created_at)
+                VALUES (:utilisateur_id, :menu_id, :commande_etat_id, :numero, :date, :adresse_livraison, :cp_livraison, :commune_livraison, :latitude, :longitude, :pret_materiel, :quantite, :remise, :total_livraison, :total_ttc, :created_at)";
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
@@ -35,9 +35,10 @@ class CommandeRepository
             'longitude' => $commande->getLongitude(),
             'pret_materiel' => $commande->getPret_materiel(),
             'quantite' => $commande->getQuantite(),
+            'remise' => $commande->getRemise(),
             'total_livraison' => $commande->getTotal_livraison(),
             'total_ttc' => $commande->getTotal_ttc(),
-            'remise' => $commande->getRemise(),
+            'created_at' => (new DateTime())->format('Y-m-d H:i:s'),
         ]))
         {
             return $this->pdo->lastInsertId();
