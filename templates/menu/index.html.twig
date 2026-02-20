@@ -30,11 +30,11 @@
                 <div class="card-body">
 
                     <form method="get" action="{{ path('menu_filter_ajax') }}" class="row g-2" id="form_filtre_menu">
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                        <div class="col-12 col-lg-2">
                             <input type="text" name="term" class="form-control" placeholder="Rechercher un menu" value="{{ (filters.term) ?? '' }}">
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                        <div class="col-12 col-lg-2">
                             <select name="theme" class="form-select">
                                 <option value="">Tout les thèmes</option>
                                 {% for theme in themes %}
@@ -46,7 +46,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                        <div class="col-12 col-lg-2">
                             <select name="regime" class="form-select">
                                 <option value="">Tout les régimes</option>
                                 {% for regime in regimes %}
@@ -58,24 +58,24 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+                        <div class="col-4 col-lg-1">
                             <input type="number" name="tarif_min" class="form-control" placeholder="Prix min" value="{{ filters.tarif_min }}">
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+                        <div class="col-4 col-lg-1">
                             <input type="number" name="tarif_max" class="form-control" placeholder="Prix max" value="{{ filters.tarif_max }}">
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+                        <div class="col-4 col-lg-1">
                             <input type="number" name="pers_min" class="form-control" placeholder="Pers. min" value="{{ filters.pers_min }}">
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-1 d-flex justify-content-end align-items-center">
+                        <div class="col-6 col-lg-1 d-flex justify-content-end align-items-center">
                             <input type="checkbox" class="form-check-input me-2" name="disponible" id="disponible" {{ filters.disponible ? 'checked' }}>
                             <label for="disponible" class="form-check-label"> Disponible </label>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-1 text-end">
+                        <div class="col-6 col-lg-1 text-end">
                             <div class="">
                                 <button type="submit" class="btn btn-warning btn-sm px-3" title="Rechercher">
                                     <i class="bi bi-search"></i>

@@ -16,26 +16,26 @@
             <div class="card-body">
                 <h2 class="mt-1 mb-3">Informations générales</h2>
 
-                <div class="row col-12">
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                <div class="row">
+                    <div class="mb-3 col-6 col-lg-3">
                         <label for="menu_id" class="form-label">Nombre minimum de personne : </label>
                         <p>{{ menu.quantite_min }}</p>
                     </div>
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-6 col-lg-3">
                         <label for="menu_id" class="form-label">Tarif par personne : </label>
                         <p>{{ menu.tarif_unitaire }} €</p>
                     </div>
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-6 col-lg-3">
                         <label for="menu_id" class="form-label">Quantité disponible : </label>
                         <p>{{ menu.quantite_disponible }}</p>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-6 col-lg-3">
                         <label for="menu_id" class="form-label">Description : </label>
                         <p>{{ menu.description }}</p>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-6 col-lg-3">
                         <label for="menu_id" class="form-label">Thèmes : </label>
                         <ul>
                             {% for theme in tab_themes %}
@@ -46,7 +46,7 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-6 col-lg-3">
                         <label for="menu_id" class="form-label">Régimes : </label>
                         <ul>
                             {% for regime in tab_regimes %}
@@ -74,7 +74,7 @@
                     <div class="row g-3">
                         {% if plats|length > 0 %}
                             {% for plat in plats %}
-                                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <div class="col-12 col-lg-3">
                                     <div class="card shadow-sm">
                                         <div class="card-body text-center">
                                             <h4>{{ plat.plat_type_libelle|upper }}</h4>

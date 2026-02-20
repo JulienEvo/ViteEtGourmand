@@ -14,7 +14,7 @@
     -->
 
     <div class="table-responsive">
-        <table class="table table-striped" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
+        <table class="table table-striped align-middle" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
             <thead>
             <tr>
                 <th>Statut</th>
@@ -22,11 +22,11 @@
                 <th>Client</th>
                 <th>Menu</th>
                 <th>Adresse</th>
-                <th>Date commande</th>
-                <th>Date livraison</th>
+                <th class="text-nowrap">Date commande</th>
+                <th class="text-nowrap">Date livraison</th>
                 <th>Remise</th>
-                <th>Montant ttc</th>
-                <th>Prêt matériel</th>
+                <th class="text-nowrap">Montant ttc</th>
+                <th class="text-nowrap">Prêt matériel</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -35,18 +35,18 @@
                 {% for item in tabCommande %}
                     {% set lien_cmd = path('admin_commande_edit', {id: item.commande.id}) %}
                     <tr style="cursor: pointer">
-                        <td style="width: 10%; background-color: {{ item.commande_etat.couleur ?? '' }}" onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande_etat.libelle }}</td>
+                        <td style="min-width: 155px; background-color: {{ item.commande_etat.couleur ?? '' }}" onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande_etat.libelle }}</td>
                         <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.numero }}</td>
-                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.nom ~ ' ' ~ item.utilisateur.prenom }}</td>
-                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.menu.libelle }}</td>
-                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.adresse ~ ' - ' ~ item.utilisateur.code_postal ~ ' - ' ~ item.utilisateur.commune }}</td>
-                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.created_at|date('d/m/Y à H:i') }}</td>
-                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.date|date('d/m/Y à H:i') }}</td>
+                        <td {{ item.class_danger }} class="text-nowrap" onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.nom ~ ' ' ~ item.utilisateur.prenom }}</td>
+                        <td {{ item.class_danger }} class="text-nowrap" onclick="goToUrl('{{ lien_cmd }}')">{{ item.menu.libelle }}</td>
+                        <td {{ item.class_danger }} style="min-width: 200px;" onclick="goToUrl('{{ lien_cmd }}')">{{ item.utilisateur.adresse ~ ' - ' ~ item.utilisateur.code_postal ~ ' - ' ~ item.utilisateur.commune }}</td>
+                        <td {{ item.class_danger }} class="text-nowrap" onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.created_at|date('d/m/Y à H:i') }}</td>
+                        <td {{ item.class_danger }} class="text-nowrap" onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.date|date('d/m/Y à H:i') }}</td>
                         <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.remise }} %</td>
                         <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{{ item.commande.total_ttc }} €</td>
-                        <td {{ item.class_danger }} onclick="goToUrl('{{ lien_cmd }}')">{% if item.commande.pret_materiel %}Oui{% else %}Non{% endif %}</td>
+                        <td {{ item.class_danger }} class="text-nowrap" onclick="goToUrl('{{ lien_cmd }}')">{% if item.commande.pret_materiel %}Oui{% else %}Non{% endif %}</td>
                         <td>
-                            <div class="d-flex gap-1 flex-wrap">
+                            <div class="d-flex gap-1">
                                 <a href="{{ lien_cmd }}" class="btn btn-sm btn-warning" title="Voir la commande">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>

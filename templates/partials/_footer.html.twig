@@ -4,7 +4,7 @@
     <div class="container py-4">
         <div class="row">
 
-            <div class="col-md-4 mb-3 text-center">
+            <div class="mb-3 text-center col-12 col-lg-4">
                 <h5 class="footer-title">{{ societe.Libelle }}</h5>
                 <p>
                     {{ societe.adresse }}<br>
@@ -16,7 +16,7 @@
                 </p>
             </div>
 
-            <div class="col-md-4 mb-3 text-center">
+            <div class="mb-3 text-center col-12 col-lg-4">
                 <h5 class="footer-title">Horaires</h5>
 
                 <ul class="list-unstyled">
@@ -37,7 +37,7 @@
                 </ul>
             </div>
 
-            <div class="col-md-4 mb-3 text-center">
+            <div class="mb-3 text-center col-12 col-lg-4">
                 <h5 class="footer-title">Liens utiles</h5>
                 <ul class="list-unstyled">
                     <li><a href="{{ path('commande_ajout') }}">Commander</a></li>
@@ -50,7 +50,7 @@
 
         </div>
 
-        <div class="text-center pt-3 border-top">
+        <div class="text-center pt-3 border-top col-12">
             <small>© {{ "now"|date("Y") }} Vite & Gourmand – Tous droits réservés</small>
         </div>
     </div>

@@ -17,61 +17,63 @@
         <form method="post" action="{{ path('admin_menu_edit', {id: menu_id, comeFrom: 'plat'}) }}">
     {% endif %}
 
-        <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Image</th>
-            <th>Libelle</th>
-            <th>Catégorie</th>
-            {% if (comeFrom == 'plat') %}
-                <th>Actif</th>
-            {% endif %}
-            {% if (comeFrom == 'plat') %}
-                <th>Actions</th>
-            {% else %}
-                <th>Sélection</th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
-        {% if tabPlat|length > 0 %}
-            {% for plat in tabPlat %}
-                <tr>
-                    <td>
-                        <div class="preview-item" style="width: 100px !important; height: 100px !important;">
-                            {% if (plat.image != '') %}
-                                <img src="{{ asset(plat.image) }}" alt=" image de {{ plat.libelle ?? '' }}">
-                            {% else %}
-                                <img src="/images/no_image.jpg" alt=" image de {{ plat.libelle ?? '' }}">
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td>{{ plat.libelle }}</td>
-                    <td>{{ tabPlatType[plat.type_id].libelle }}</td>
-                    {% if (comeFrom == 'plat') %}
-                        <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
-                    {% endif %}
-                    <td>
-                        {% if (comeFrom == 'plat') %}
-                            <a href="{{ path('admin_plat_edit', {id: plat.id, comeFrom: comeFrom}) }}" title="Voir le plat" class="btn btn-sm btn-warning">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a href="{{ path('admin_plat_delete', {id: plat.id, comeFrom: comeFrom}) }}" class="btn btn-sm btn-danger" title="Supprimer le plat" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le plat ?')">
-                                <i class="bi bi-trash3-fill"></i>
-                            </a>
-                        {% elseif (comeFrom == 'menu') %}
-                            <input type="checkbox" class="form-check" name="PLATS[{{ plat.id }}]" id="plat_{{ plat.id }}">
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        {% else %}
+    <div class="table-responsive">
+        <table class="table table-striped text-nowrap align-middle" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
+            <thead>
             <tr>
-                <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+                <th>Image</th>
+                <th>Libelle</th>
+                <th>Catégorie</th>
+                {% if (comeFrom == 'plat') %}
+                    <th>Actif</th>
+                {% endif %}
+                {% if (comeFrom == 'plat') %}
+                    <th>Actions</th>
+                {% else %}
+                    <th>Sélection</th>
+                {% endif %}
             </tr>
-        {% endif %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% if tabPlat|length > 0 %}
+                {% for plat in tabPlat %}
+                    <tr>
+                        <td>
+                            <div class="preview-item" style="width: 100px !important; height: 100px !important;">
+                                {% if (plat.image != '') %}
+                                    <img src="{{ asset(plat.image) }}" alt=" image de {{ plat.libelle ?? '' }}">
+                                {% else %}
+                                    <img src="/images/no_image.jpg" alt=" image de {{ plat.libelle ?? '' }}">
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>{{ plat.libelle }}</td>
+                        <td>{{ tabPlatType[plat.type_id].libelle }}</td>
+                        {% if (comeFrom == 'plat') %}
+                            <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
+                        {% endif %}
+                        <td>
+                            {% if (comeFrom == 'plat') %}
+                                <a href="{{ path('admin_plat_edit', {id: plat.id, comeFrom: comeFrom}) }}" title="Voir le plat" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{{ path('admin_plat_delete', {id: plat.id, comeFrom: comeFrom}) }}" class="btn btn-sm btn-danger" title="Supprimer le plat" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le plat ?')">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </a>
+                            {% elseif (comeFrom == 'menu') %}
+                                <input type="checkbox" class="form-check" name="PLATS[{{ plat.id }}]" id="plat_{{ plat.id }}">
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
 
     {% if (comeFrom == 'menu') %}
             <div class="d-flex justify-content-between">

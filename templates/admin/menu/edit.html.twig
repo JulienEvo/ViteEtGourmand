@@ -33,22 +33,22 @@
             </div>
             <div class="card-body">
                 <div class="row col-12">
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-3">
                         <label for="libelle" class="form-label">Libellé</label>
                         <input type="text" class="form-control" name="libelle" id="libelle" value="{{ menu.libelle ?? '' }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-3">
                         <label for="quantite_min" class="form-label">Nombre min. de personne</label>
                         <input type="number" step="1" min="1" class="form-control" name="quantite_min" id="quantite_min" value="{{ menu.quantite_min ?? 1 }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-3">
                         <label for="tarif_unitaire" class="form-label">Tarif par personne</label>
                         <input type="number" step="00.1" min="0" class="form-control" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire ?? '0' }}" required>
                     </div>
 
-                    <div class="mb-3 col-12 col-md-6 col-lg-3">
+                    <div class="mb-3 col-12 col-lg-3">
                         <label for="quantite" class="form-label">Quantité disponible</label>
                         <input type="number" step="1" min="0" class="form-control" name="quantite_disponible" id="quantite_disponible" value="{{ menu.quantite_disponible ?? '0' }}" required>
                     </div>
@@ -85,27 +85,24 @@
                         <textarea class="form-control text-danger" rows="5" name="conditions" id="conditions">{{ menu.conditions ?? '' }}</textarea>
                     </div>
 
-                    <div class="mb-3 col-12 col-lg-2">
+                    <div class="mb-3 col-6 col-lg-2">
+                        <label for="pret_materiel_1" class="form-label">Prêt materiel</label>
                         <div>
-                            <label for="pret_materiel_1" class="form-label">Prêt materiel</label>
-                            <div>
-                                <span>Oui :&nbsp;</span>
-                                <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (menu and menu.pret_materiel == 1) %} {{ 'checked' }} {% endif %}>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="pret_materiel" id="pret_materiel_1" value="1" {% if (menu and menu.pret_materiel == 1) %} {{ 'checked' }} {% endif %}>
 
-                                <span>Non :&nbsp;</span>
-                                <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (not menu or menu.pret_materiel != 1) %} {{ 'checked' }} {% endif %}>
-                            </div>
+                            <span>Non :&nbsp;</span>
+                            <input type="radio" name="pret_materiel" id="pret_materiel_0" value="0" {% if (not menu or menu.pret_materiel != 1) %} {{ 'checked' }} {% endif %}>
                         </div>
-                        <br><br>
+                    </div>
+                    <div class="mb-3 col-6 col-lg-2">
+                        <label for="actif_1" class="form-label">Actif</label>
                         <div>
-                            <label for="actif_1" class="form-label">Actif</label>
-                            <div>
-                                <span>Oui :&nbsp;</span>
-                                <input type="radio" name="actif" id="actif_1" value="1" {% if (not menu or menu.actif == 1) %} {{ 'checked' }} {% endif %}>
+                            <span>Oui :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_1" value="1" {% if (not menu or menu.actif == 1) %} {{ 'checked' }} {% endif %}>
 
-                                <span>Non :&nbsp;</span>
-                                <input type="radio" name="actif" id="actif_0" value="0" {% if (menu and menu.actif != 1) %} {{ 'checked' }} {% endif %}>
-                            </div>
+                            <span>Non :&nbsp;</span>
+                            <input type="radio" name="actif" id="actif_0" value="0" {% if (menu and menu.actif != 1) %} {{ 'checked' }} {% endif %}>
                         </div>
                     </div>
 
@@ -129,7 +126,7 @@
                 <div class="row g-3">
                     {% if plats|length > 0 %}
                         {% for plat in plats %}
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="col-12 col-lg-3">
                                 <div class="card shadow-sm">
                                     <div class="card-body text-center">
                                         <h4>{{ plat.plat_type_libelle|upper }}</h4>
@@ -175,7 +172,7 @@
                 <div class="row g-3">
                     {% if tab_avis|length > 0 %}
                         {% for avis in tab_avis %}
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                            <div class="col-12 col-lg-4">
                                 <div class="card shadow-sm">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center pb-3">

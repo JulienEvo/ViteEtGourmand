@@ -7,62 +7,64 @@
         <i class="bi bi-people-fill"></i>&nbsp;Liste des avis : {{ tabAvis|length }} résultat{% if tabAvis|length > 1 %}s{% endif %}
     </h1>
 
-    <table class="table table-striped align-middle">
-        <thead>
-        <tr>
-            <th>État</th>
-            <th>Numéro</th>
-            <th>Client</th>
-            <th>Commande</th>
-            <th>Note</th>
-            <th>commentaire</th>
-            <th>Date</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% if tabAvis|length > 0 %}
-            {% for item in tabAvis %}
-                {% if item.avis.valide == 1 %}
-                    {% set bg = 'bg-success text-white' %}
-                    {% set etat = 'Validé' %}
-                {% elseif item.avis.valide == 2 %}
-                    {% set bg = 'bg-danger text-white' %}
-                    {% set etat = 'Refusé' %}
-                {% else %}
-                    {% set bg = 0 %}
-                    {% set etat = 'En attente' %}
-                {% endif %}
+    <div class="table-responsive">
+        <table class="table table-striped text-nowrap align-middle" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
+            <thead>
+            <tr>
+                <th>État</th>
+                <th>Numéro</th>
+                <th>Client</th>
+                <th>Commande</th>
+                <th>Note</th>
+                <th>commentaire</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if tabAvis|length > 0 %}
+                {% for item in tabAvis %}
+                    {% if item.avis.valide == 1 %}
+                        {% set bg = 'bg-success text-white' %}
+                        {% set etat = 'Validé' %}
+                    {% elseif item.avis.valide == 2 %}
+                        {% set bg = 'bg-danger text-white' %}
+                        {% set etat = 'Refusé' %}
+                    {% else %}
+                        {% set bg = 0 %}
+                        {% set etat = 'En attente' %}
+                    {% endif %}
 
+                    <tr>
+                        <td class="{{ bg }}">{{ etat }}</td>
+                        <td class="text-end">{{ item.avis.id }}</td>
+                        <td>{{ item.utilisateur.nom~ ' ' ~ item.utilisateur.prenom }}</td>
+                        <td>{{ item.commande.numero }}</td>
+                        <td class="text-primary" style="width: 10%">
+                            {% for i in 1..5 %}
+                                {{ i <= item.avis.note ? '★' : '☆' }}
+                            {% endfor %}
+                        </td>
+                        <td>{{ item.avis.commentaire }}</td>
+                        <td>{{ item.avis.created_at|date('d/m/Y') }}</td>
+                        <td style="width: 8%">
+                            <a href="{{ path('admin_avis_edit', {id: item.avis.id}) }}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{{ path('admin_avis_delete', {id: item.avis.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'avis ?')">
+                                <i class="bi bi-trash3-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
                 <tr>
-                    <td class="{{ bg }}">{{ etat }}</td>
-                    <td class="text-end">{{ item.avis.id }}</td>
-                    <td>{{ item.utilisateur.nom~ ' ' ~ item.utilisateur.prenom }}</td>
-                    <td>{{ item.commande.numero }}</td>
-                    <td class="text-primary" style="width: 10%">
-                        {% for i in 1..5 %}
-                            {{ i <= item.avis.note ? '★' : '☆' }}
-                        {% endfor %}
-                    </td>
-                    <td>{{ item.avis.commentaire }}</td>
-                    <td>{{ item.avis.created_at|date('d/m/Y') }}</td>
-                    <td style="width: 8%">
-                        <a href="{{ path('admin_avis_edit', {id: item.avis.id}) }}" class="btn btn-sm btn-warning">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a href="{{ path('admin_avis_delete', {id: item.avis.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'avis ?')">
-                            <i class="bi bi-trash3-fill"></i>
-                        </a>
+                    <td colspan="7">
+                        <div class="alert alert-warning text-center">Aucun résultat</div>
                     </td>
                 </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="7">
-                    <div class="alert alert-warning text-center">Aucun résultat</div>
-                </td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

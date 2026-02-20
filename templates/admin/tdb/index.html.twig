@@ -10,7 +10,7 @@
     </h1>
 
     <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-12 col-lg-4">
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5>{{ tab_plat|length }} Plat{% if tab_plat|length > 1 %}s{% endif %}</h5>
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-12 col-lg-4">
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5>{{ nb_commande }} Commande{% if nb_commande > 1 %}s{% endif %}</h5>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-12 col-lg-4">
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h5>{{ nb_avis }} Avis clients</h5>
@@ -71,7 +71,7 @@
         </div>
 
         {% if is_granted('ROLE_ADMIN') %}
-            <div class="col-md-4 mt-3">
+            <div class="mt-3 col-12 col-lg-4">
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h5>Statistiques du chiffre d'affaires</h5>
@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 mt-3 mt-3">
+            <div class="mt-3 mt-3 col-12 col-lg-4">
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h5>Statistiques de commandes</h5>
@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4 mt-3">
+            <div class="mt-3 col-12 col-lg-4">
                 <div class="card shadow-sm">
                     <div class="card-header">
                         <h5>Statistiques des avis clients</h5>

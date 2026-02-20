@@ -24,7 +24,7 @@
     {% endif %}
 
     <div class="table-responsive">
-        <table class="table table-striped" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
+        <table class="table table-striped align-middle" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
             <thead>
             <tr>
                 <th>Nom</th>
@@ -32,7 +32,7 @@
                 <th>Email</th>
                 <th>Téléphone</th>
                 <th>Adresse</th>
-                <th>Code postal</th>
+                <th class="text-nowrap">Code postal</th>
                 <th>Commune</th>
                 <th>Pays</th>
                 <th>Poste</th>
@@ -46,8 +46,8 @@
                     <tr>
                         <td>{{ utilisateur.nom }}</td>
                         <td>{{ utilisateur.prenom }}</td>
-                        <td>{{ utilisateur.email }}</td>
-                        <td>{{ utilisateur.telephone|formatTelFr }}</td>
+                        <td class="text-nowrap">{{ utilisateur.email }}</td>
+                        <td class="text-nowrap">{{ utilisateur.telephone|formatTelFr }}</td>
                         <td>{{ utilisateur.adresse }}</td>
                         <td>{{ utilisateur.code_postal }}</td>
                         <td>{{ utilisateur.commune }}</td>

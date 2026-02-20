@@ -7,42 +7,44 @@
         <i class="bi bi-people-fill"></i>&nbsp;Historique des commandes : <span class="fs-3">{{ tabCommande|length }} résultat{% if tabCommande|length > 1 %}s{% endif %}</span>
     </h1>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>État</th>
-            <th>Numéro</th>
-            <th>Date de livraison</th>
-            <th>Menu</th>
-            <th>Quantité</th>
-            <th>Montant</th>
-            <th>Prêt matériel</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% if tabCommande|length > 0 %}
-            {% for commande in tabCommande %}
-                <tr>
-                    <td style="width: 20%; background-color: {{ tabCommandeEtat[commande.commande_etat_id].couleur }}">{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
-                    <td>{{ commande.numero }}</td>
-                    <td>{{ commande.date|date('d/m/Y') }}</td>
-                    <td>{{ tabMenu[commande.menu_id].libelle }}</td>
-                    <td>{{ commande.quantite }}</td>
-                    <td>{{ commande.total_ttc }} €</td>
-                    <td>{{ commande.pret_materiel ? '<span class="text-danger fw-bold">Oui<span>':'Non' }}</td>
-                    <td>
-                        <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning" title="Voir la commande">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        {% else %}
+    <div class="table-responsive">
+        <table class="table table-striped text-nowrap align-middle" style="overflow-x: auto; overflow-y: visible; max-width: 100%; -webkit-overflow-scrolling: touch;">
+            <thead>
             <tr>
-                <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+                <th>État</th>
+                <th>Numéro</th>
+                <th>Date de livraison</th>
+                <th>Menu</th>
+                <th>Quantité</th>
+                <th>Montant</th>
+                <th>Prêt matériel</th>
+                <th>Actions</th>
             </tr>
-        {% endif %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% if tabCommande|length > 0 %}
+                {% for commande in tabCommande %}
+                    <tr>
+                        <td style="width: 20%; background-color: {{ tabCommandeEtat[commande.commande_etat_id].couleur }}">{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
+                        <td>{{ commande.numero }}</td>
+                        <td>{{ commande.date|date('d/m/Y') }}</td>
+                        <td>{{ tabMenu[commande.menu_id].libelle }}</td>
+                        <td>{{ commande.quantite }}</td>
+                        <td>{{ commande.total_ttc }} €</td>
+                        <td>{{ commande.pret_materiel ? '<span class="text-danger fw-bold">Oui<span>':'Non' }}</td>
+                        <td>
+                            <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning" title="Voir la commande">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="11" class="alert alert-warning text-center">Aucun résultat</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
