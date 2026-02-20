@@ -17,7 +17,7 @@
                 </div>
                 <div class="card-body">
                     {% for plat_type in tab_plat_type %}
-                        <a class="text-decoration-none" href="{{ path('admin_plat_index', {filtre_type:plat_type.id }) }}">
+                        <a class="text-decoration-none" href="{{ path('admin_plat_index', {filtre_type:plat_type.id, comeFrom:'plat'}) }}">
                             <div class="d-flex justify-content-between align-items-center text-black py-2">
                                 <span class="fw-semibold">{{ plat_type.libelle }}</span>
                                 <span class="badge bg-primary fs-6">

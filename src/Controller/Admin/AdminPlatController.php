@@ -20,7 +20,7 @@ class AdminPlatController extends AbstractController
     public function index(Request $request, PlatRepository $platRepository, GeneriqueRepository $generiqueRepository): Response
     {
         $menu_id = $request->query->get('menu_id', 0);
-        $comeFrom = $request->query->get('comeFrom', 'zzz');
+        $comeFrom = $request->query->get('comeFrom', '');
         $filtre_type = $request->query->get('filtre_type', '');
 
         $tabPlat = $platRepository->findAll($filtre_type);
