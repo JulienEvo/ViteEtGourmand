@@ -53,16 +53,18 @@
                             <td>{{ (plat.actif) ? 'Oui':'Non' }}</td>
                         {% endif %}
                         <td>
-                            {% if (comeFrom == 'plat') %}
-                                <a href="{{ path('admin_plat_edit', {id: plat.id, comeFrom: comeFrom}) }}" title="Voir le plat" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a href="{{ path('admin_plat_delete', {id: plat.id, comeFrom: comeFrom}) }}" class="btn btn-sm btn-danger" title="Supprimer le plat" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le plat ?')">
-                                    <i class="bi bi-trash3-fill"></i>
-                                </a>
-                            {% elseif (comeFrom == 'menu') %}
-                                <input type="checkbox" class="form-check" name="PLATS[{{ plat.id }}]" id="plat_{{ plat.id }}">
-                            {% endif %}
+                            <div class="d-flex gap-1">
+                                {% if (comeFrom == 'plat') %}
+                                    <a href="{{ path('admin_plat_edit', {id: plat.id, comeFrom: comeFrom}) }}" title="Voir le plat" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{{ path('admin_plat_delete', {id: plat.id, comeFrom: comeFrom}) }}" class="btn btn-sm btn-danger" title="Supprimer le plat" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le plat ?')">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+                                {% elseif (comeFrom == 'menu') %}
+                                    <input type="checkbox" class="form-check" name="PLATS[{{ plat.id }}]" id="plat_{{ plat.id }}">
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
