@@ -31,7 +31,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
-    public function login(AuthenticationUtils $authenticationUtils, UserRepository $userRepository, Request $request): Response
+    public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
         $redirect = $request->query->get('redirect', 'home');
 

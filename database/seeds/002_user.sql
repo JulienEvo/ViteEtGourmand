@@ -3,7 +3,7 @@ INSERT INTO utilisateur (roles, email, password, prenom, nom, telephone, adresse
 VALUES (
         '["ROLE_USER", "ROLE_ADMIN"]',
         'jose@vite_et_gourmand.fr',
-        '$2y$13$hNViZs9.8bInu/FL.WHAQOI8aB.Rsg746pNiFAW9nYhZYyrohI5cm',
+        '$2y$10$0Bx/sGuv5JAzc3cVJmHgZ.MIUEu3ezNl0UoSrWojbdBqKDT0KATdC', /* ViteEtGourmand123+ */
         'José',
         'Studi',
         '060504030201',
@@ -19,7 +19,7 @@ INSERT INTO utilisateur (roles, email, password, prenom, nom, telephone, adresse
 VALUES (
     '["ROLE_USER", "ROLE_ADMIN"]',
     'julien.chiarotti@gmail.com',
-    '$2y$13$hNViZs9.8bInu/FL.WHAQOI8aB.Rsg746pNiFAW9nYhZYyrohI5cm', /* admin */
+    '$2y$10$0Bx/sGuv5JAzc3cVJmHgZ.MIUEu3ezNl0UoSrWojbdBqKDT0KATdC', /* ViteEtGourmand123+ */
     'Julien',
     'Chiarotti',
     '0689715695',
@@ -68,3 +68,20 @@ VALUES (
     CURRENT_DATE
 );
 
+INSERT INTO utilisateur (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, latitude, longitude, poste, created_at)
+VALUES (
+           '["ROLE_EMPLOYE","ROLE_USER"]',
+           'employe1@vite-et-gourmand.fr',
+           '$2y$10$0Bx/sGuv5JAzc3cVJmHgZ.MIUEu3ezNl0UoSrWojbdBqKDT0KATdC', /* ViteEtGourmand123+ */
+           'Gustave',
+           'Eiffel',
+           '0102020202',
+           '26 Rue Beck',
+           '33800',
+           'Bordeaux',
+           'France',
+           44.822,
+           -0.550368,
+           'Serveur',
+           '2026-02-09 14:40:47'
+       );
