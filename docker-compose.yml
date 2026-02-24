@@ -1,0 +1,62 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        container_name: vite_et_gourmand_app
+        ports:
+            - "8000:80"
+        volumes:
+            - .:/var/www
+        depends_on:
+            - database
+            - mongodb
+            - mailer
+        restart: unless-stopped
+
+    database:
+        image: mariadb:10.6
+        container_name: vite_et_gourmand_db
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: vite_et_gourmand
+            MYSQL_USER: vite-et-gourmand
+            MYSQL_PASSWORD: ViteEtGourmand123
+        ports:
+            - "3307:3306"
+        volumes:
+            - vite_et_gourmand_db_data:/var/lib/mysql
+            - ./docker/mysql:/docker-entrypoint-initdb.d
+        restart: unless-stopped
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: database
+            MYSQL_ROOT_PASSWORD: root
+        depends_on:
+            - database
+
+    mongodb:
+        image: mongo:6
+        container_name: vite_et_gourmand_mongo
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodb_data:/data/db
+        restart: unless-stopped
+
+    mailer:
+        image: axllent/mailpit
+        container_name: vite_et_gourmand_mailer
+        ports:
+            - "60022:1025"
+            - "60021:8025"
+        restart: unless-stopped
+
+volumes:
+    vite_et_gourmand_db_data:
+    mongodb_data:

@@ -1,5 +1,5 @@
 -- commande pour lancer le script
--- > mysql -u jchiarotti -p < C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/script/init_dev_db.sql
+-- > mysql -u vite-et-gourmand -p < C:/www/STUDI/EXAMEN/ECF/ViteEtGourmand/database/script/init_dev_db.sql
 
 CREATE DATABASE IF NOT EXISTS vite_et_gourmand
 CHARACTER SET utf8mb4

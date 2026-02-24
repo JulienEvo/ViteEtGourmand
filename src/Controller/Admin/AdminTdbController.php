@@ -26,7 +26,7 @@ class AdminTdbController extends AbstractController
     ): Response
     {
         $utilisateur_id = 0;
-        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_EMPLOYE'))
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_EMPLOYE') && is_countable($this->getUser()))
         {
             $utilisateur_id = $this->getUser()->getId();
         }
