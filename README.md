@@ -20,97 +20,89 @@ des clients.
 - Gestionnaire de dépendances : **Composer**
 - Serveur web : **Apache**
 - SGBD : **MariaDB** (MySQL)
+- Base NoSQL : **MongoDB**
 - Gestion de versions : **Git**
+- Containerisation : **Docker / Docker Compose**
 
 ---
 
-## Installation
+## Installation local avec Docker
 
-### 1. Récupération du projet
-Cloner le dépôt Git sur la machine locale.
+Le projet **Vite & Gourmand** est entièrement containérisé avec Docker afin de :
+- Garantir un environnement identique pour toutes installations
+- Éviter les conflits de versions (PHP, MariaDB, MongoDB)
+- Simplifier l'installation
+- Centraliser tous les services via `docker-compose`
 
+### Architecture des services
+- Service : `app` (Symfony, PHP, Apache) - port : 8000
+- Service : `database` (Base de données MariaDB) - port : 3306
+- Service : `mongodb` (Base MongoDB) - port : 27017
+- Service : `mailer` (MailHog) - port : 8025
+
+### 1. Installation du projet
+
+#### Prérequis
+- Docker
+- Docker Compose
+
+#### Cloner le dépot
 ``` bash 
   git clone https://github.com/JulienEvo/ViteEtGourmand.git
 ```
-
-### 2. Installation des dépendances
-Installer les dépendances PHP via Composer.
-
-``` bash
-  composer install
+Et on se place dans le dossier du projet :
+``` bash 
+  cd vite-et-gourmand
 ```
 
-### 3. Configuration de l’environnement
-Configurer les variables d’environnement, notamment la connexion à la base de données, dans le fichier `.env.local`.
+#### Lancer les conteneurs
+``` bash 
+  docker compose up -d --build
+```
+Cette commande :
+- Construit l'image PHP
+- Démarre MariaDB
+- Démarre MongoDB
+- Démarre MailHog
+- Monte le volume du projet dans `/var/www`
+
+#### Lancer les dépendances Symfony
+``` bash 
+  docker compose exec app composer install
+```
+
+### 2. Configuration des variables d'environnement
+Configurer les variables d’environnement dans le fichier `.env.local` à la racine du projet.
 
 ```
 APP_ENV=dev
 APP_DEBUG=1
-DATABASE_URL="mysql://user:password@236@127.0.0.1:3306/vite_et_gourmand?serverVersion=mariadb-10.11"
+DATABASE_URL="mysql://user:password@database:3306/vite_et_gourmand?serverVersion=mariadb-10.11"
 DATABASE_USER="user"
 DATABASE_PASSWORD="password"
+MONGODB_URL=mongodb://mongodb:27017/vite_gourmand_mongo
 ```
+`database` et `mongodb` correspondent aux noms des services Docker
 
-Configurer le serveur web local (VirtualHost) qui pointe directement sur le dossier `public/` de Symfony : 
-- Ajouter une entrée au fichier `C:\Windows\System32\drivers\etc\hosts` :
-```
-127.0.0.1   viteetgourmand.local
-```
-- Ajouter le VirtualHost à la configuration d'Apache dans le fichier `..\apache\conf\extra\vhosts.conf` :
-```
-  <VirtualHost *:80>
-      ServerName viteetgourmand.local
-      DocumentRoot "chemin_du_dossier_public"
-      <Directory "chemin_du_dossier_public">
-          AllowOverride All
-          Require all granted
-      </Directory>
-  </VirtualHost>
-```
-
-### 4. Base de données
+### 3. Base de données
 Exécuter le script pour créer la base de données et insérer les données nécessaires au bon fonctionnement. 
 ``` bash
-  mysql -u user -p < ../ViteEtGourmand/database/script/init_dev_db.sql
+  docker compose exec -T database mysql -u user -p < script/init_dev_db.sql
 ```
 
-### 5. Lancement de l’application
-Démarrer le serveur web local et accéder à l’application via un navigateur.
+### 4. Accès aux services
 ```
-http://viteetgourmand.local/
+  http://localhost:8000
 ```
 
----
+### 5. Arrêter l'environnement
+``` bash
+  docker compose down
+```
+Avec l'option `-v` pour supprimer les volumes (reset de la base de données)
 
-## Mise en place de l'environnement de travail
-
-Pour ce projet, l'environnement de travail a été configuré de manière à permettre un développement local efficace et un 
-déploiement sécurisé en production.
-
-### 1. Développement local :
-- Serveur : Apache avec VirtualHost pointant vers le dossier `public/`
-- Objectif recherché : assure que les fichiers sensibles restent protégés et que le routage Symfony fonctionne correctement.
-
-### 2. PHP & Composer :
-- PHP 8.2
-- Composer pour gérer les dépendances
-- Atouts : compatibilité avec Symfony 7.4 et les bundles utilisés.
-
-### 3. Base de données :
-- MariaDB (MySQL)
-- Création des tables de la base de données et insertions de données fonctionnelles via un script SQL.
-- Objectifs recherchés : Avoir une base de données relationnelle performante et fiable, facilement évolutive et reproductible.
-
-### 4. Variables d'environnement :
-- `.env` : valeurs par défaut
-- `.env.local` : secrets locaux (APP_SECRET, mot de passe BDD)
-- Avantages : sécurise les informations sensibles tout en permettant la portabilité entre environnements.
-
-### 5. Déploiement en production :
-- Hébergeur : AlwaysData (https://www.alwaysdata.com/fr/)
-- Répertoire racine : `public/`
-- Variables d'environnement configurées dans les paramètres avancés
-- Objectif recherché : permettre de déployer le site sans exposer les informations sensibles dans le dépôt Git en respectant les bonnes pratiques Symfony.
+### 6. Conclusion
+Docker est une solution simple, efficace et professionnelle pour installer et configurer un environnement de travail sain et fonctionnel.
 
 ---
 
@@ -118,7 +110,7 @@ déploiement sécurisé en production.
 
 - Les informations sensibles ne sont pas versionnées
 - Les accès sont protégés par le système de sécurité Symfony (rôles)
-- Les requêtes sont sécurisées via PDO
+- Protection CSRF sur les formulaires eet validation des données
 
 ---
 
@@ -128,8 +120,8 @@ Le site est déployé sur un serveur distant via **AlwaysData**.
 
 - Hébergement PHP
 - Base de données relationnelle **MariaDB**
-- Base de données non relationnelle **MongoDB** (non par défaut)
-- Accès distant via **SSH/SFTP**
+- Base de données non relationnelle **MongoDB** (installé manuellement)
+- Accès distant via **SFTP**
 - Domaine public fourni par l’hébergeur
 
 ---
@@ -138,11 +130,11 @@ Le site est déployé sur un serveur distant via **AlwaysData**.
 
 Administrateur
 - Email : jose@vite-et-gourmand.fr
-- Mot de passe : Administrateur123+
+- Mot de passe : ViteEtGourmand123+
 
 Employé
 - Email : employe1@vite-et-gourmand.fr
-- Mot de passe : Employe123+
+- Mot de passe : ViteEtGourmand123+
 
 Utilisateur
 - Email : utilisateur1@studi.fr
