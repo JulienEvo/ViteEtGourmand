@@ -63,3 +63,8 @@ VALUES (
    CURRENT_DATE
 );
 
+INSERT INTO commande (utilisateur_id, menu_id, commande_etat_id, numero, date, adresse_livraison, cp_livraison, commune_livraison, latitude, longitude, pret_materiel, quantite, remise, total_livraison, total_ttc, created_at)
+VALUES
+    (4, 1, 1, 'C26020005', '2026-02-19 00:00:00', '23 Rue Gouffrand', '33000', 'Bordeaux', 44.8559, -0.57212, 1, 7, 10, 6.94, 210, '2026-02-08 00:00:00'),
+    (4, 3, 1, 'C26020009', '2026-02-11 11:06:00', '23 Rue Gouffrand', '33000', 'Bordeaux', 44.8559, -0.57212, 0, 4, 5, 6.94, 65, '2026-02-09 00:00:00'),
+    (3, 2, 1, 'C26020011', '2026-02-12 11:36:00', '12 rue de la Fontaine', '50100', 'Florence', 0, 0, 1, 10, 0, 5, 455, '2026-02-09 00:00:00');

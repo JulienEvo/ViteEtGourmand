@@ -35,20 +35,21 @@
                         {% set etat = 'En attente' %}
                     {% endif %}
 
-                    <tr>
-                        <td class="{{ bg }}">{{ etat }}</td>
-                        <td class="text-end">{{ item.avis.id }}</td>
-                        <td>{{ item.utilisateur.nom~ ' ' ~ item.utilisateur.prenom }}</td>
-                        <td>{{ item.commande.numero }}</td>
-                        <td class="text-primary" style="width: 10%">
+                    {% set lien_avis = path('admin_avis_edit', {id: item.avis.id, utilisateur_id: item.utilisateur.id, commande_id: item.commande.id}) %}
+                    <tr style="cursor: pointer">
+                        <td class="{{ bg }}" onclick="goToUrl('{{ lien_avis }}')">{{ etat }}</td>
+                        <td class="text-end" onclick="goToUrl('{{ lien_avis }}')">{{ item.avis.id }}</td>
+                        <td onclick="goToUrl('{{ lien_avis }}')">{{ item.utilisateur.nom~ ' ' ~ item.utilisateur.prenom }}</td>
+                        <td onclick="goToUrl('{{ lien_avis }}')">{{ item.commande.numero }}</td>
+                        <td class="text-primary" style="width: 10%" onclick="goToUrl('{{ lien_avis }}')">
                             {% for i in 1..5 %}
                                 {{ i <= item.avis.note ? '★' : '☆' }}
                             {% endfor %}
                         </td>
-                        <td>{{ item.avis.commentaire }}</td>
-                        <td>{{ item.avis.created_at|date('d/m/Y') }}</td>
-                        <td style="width: 8%">
-                            <a href="{{ path('admin_avis_edit', {id: item.avis.id}) }}" class="btn btn-sm btn-warning">
+                        <td onclick="goToUrl('{{ lien_avis }}')">{{ item.avis.commentaire }}</td>
+                        <td onclick="goToUrl('{{ lien_avis }}')">{{ item.avis.created_at|date('d/m/Y') }}</td>
+                        <td style="width: 8%; cursor:auto;">
+                            <a href="{{ path('admin_avis_edit', {id: item.avis.id, utilisateur_id: item.utilisateur.id, commande_id: item.commande.id}) }}" class="btn btn-sm btn-warning">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                             <a href="{{ path('admin_avis_delete', {id: item.avis.id}) }}" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'avis ?')">

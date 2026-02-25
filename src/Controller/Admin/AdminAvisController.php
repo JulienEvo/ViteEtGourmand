@@ -35,8 +35,8 @@ class AdminAvisController extends AbstractController
             }
 
             if ($filtre_avis == '' || $filtre_avis == $etat_avis) {
-                $utilisateur = $userRepository->findById($avis->getId());
-                $commande = $commandeRepository->findById($avis->getId());
+                $utilisateur = $userRepository->findById($avis->getUtilisateur_id());
+                $commande = $commandeRepository->findById($avis->getCommande_id());
 
                 $tabAvis[$avis_id]['avis'] = $avis;
                 $tabAvis[$avis_id]['utilisateur'] = $utilisateur;
@@ -60,10 +60,10 @@ class AdminAvisController extends AbstractController
     ): Response
     {
         $avis = $avisRepository->findById($id);
-        $tab_utilisateur = $userRepository->findAll();
+        $tab_utilisateur = $userRepository->findAll('ROLE_USER');
         $tab_commande = $commandeRepository->findAll();
-        $utilisateur_id = $request->query->get('utilisateur_id', 0);
-        $commande_id = $request->query->get('commande_id', 0);
+        $utilisateur_id = $request->query->getInt('utilisateur_id', 0);
+        $commande_id = $request->query->getInt('commande_id', 0);
         $comeFrom = $request->query->get('comeFrom', '');
 
         if ($request->isMethod('POST'))
@@ -73,8 +73,8 @@ class AdminAvisController extends AbstractController
                 $avis = new Avis();
             }
 
-            $avis->setUtilisateur_id($request->request->get('utilisateur_id'));
-            $avis->setCommande_id($request->request->get('commande_id'));
+            $avis->setUtilisateur_id($request->request->get('utilisateur_id', 0));
+            $avis->setCommande_id($request->request->get('commande_id', 0));
             $avis->setNote($request->request->get('note'));
             $avis->setCommentaire($request->request->get('commentaire'));
             $avis->setValide(($request->request->get('valide') == '') ? 0:$request->request->get('valide'));
@@ -111,18 +111,21 @@ class AdminAvisController extends AbstractController
                 $stats_commande = $mongo_db->avis;
 
                 $created_at = $avis->getCreated_at();
-                $menu = $menuRepository->findByCommandeId($commande_id);
+                $menu = $menuRepository->findByCommandeId($avis->getCommande_id());
 
-                $stats_commande->insertOne([
-                    'id' => $avis->getId(),
-                    'utilisateur_id' => $avis->getUtilisateur_id(),
-                    'commande_id' => $avis->getCommande_id(),
-                    'note' => $avis->getNote(),
-                    'commentaire' => $avis->getCommentaire(),
-                    'valide' => $avis->getValide(),
-                    'created_at' => $created_at->format('Y-m-d H:i:s'),
-                    'menu_libelle' => $menu->getLibelle(),
-                ]);
+                if (isset($menu))
+                {
+                    $stats_commande->insertOne([
+                        'id' => $avis->getId(),
+                        'utilisateur_id' => $avis->getUtilisateur_id(),
+                        'commande_id' => $avis->getCommande_id(),
+                        'note' => $avis->getNote(),
+                        'commentaire' => $avis->getCommentaire(),
+                        'valide' => $avis->getValide(),
+                        'created_at' => $created_at->format('Y-m-d H:i:s'),
+                        'menu_libelle' => $menu->getLibelle(),
+                    ]);
+                }
             }
 
             if ($comeFrom == 'historique')

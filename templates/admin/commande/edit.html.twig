@@ -47,9 +47,9 @@
                         <label for="utilisateur_id" class="form-label">
                             Client
                             {% if utilisateur.latitude ?? null and utilisateur.longitude %}
-                                <span class='text-success' style="font-size: smaller">&nbsp;<i class="bi bi-pin-map-fill"></i></span>
+                                <span class='text-success' style="font-size: smaller">&nbsp;<i class="bi bi-pin-map-fill" title="Géolocalisé"></i></span>
                             {% else %}
-                                <span class='text-danger' style="font-size: smaller">&nbsp;<i class="bi bi-pin-map-fill"></i></span>
+                                <span class='text-danger' style="font-size: smaller">&nbsp;<i class="bi bi-pin-map-fill" title="Non géolocalisé"></i></span>
                             {% endif %}
                         </label>
                         <select class="form-select" name="utilisateur_id" id="utilisateur_id" required>

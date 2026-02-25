@@ -30,16 +30,17 @@
             <tbody>
             {% if tabMenu|length > 0 %}
                 {% for menu in tabMenu %}
-                    <tr>
-                        <td class="text-nowrap">{{ menu.libelle }}</td>
-                        <td style="min-width: 400px">{{ menu.description }}</td>
-                        <td style="min-width: 300px">{{ menu.themes }}</td>
-                        <td style="min-width: 300px">{{ menu.regimes }}</td>
-                        <td>{{ menu.quantite_min }}</td>
-                        <td>{{ menu.tarif_unitaire }} €</td>
-                        <td>{{ menu.quantite_disponible }}</td>
-                        <td>{{ (menu.pret_materiel) ? 'Oui':'Non' }}</td>
-                        <td>{{ (menu.actif) ? 'Oui':'Non' }}</td>
+                    {% set lien_menu = path('admin_menu_edit', {id: menu.id}) %}
+                    <tr style="cursor: pointer">
+                        <td class="text-nowrap" onclick="goToUrl('{{ lien_menu }}')">{{ menu.libelle }}</td>
+                        <td style="min-width: 400px" onclick="goToUrl('{{ lien_menu }}')">{{ menu.description }}</td>
+                        <td style="min-width: 300px" onclick="goToUrl('{{ lien_menu }}')">{{ menu.themes }}</td>
+                        <td style="min-width: 300px" onclick="goToUrl('{{ lien_menu }}')">{{ menu.regimes }}</td>
+                        <td onclick="goToUrl('{{ lien_menu }}')">{{ menu.quantite_min }}</td>
+                        <td onclick="goToUrl('{{ lien_menu }}')">{{ menu.tarif_unitaire }} €</td>
+                        <td onclick="goToUrl('{{ lien_menu }}')">{{ menu.quantite_disponible }}</td>
+                        <td onclick="goToUrl('{{ lien_menu }}')">{{ (menu.pret_materiel) ? 'Oui':'Non' }}</td>
+                        <td onclick="goToUrl('{{ lien_menu }}')">{{ (menu.actif) ? 'Oui':'Non' }}</td>
                         <td>
                             <a href="{{ path('admin_menu_edit', {id: menu.id}) }}" class="btn btn-sm btn-warning">
                                 <i class="bi bi-pencil-square"></i>

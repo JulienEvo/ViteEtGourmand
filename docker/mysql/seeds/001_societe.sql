@@ -21,7 +21,7 @@ INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Lundi',
-    '09:00:00',
+    '16:00:00',
     '23:00:00',
     0
 );
@@ -49,7 +49,7 @@ VALUES (
     1,
     'Jeudi',
     '09:00:00',
-    '23:00:00',
+    '15:00:00',
     0
 );
 
@@ -66,7 +66,7 @@ INSERT INTO horaire (societe_id, jour, ouverture, fermeture, ferme)
 VALUES (
     1,
     'Samedi',
-    '09:00:00',
+    '16:30:00',
     '23:00:00',
     0
 );

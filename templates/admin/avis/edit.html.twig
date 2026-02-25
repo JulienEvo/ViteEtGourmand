@@ -36,19 +36,20 @@
                                 </option>
                             {% endfor %}
                         </select>
-                        <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="">
+                        <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ tab_utilisateur[utilisateur_id].id ?? '' }}">
                     </div>
                     <div class="mb-3 col-12 col-lg-4">
                         <label for="commande_id" class="form-label">Commande</label>
                         <select class="form-select" onchange="setCommandeValue(this.value)" disabled>
                             <option value="">Choix</option>
                             {% for commande in tab_commande %}
+
                                 <option value="{{ commande.id }}" {% if (commande.id == (avis.getCommande_id() ?? commande_id)) %}selected{% endif %}>
                                     {{ commande.numero }}
                                 </option>
                             {% endfor %}
                         </select>
-                        <input type="hidden" name="commande_id" id="commande_id" value="">
+                        <input type="hidden" name="commande_id" id="commande_id" value="{{ tab_commande[commande_id].id ?? '' }}">
                     </div>
                     <div class="mb-3 col-12 col-lg-2">
                         <label for="note" class="form-label">Note</label>
@@ -59,19 +60,25 @@
                             <option value="4" {% if avis.note ?? 0 == 4 %}selected{% endif %}>★★★★☆</option>
                             <option value="5" {% if avis.note ?? 5 == 5 %}selected{% endif %}>★★★★★</option>
                         </select>
+                        {% if avis %}
+                            <input type="hidden" name="note" id="note" value="{{ avis.note ?? 5 }}">
+                        {% endif %}
                     </div>
                     <div class="mb-3 col-12 col-lg-2">
                         <label for="valide" class="form-label">État</label>
-                        <select class="form-select" name="valide" id="valide" {% if utilisateur_id > 0 %}disabled{% else %}required{% endif %}>
-                            <option value="" {% if avis.valide ?? '' == '' %}selected{% endif %}>En attente</option>
-                            <option value="1" {% if avis.valide ?? '' == 1 %}selected{% endif %}>Validé</option>
-                            <option value="0" {% if avis.valide ?? '' == 0 %}selected{% endif %}>Refusé</option>
+                        <select class="form-select" name="valide" id="valide" {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EMPLOYE') %}required{% else %}disabled{% endif %}>
+                            <option value="0" {% if avis.valide ?? 0 == 0 %}selected{% endif %}>En attente</option>
+                            <option value="1" {% if avis.valide ?? 0 == 1 %}selected{% endif %}>Validé</option>
+                            <option value="2" {% if avis.valide ?? 0 == 2 %}selected{% endif %}>Refusé</option>
                         </select>
                     </div>
 
                     <div class="mb-3 col-12 col-lg-12">
                         <label for="commentaire" class="form-label">Commentaire</label>
                         <textarea class="form-control" rows="5" name="commentaire" id="commentaire" {{ option }}>{{ avis.commentaire ?? '' }}</textarea>
+                        {% if avis %}
+                            <input type="hidden" name="commentaire" id="commentaire" value="{{ avis.commentaire ?? '' }}">
+                        {% endif %}
                     </div>
                 </div>
             </div>
