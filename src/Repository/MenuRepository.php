@@ -79,11 +79,6 @@ class MenuRepository
             ':actif' => $menu->isActif(),
             ':id' => $id
         ]);
-
-        // Met à jour les thèmes du menu
-        // ...
-
-        // Met à jour les régimes du menu
     }
 
     public function delete(int $menu_id): bool|array

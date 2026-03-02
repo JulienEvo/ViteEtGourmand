@@ -1,7 +1,7 @@
 
 FROM php:8.2-apache
 
-# Installer dépendances système et extensions PHP
+# Installation des dépendances
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libzip-dev \
@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean  \
     && rm -rf /var/lib/apt/lists/*
 
+# Installation des extensions PHP
 RUN docker-php-ext-install pdo pdo_mysql mbstring zip intl
 
-
-# Installer MongoDB
+# Installation de MongoDB
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 # Activer mod_rewrite

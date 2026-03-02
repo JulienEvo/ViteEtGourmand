@@ -131,7 +131,7 @@ class AdminAvisController extends AbstractController
             if ($comeFrom == 'historique')
             {
                 // on vient de l'historique de commande d'un USER : On retourne à l'historique
-                return $this->redirectToRoute('admin_commande_visualisation', ['id' => $commande_id]);
+                return $this->redirectToRoute('admin_commande_visualisation', ['id' => $avis->getCommande_id()]);
             }
         }
 

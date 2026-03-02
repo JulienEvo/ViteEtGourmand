@@ -54,7 +54,7 @@ INSERT INTO utilisateur (roles, email, password, prenom, nom, telephone, adresse
 VALUES (
     '["ROLE_USER"]',
     'marie.curie@test.com',
-    '$2y$10$AHSKYZO8N/xLCm9pJFCRV.R3veYVDVWUDtNZ6QSx2pF7MQ2rP7/SW', /* mCurie123+ */
+    '$2y$10$oIKSFWtFLpN0P7DMaWg/vODTJuzWS2IRr9xOSkEJWqP4edOqbwPc.', /* mCurie123+ */
     'Marie',
     'Curie',
     '0715264895',

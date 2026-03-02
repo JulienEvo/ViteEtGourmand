@@ -24,16 +24,17 @@
             <tbody>
             {% if tabCommande|length > 0 %}
                 {% for commande in tabCommande %}
-                    <tr>
-                        <td style="width: 20%; background-color: {{ tabCommandeEtat[commande.commande_etat_id].couleur }}">{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
-                        <td>{{ commande.numero }}</td>
-                        <td>{{ commande.date|date('d/m/Y') }}</td>
-                        <td>{{ tabMenu[commande.menu_id].libelle }}</td>
-                        <td>{{ commande.quantite }}</td>
-                        <td>{{ commande.total_ttc }} €</td>
-                        <td>{{ commande.pret_materiel ? '<span class="text-danger fw-bold">Oui<span>':'Non' }}</td>
+                    {% set lien_cmd = path('admin_commande_visualisation', {id: commande.id}) %}
+                    <tr style="cursor: pointer">
+                        <td style="width: 20%; background-color: {{ tabCommandeEtat[commande.commande_etat_id].couleur }}" onclick="goToUrl('{{ lien_cmd }}')">{{ tabCommandeEtat[commande.commande_etat_id].libelle }}</td>
+                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ commande.numero }}</td>
+                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ commande.date|date('d/m/Y') }}</td>
+                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ tabMenu[commande.menu_id].libelle }}</td>
+                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ commande.quantite }}</td>
+                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ commande.total_ttc }} €</td>
+                        <td onclick="goToUrl('{{ lien_cmd }}')">{{ commande.pret_materiel ? '<span class="text-danger fw-bold">Oui<span>':'Non' }}</td>
                         <td>
-                            <a href="{{ path('admin_commande_visualisation', {id: commande.id}) }}" class="btn btn-sm btn-warning" title="Voir la commande">
+                            <a href="{{ lien_cmd }}" class="btn btn-sm btn-warning" title="Voir la commande">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
                         </td>
