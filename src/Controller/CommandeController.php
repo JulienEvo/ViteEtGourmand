@@ -283,7 +283,7 @@ class CommandeController extends AbstractController
 
         $mailer->send($email);
 
-        // Enregistrement pour les STATS (MongoDB)
+        // Enregistrement pour les statistiques (MongoDB)
         $client = new Client($_ENV['MONGODB_URL']);
         $mongo_db = $client->vite_et_gourmand_stats;
 
