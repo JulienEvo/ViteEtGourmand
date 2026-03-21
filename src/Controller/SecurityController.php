@@ -33,6 +33,8 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
+        //*** NON utilisée (Composant de sécurité de Symfony) ***//
+
         $redirect = $request->query->get('redirect', 'home');
 
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -51,7 +53,9 @@ class SecurityController extends AbstractController
 
     #[Route('/logout', name: 'logout')]
     public function logout(Request $request)
-    {}
+    {
+        //*** NON utilisée (Composant de sécurité de Symfony) ***//
+    }
 
     #[Route('/register', name: 'register')]
     public function register(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager, HttpClientInterface $httpClient, AdminUtilisateurController $adminUtilisateurController): Response

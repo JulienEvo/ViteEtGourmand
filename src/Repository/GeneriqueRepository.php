@@ -21,8 +21,7 @@ class GeneriqueRepository
         }
 
         $sql = "SELECT *
-                FROM {$table}
-                ORDER BY libelle";
+                FROM {$table}";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();

@@ -92,7 +92,7 @@ class AdminTdbController extends AbstractController
         ];
         foreach ($tab_avis as $avis)
         {
-            if ($avis->getValide() == 0)
+            if ($avis->getValide() == 2)
             {
                 $tab_avis_valide['Refusé']++;
             }

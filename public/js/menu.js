@@ -1,12 +1,19 @@
+// Écouteur d'événement lorsque le document HTML est complètement chargé
 document.addEventListener('DOMContentLoaded', () => {
+    // Récupère le formulaire
     const form = document.getElementById('form_filtre_menu');
     if (!form) return;
 
+    // Écouteur d'événement sur la validation du formulaire
     form.addEventListener('submit', function (e) {
         e.preventDefault();
 
+        // Récupère les données du formulaire
         const params = new URLSearchParams(new FormData(form));
 
+        // Fonction "fetch" qui intérroge le serveur (fonction du contrôleur) et retourne une promesse
+        // Paramètre : URL de la route du serveur
+        // Retour : Rendu de la page HTML de la liste des menus, généré selon le résultat de la requête
         fetch(form.action + '?' + params.toString(), {
             headers: { 'X-Requested-With': 'XMLHttpRequest' }
         })

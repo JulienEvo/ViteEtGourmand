@@ -86,7 +86,8 @@ class AvisRepository
                 $row['commande_id'],
                 $row['note'],
                 $row['commentaire'],
-                $row['valide']
+                $row['valide'],
+                new DateTime($row['created_at'])
             );
         }
 

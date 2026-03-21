@@ -64,7 +64,7 @@ class CommandeController extends AbstractController
                 $data = json_decode($distance_km->getContent(), true);
 
                 $this->addFlash('danger', $data['erreur'].$data['message']);
-                return $this->redirectToRoute('admin_commande_edit', ['id' => $id]);
+                return $this->redirectToRoute('admin_commande_edit', ['id' => 0]);
             }
 
             $total_livraison += round($distance_km * 0.59, 2);
@@ -90,9 +90,8 @@ class CommandeController extends AbstractController
         MenuRepository $menuRepository,
         HoraireRepository $horaireRepository,
         MailerInterface $mailer,
-        HttpClientInterface $httpClient,
-        Request $request):
-    Response
+        Request $request
+    ): Response
     {
         $erreur = "";
 
@@ -150,6 +149,7 @@ class CommandeController extends AbstractController
         // Vérifie la date et l'heure de livraison
         $tabHoraire = $horaireRepository->findBySociete(1);
 
+        // Récupère le numéro du jour de la commande (1 à 7 : 1 = lundi)
         $day_cmd = date('N', strtotime($commande_date));
         foreach ($tabHoraire as $horaire) {
             if ($horaire->getId() == $day_cmd) {

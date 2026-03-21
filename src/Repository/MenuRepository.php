@@ -27,11 +27,18 @@ class MenuRepository
 
     public function insert(Menu $menu): false|int
     {
-        $sql = "INSERT INTO menu (libelle, description, conditions, quantite_min, tarif_unitaire, quantite_disponible, pret_materiel, actif)
-                VALUES (:libelle, :description, :conditions, :quantite_min, :tarif_unitaire, :quantite_disponible, :pret_materiel, :actif)";
+        // Requête SQL d'insertion d'un nouveau menu
+        $sql = "INSERT INTO menu
+                    (libelle, description, conditions, quantite_min,
+                     tarif_unitaire, quantite_disponible, pret_materiel, actif)
+                VALUES
+                    (:libelle, :description, :conditions, :quantite_min,
+                     :tarif_unitaire, :quantite_disponible, :pret_materiel, :actif)";
 
+        // Préparation de la requête
         $stmt = $this->pdo->prepare($sql);
 
+        // Exécution de la requête
         $retour = $stmt->execute([
             ':libelle' => $menu->getLibelle(),
             ':description' => $menu->getDescription(),
@@ -100,6 +107,7 @@ class MenuRepository
 
     public function findAll($only_actif = false): array
     {
+        // Récupère tous les menus avec leurs thèmes et régimes associés
         $sql = "SELECT menu.*,
                     IFNULL((
                         SELECT GROUP_CONCAT(theme.libelle SEPARATOR ', ')
