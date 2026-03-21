@@ -1,3 +1,13 @@
+/*
+    PROD :
+        - Ouvrir l'invite de commande
+        - mongosh "mongodb+srv://vite-et-gourmand-stats.llqwbr5.mongodb.net/" --apiVersion 1 --username vite_et_gourmand_stats
+        - pass : ViteEtGourmand123
+
+    DEV :
+        - Via Docker : Docker compose up -d --build
+
+ */
 
 db = db.getSiblingDB('vite_et_gourmand_stats');
 
