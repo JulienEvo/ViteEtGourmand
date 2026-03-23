@@ -28,7 +28,7 @@
                             </div>
                         {% endif %}
 
-                        <form method="post">
+                        <form method="post" autocomplete="off">
                             <!-- Le token CSRF permet de garantir que la requête provient bien du formulaire généré
                                  par l’application et non d’un site tiers -->
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">

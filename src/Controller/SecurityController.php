@@ -33,14 +33,13 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'login', methods: ['GET','POST'])]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        //*** NON utilisée (Composant de sécurité de Symfony) ***//
-
         $redirect = $request->query->get('redirect', 'home');
 
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
         if ($this->getUser()) {
+            echo "Bienvenue " . $this->getUser()->getPrenom(); exit;
             $this->addFlash('success', "Bienvenue " . $this->getUser()->getPrenom());
             return $this->redirectToRoute($redirect);
         }

@@ -2,12 +2,12 @@
 INSERT INTO utilisateur (roles, email, password, prenom, nom, telephone, adresse, code_postal, commune, pays, poste, created_at)
 VALUES (
         '["ROLE_USER", "ROLE_ADMIN"]',
-        'jose@vite_et_gourmand.fr',
+        'jose@vite-et-gourmand.fr',
         '$2y$10$0Bx/sGuv5JAzc3cVJmHgZ.MIUEu3ezNl0UoSrWojbdBqKDT0KATdC', /* ViteEtGourmand123+ */
         'José',
         'Studi',
         '060504030201',
-        '24 boulevard de la grande avenue',
+        '24 cr Pasteur',
         '33000',
         'Bordeaux',
         'France',
@@ -93,7 +93,7 @@ INSERT INTO utilisateur (roles, email, password, prenom, nom, telephone, adresse
 VALUES (
     '["ROLE_USER"]',
     'marie.curie@vg-mail.fr',
-    '$2y$10$oIKSFWtFLpN0P7DMaWg/vODTJuzWS2IRr9xOSkEJWqP4edOqbwPc.', /* mCurie123+ */
+    '$2y$10$0Bx/sGuv5JAzc3cVJmHgZ.MIUEu3ezNl0UoSrWojbdBqKDT0KATdC', /* ViteEtGourmand123+ */
     'Marie',
     'Curie',
     '0715264895',

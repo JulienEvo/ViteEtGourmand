@@ -105,16 +105,21 @@ class AdminAvisController extends AbstractController
             // Enregistre dans MongoDB pour les stats
             if (extension_loaded('mongodb'))
             {
-                $client = new Client($_ENV['MONGODB_URL']);
-                $mongo_db = $client->vite_et_gourmand_stats;
-
-                $stats_commande = $mongo_db->avis;
-
                 $created_at = $avis->getCreated_at();
                 $menu = $menuRepository->findByCommandeId($avis->getCommande_id());
 
                 if (isset($menu))
                 {
+                    // Création du client MongoDB
+                    $client = new Client($_ENV['MONGODB_URL']);
+
+                    // Se connecte à la base
+                    $mongo_db = $client->vite_et_gourmand_stats;
+
+                    // Se place sur la collection (table) "avis"
+                    $stats_commande = $mongo_db->avis;
+
+                    // Insertion d'un nouveau document
                     $stats_commande->insertOne([
                         'id' => $avis->getId(),
                         'utilisateur_id' => $avis->getUtilisateur_id(),
