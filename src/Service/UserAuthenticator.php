@@ -24,7 +24,7 @@ class UserAuthenticator
             return null;
         }
 
-        // Vérifie le mot de passe
+        // Vérification du mot de passe
         if (!password_verify($password, $user->getPassword())) {
             return null;
         }

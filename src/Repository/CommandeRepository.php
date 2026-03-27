@@ -23,22 +23,22 @@ class CommandeRepository
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
-            'utilisateur_id' => $commande->getUtilisateur_id(),
-            'menu_id' => $commande->getMenu_id(),
-            'commande_etat_id' => $commande->getCommande_etat_id(),
-            'numero' => $commande->getNumero(),
-            'date' => $commande->getDate()?->format('Y-m-d H:i:s'),
-            'adresse_livraison' => $commande->getAdresse_livraison(),
-            'cp_livraison' => $commande->getCp_livraison(),
-            'commune_livraison' => $commande->getCommune_livraison(),
-            'latitude' => $commande->getLatitude(),
-            'longitude' => $commande->getLongitude(),
-            'pret_materiel' => $commande->getPret_materiel(),
-            'quantite' => $commande->getQuantite(),
-            'remise' => $commande->getRemise(),
-            'total_livraison' => $commande->getTotal_livraison(),
-            'total_ttc' => $commande->getTotal_ttc(),
-            'created_at' => (new DateTime())->format('Y-m-d H:i:s'),
+            ':utilisateur_id' => $commande->getUtilisateur_id(),
+            ':menu_id' => $commande->getMenu_id(),
+            ':commande_etat_id' => $commande->getCommande_etat_id(),
+            ':numero' => $commande->getNumero(),
+            ':date' => $commande->getDate()?->format('Y-m-d H:i:s'),
+            ':adresse_livraison' => $commande->getAdresse_livraison(),
+            ':cp_livraison' => $commande->getCp_livraison(),
+            ':commune_livraison' => $commande->getCommune_livraison(),
+            ':latitude' => $commande->getLatitude(),
+            ':longitude' => $commande->getLongitude(),
+            ':pret_materiel' => $commande->getPret_materiel(),
+            ':quantite' => $commande->getQuantite(),
+            ':remise' => $commande->getRemise(),
+            ':total_livraison' => $commande->getTotal_livraison(),
+            ':total_ttc' => $commande->getTotal_ttc(),
+            ':created_at' => (new DateTime())->format('Y-m-d H:i:s'),
         ]))
         {
             return $this->pdo->lastInsertId();
@@ -100,7 +100,7 @@ class CommandeRepository
         if ($utilisateur_id > 0)
         {
             $sql .= " AND utilisateur_id = :utilisateur_id";
-            $vars['utilisateur_id'] = $utilisateur_id;
+            $vars[':utilisateur_id'] = $utilisateur_id;
         }
 
         $sql .= " ORDER BY commande.date DESC";

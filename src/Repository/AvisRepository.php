@@ -19,20 +19,24 @@ class AvisRepository
 
     public function insert(Avis $avis): bool
     {
+        // Requête SQL d'insertion d'un nouvel avis
         $sql = "INSERT INTO avis
                     (utilisateur_id, commande_id, note, commentaire, valide, created_at)
                 VALUES
                     (:utilisateur_id, :commande_id, :note, :commentaire, :valide, :created_at)";
+
+        // Préparation de la requête
         $stmt = $this->pdo->prepare($sql);
 
         $date = new DateTime();
+        // Exécution de la requête avec les valeurs passées via les paramètres nommés
         return $stmt->execute([
-            'utilisateur_id' => $avis->getUtilisateur_id(),
-            'commande_id' => $avis->getCommande_id(),
-            'note' => $avis->getNote(),
-            'commentaire' => $avis->getCommentaire(),
-            'valide' => $avis->getValide(),
-            'created_at' => $date->format('Y-m-d H:i:s')
+            ':utilisateur_id' => $avis->getUtilisateur_id(),
+            ':commande_id' => $avis->getCommande_id(),
+            ':note' => $avis->getNote(),
+            ':commentaire' => $avis->getCommentaire(),
+            ':valide' => $avis->getValide(),
+            ':created_at' => $date->format('Y-m-d H:i:s')
         ]);
     }
 
@@ -44,10 +48,10 @@ class AvisRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'note' => $avis->getNote(),
-            'commentaire' => $avis->getCommentaire(),
-            'valide' => $avis->getValide(),
-            'id' => $avis->getId()
+            ':note' => $avis->getNote(),
+            ':commentaire' => $avis->getCommentaire(),
+            ':valide' => $avis->getValide(),
+            ':id' => $avis->getId()
         ]);
     }
 
@@ -63,7 +67,7 @@ class AvisRepository
         if ($valide_only)
         {
             $sql .= " AND valide = :statut_valide";
-            $vars['statut_valide'] = Avis::STATUT_VALIDE;
+            $vars[':statut_valide'] = Avis::STATUT_VALIDE;
         }
 
         $sql .= " ORDER BY created_at DESC";
@@ -179,7 +183,7 @@ class AvisRepository
                 ORDER BY created_at DESC";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['menu_id' => $menu_id]);
+        $stmt->execute([':menu_id' => $menu_id]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

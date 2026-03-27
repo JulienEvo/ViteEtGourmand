@@ -20,7 +20,7 @@ class AllergeneRepository
                 VALUES (:libelle, :description)";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute(['libelle' => $allergene->getLibelle(), 'description' => $allergene->getDescription()]);
+        return $stmt->execute([':libelle' => $allergene->getLibelle(), ':description' => $allergene->getDescription()]);
     }
 
     public function update(Allergene $allergene): bool
@@ -30,9 +30,9 @@ class AllergeneRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'libelle' => $allergene->getLibelle(),
-            'description' => $allergene->getDescription(),
-            'id' => $allergene->getId()
+            ':libelle' => $allergene->getLibelle(),
+            ':description' => $allergene->getDescription(),
+            ':id' => $allergene->getId()
         ]);
     }
 }

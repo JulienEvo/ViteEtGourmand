@@ -326,7 +326,11 @@ class AdminCommandeController extends AbstractController
         {
             if (strtoupper($utilisateur->getCommune()) != 'BORDEAUX' && !empty($utilisateur->getLatitude()))
             {
-                $distance_km = FonctionsService::distanceKm(Societe::BORDEAUX_LAT, Societe::BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+                $distance_km = FonctionsService::distanceKm(
+                    Societe::BORDEAUX_LAT,
+                    Societe::BORDEAUX_LON,
+                    $utilisateur->getLatitude(),
+                    $utilisateur->getLongitude(), $httpClient);
 
                 if (!is_float($distance_km))
                 {

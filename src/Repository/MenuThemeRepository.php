@@ -43,7 +43,7 @@ class MenuThemeRepository
         $sql = "DELETE FROM menu_theme WHERE menu_id = :menu_id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute(['menu_id' => $menu_id]);
+        return $stmt->execute([':menu_id' => $menu_id]);
     }
 
     public function findAllIdByMenuId($menu_id): array
@@ -55,7 +55,7 @@ class MenuThemeRepository
                 WHERE menu_id = :menu_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['menu_id' => $menu_id]);
+        $stmt->execute([':menu_id' => $menu_id]);
 
         while ($row = $stmt->fetch())
         {
@@ -75,7 +75,7 @@ class MenuThemeRepository
                 WHERE menu_theme.menu_id = :menu_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['menu_id' => $menu_id]);
+        $stmt->execute([':menu_id' => $menu_id]);
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
         {

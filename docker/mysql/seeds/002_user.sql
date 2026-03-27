@@ -6,7 +6,7 @@ VALUES (
         '$2y$10$0Bx/sGuv5JAzc3cVJmHgZ.MIUEu3ezNl0UoSrWojbdBqKDT0KATdC', /* ViteEtGourmand123+ */
         'José',
         'Studi',
-        '060504030201',
+        '06050403020',
         '24 cr Pasteur',
         '33000',
         'Bordeaux',

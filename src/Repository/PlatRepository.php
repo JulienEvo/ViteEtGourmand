@@ -21,10 +21,10 @@ class PlatRepository
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
-            'libelle' => $plat->getLibelle(),
-            'type_id' => $plat->getType_id(),
-            'image' => $plat->getImage(),
-            'actif' => 1
+            ':libelle' => $plat->getLibelle(),
+            ':type_id' => $plat->getType_id(),
+            ':image' => $plat->getImage(),
+            ':actif' => 1
         ]))
         {
             return $this->pdo->lastInsertId();
@@ -43,12 +43,12 @@ class PlatRepository
         $stmt = $this->pdo->prepare($sql);
 
         if ($stmt->execute([
-            'libelle' => $plat->getLibelle(),
-            'description' => $plat->getDescription(),
-            'type_id' => $plat->getType_id(),
-            'image' => $plat->getImage(),
-            'actif' => $plat->isActif(),
-            'id' => $plat->getId()
+            ':libelle' => $plat->getLibelle(),
+            ':description' => $plat->getDescription(),
+            ':type_id' => $plat->getType_id(),
+            ':image' => $plat->getImage(),
+            ':actif' => $plat->isActif(),
+            ':id' => $plat->getId()
         ]))
         {
             return $plat->getId();

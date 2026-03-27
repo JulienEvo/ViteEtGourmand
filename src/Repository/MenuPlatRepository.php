@@ -31,13 +31,13 @@ class MenuPlatRepository
 
     public function delete(int $menu_id, int $plat_id = 0): bool
     {
-        $vars = ['menu_id' => $menu_id];
+        $vars = [':menu_id' => $menu_id];
         $sql = "DELETE FROM menu_plat
                 WHERE menu_id = :menu_id";
         if ($plat_id > 0)
         {
             $sql .= " AND plat_id = :plat_id";
-            $vars['plat_id'] = $plat_id;
+            $vars[':plat_id'] = $plat_id;
         }
         $stmt = $this->pdo->prepare($sql);
 
@@ -51,7 +51,7 @@ class MenuPlatRepository
                 WHERE menu_id = :menu_id AND plat_id = :plat_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['menu_id' => $menu_id, 'plat_id' => $plat_id]);
+        $stmt->execute([':menu_id' => $menu_id, ':plat_id' => $plat_id]);
 
         return ($stmt->rowCount() > 0);
     }

@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class FonctionsService
 {
     public static function p($tableau)

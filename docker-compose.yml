@@ -29,17 +29,6 @@ services:
             - ./docker/mysql:/docker-entrypoint-initdb.d
         restart: unless-stopped
 
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin
-        restart: always
-        ports:
-            - "8080:80"
-        environment:
-            PMA_HOST: database
-            MYSQL_ROOT_PASSWORD: root
-        depends_on:
-            - database
-
     mongodb:
         image: mongo:6
         container_name: vite_et_gourmand_mongo
@@ -59,6 +48,17 @@ services:
             - "60022:1025"
             - "60021:8025"
         restart: unless-stopped
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: database
+            MYSQL_ROOT_PASSWORD: root
+        depends_on:
+            - database
 
 volumes:
     vite_et_gourmand_db_data:

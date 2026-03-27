@@ -157,7 +157,7 @@ class CommandeController extends AbstractController
                     $erreur = "Désolé, nous sommes fermé le " . $horaire->getJour();
                 }
                 elseif ($commande_heure < $horaire->getOuverture() && $commande_heure >= $horaire->getFermeture()) {
-                    $erreur = "heure souhaité hors des horaires d'ouverture du " . $horaire->getJour();
+                    $erreur = "heure souhaitée hors des horaires d'ouverture du " . $horaire->getJour();
                 }
 
                 if ($erreur != "") {

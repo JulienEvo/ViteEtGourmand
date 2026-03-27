@@ -7,7 +7,7 @@
 
     <h1>Modifier vos informations personnelles</h1>
 
-    <form method="post" id="form_profile" action="{{ path('admin_utilisateur_profil') }}">
+    <form method="post" id="form_profile" action="{{ path('admin_utilisateur_profil') }}" autocomplete="off">
         <input type="hidden" name="comeFrom" id="comeFrom" value="{{ comeFrom ?? '' }}">
 
         <div class="card mb-3">

@@ -79,8 +79,13 @@ class MenuController extends AbstractController
     }
 
     #[Route('/menus/filter', name: 'filter_ajax')]
-    public function filter(Request $request, MenuRepository $menuRepository, GeneriqueRepository $generiqueRepository): Response
+    public function filter(
+        Request $request,
+        MenuRepository $menuRepository,
+        GeneriqueRepository $generiqueRepository
+    ): Response
     {
+        // Récupération des données de recherche
         $filters = [
             'term' => $request->query->get('term'),
             'theme' => $request->query->get('theme'),
@@ -91,10 +96,14 @@ class MenuController extends AbstractController
             'disponible' => $request->query->getBoolean('disponible', true),
         ];
 
+        // Récupération des menus en base de données selon les filtres
         $menus = $menuRepository->findByFilters($filters);
+        // Récupération des thèmes
         $themes = $generiqueRepository->findAll('theme');
+        // Récupération des régimes
         $regimes = $generiqueRepository->findAll('regime');
 
+        // Affichage de la vue
         return $this->render('menu/_list.html.twig', [
             'menus' => $menus,
             'themes' => $themes,

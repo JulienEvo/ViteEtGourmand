@@ -22,11 +22,11 @@ class HoraireRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'societe_id' => $horaire->getSocieteId(),
-            'jour' => $horaire->getJour(),
-            'ouverture' => $horaire->getOuverture()?->format('H:i:s'),
-            'fermeture' => $horaire->getFermeture()?->format('H:i:s'),
-            'ferme' => $horaire->isFerme() ? 1 : 0
+            ':societe_id' => $horaire->getSociete_id(),
+            ':jour' => $horaire->getJour(),
+            ':ouverture' => $horaire->getOuverture()?->format('H:i:s'),
+            ':fermeture' => $horaire->getFermeture()?->format('H:i:s'),
+            ':ferme' => $horaire->isFerme() ? 1 : 0
         ]);
     }
 
@@ -38,12 +38,12 @@ class HoraireRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'societe_id' => $horaire->getSociete_id(),
-            'jour' => $horaire->getJour(),
-            'ouverture' => $horaire->getOuverture()?->format('H:i:s'),
-            'fermeture' => $horaire->getFermeture()?->format('H:i:s'),
-            'ferme' => $horaire->isFerme() ? 1 : 0,
-            'id' => $horaire->getId()
+            ':societe_id' => $horaire->getSociete_id(),
+            ':jour' => $horaire->getJour(),
+            ':ouverture' => $horaire->getOuverture()?->format('H:i:s'),
+            ':fermeture' => $horaire->getFermeture()?->format('H:i:s'),
+            ':ferme' => $horaire->isFerme() ? 1 : 0,
+            ':id' => $horaire->getId()
         ]);
     }
 
