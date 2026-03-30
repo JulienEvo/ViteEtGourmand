@@ -38,8 +38,7 @@
                             <select name="theme" class="form-select">
                                 <option value="">Tout les thèmes</option>
                                 {% for theme in themes %}
-                                    <option value="{{ theme.id }}"
-                                        {{ filters.theme == theme.id ? 'selected' }}>
+                                    <option value="{{ theme.id }}" {{ filters.theme == theme.id ? 'selected' }}>
                                         {{ theme.libelle }}
                                     </option>
                                 {% endfor %}
@@ -50,8 +49,7 @@
                             <select name="regime" class="form-select">
                                 <option value="">Tout les régimes</option>
                                 {% for regime in regimes %}
-                                    <option value="{{ regime.id }}"
-                                        {{ filters.regime == regime.id ? 'selected' }}>
+                                    <option value="{{ regime.id }}" {{ filters.regime == regime.id ? 'selected' }}>
                                         {{ regime.libelle }}
                                     </option>
                                 {% endfor %}

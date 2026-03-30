@@ -4,18 +4,19 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>
-            {% block title %}Vite & Gourmand{% endblock %}
-        </title>
+        <title>{% block title %}Vite & Gourmand{% endblock %}</title>
 
+        <!-- CSS -->
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
     </head>
     <body>
+        <!-- Inclusion de l'entête -->
         {% include 'partials/_header.html.twig' %}
 
         <main>
+            <!-- Flash-message -->
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
                     <div class="text-center alert alert-{{ label }} flash-message">
@@ -24,11 +25,14 @@
                 {% endfor %}
             {% endfor %}
 
+            <!-- Contenu de la page -->
             {% block body %}{% endblock %}
         </main>
 
+        <!-- Inclusion du pied de page -->
         {% include 'partials/_footer.html.twig' %}
 
+        <!-- JavaScript -->
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
