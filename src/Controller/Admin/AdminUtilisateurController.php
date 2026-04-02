@@ -358,8 +358,8 @@ class AdminUtilisateurController extends AbstractController
                 'longitude' => $data[0]['lon'],
                 'ville'     => $data[0]['address']['city']
                     ?? $data[0]['address']['town']
-                        ?? $data[0]['address']['village']
-                        ?? null,
+                    ?? $data[0]['address']['village']
+                    ?? null,
             ]);
 
         } catch (\Exception $e) {

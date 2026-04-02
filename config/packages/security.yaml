@@ -13,8 +13,6 @@ security:
             user_checker: App\Security\UserChecker
 
             form_login:
-                # username_parameter: email
-                # password_parameter: password
                 login_path: login
                 check_path: login
                 enable_csrf: true

@@ -28,13 +28,13 @@
                             </div>
                         {% endif %}
 
-                        <form method="post">
+                        <form method="post" autocomplete="off">
                             <!-- Le token CSRF permet de garantir que la requête provient bien du formulaire généré
                                  par l’application et non d’un site tiers -->
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                             <div class="mb-3">
-                                <label for="_username" class="form-label">Email</label>
+                                <label for="_username" class="form-label">E-mail</label>
                                 <input type="email" class="form-control" id="_username" name="_username" value="{{ last_username ?? '' }}" required autofocus>
                             </div>
 

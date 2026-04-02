@@ -22,20 +22,20 @@ class UserRepository
     public function insert(User $user, HttpClientInterface $httpClient, AdminUtilisateurController $adminUtilisateurController): int|array
     {
         $vars = [
-            'roles' => json_encode($user->getRoles()),
-            'email' => $user->getEmail(),
-            'password' => password_hash($user->getPassword(), PASSWORD_DEFAULT),
-            'prenom' => $user->getPrenom(),
-            'nom' => $user->getNom(),
-            'telephone' => $user->getTelephone(),
-            'adresse' => $user->getAdresse(),
-            'code_postal' => $user->getCode_postal(),
-            'commune' => $user->getCommune(),
-            'pays' => $user->getPays(),
-            'latitude' => 0,
-            'longitude' => 0,
-            'poste' => $user->getPoste(),
-            'created_at' => date('Y-m-d H:i:s')
+            ':roles' => json_encode($user->getRoles()),
+            ':email' => $user->getEmail(),
+            ':password' => password_hash($user->getPassword(), PASSWORD_DEFAULT),
+            ':prenom' => $user->getPrenom(),
+            ':nom' => $user->getNom(),
+            ':telephone' => $user->getTelephone(),
+            ':adresse' => $user->getAdresse(),
+            ':code_postal' => $user->getCode_postal(),
+            ':commune' => $user->getCommune(),
+            ':pays' => $user->getPays(),
+            ':latitude' => 0,
+            ':longitude' => 0,
+            ':poste' => $user->getPoste(),
+            ':created_at' => date('Y-m-d H:i:s')
         ];
 
         // Géolocalise l'adresse
@@ -56,8 +56,8 @@ class UserRepository
                 $user->setCommune($ville);
             }
 
-            $vars['latitude'] = $user->getLatitude();
-            $vars['longitude'] = $user->getLongitude();
+            $vars[':latitude'] = $user->getLatitude();
+            $vars[':longitude'] = $user->getLongitude();
         }
 
         // Requête d'insertion
@@ -71,7 +71,8 @@ class UserRepository
         {
             return $this->pdo->lastInsertId();
         }
-        else{
+        else
+        {
             return $stmt->errorInfo();
         }
     }
@@ -118,8 +119,8 @@ class UserRepository
                 $user->setCommune($ville);
             }
 
-            $vars['latitude'] = $user->getLatitude();
-            $vars['longitude'] = $user->getLongitude();
+            $vars[':latitude'] = $user->getLatitude();
+            $vars[':longitude'] = $user->getLongitude();
         }
 
         // Requête de modification
@@ -145,7 +146,7 @@ class UserRepository
         $sql = "DELETE FROM utilisateur WHERE id=:id";
         $stmt = $this->pdo->prepare($sql);
 
-        if ($stmt->execute(['id' => $id]))
+        if ($stmt->execute([':id' => $id]))
         {
             return true;
         }
@@ -260,7 +261,7 @@ class UserRepository
                 WHERE email = :email";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['email' => $email]);
+        $stmt->execute([':email' => $email]);
 
         if ($stmt->rowCount() > 0)
         {

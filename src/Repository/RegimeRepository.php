@@ -21,8 +21,8 @@ class RegimeRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'libelle' => $regime->getLibelle(),
-            'description' => $regime->getDescription()
+            ':libelle' => $regime->getLibelle(),
+            ':description' => $regime->getDescription()
         ]);
     }
 
@@ -34,9 +34,9 @@ class RegimeRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'libelle' => $regime->getLibelle(),
-            'description' => $regime->getDescription(),
-            'id' => $regime->getId()
+            ':libelle' => $regime->getLibelle(),
+            ':description' => $regime->getDescription(),
+            ':id' => $regime->getId()
         ]);
     }
 }

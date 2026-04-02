@@ -174,7 +174,9 @@ class AdminCommandeController extends AbstractController
         // Calcule des frais de livraison
         $distance_km = 0;
         $total_livraison = 5;
-        $utilisateur = $this->getUser();
+        //$utilisateur = $this->getUser();
+        $commande = $commandeRepository->findById($id);
+        $utilisateur = $userRepository->findById($commande->getUtilisateur_id());
 
         if (strtoupper($utilisateur->getCommune()) != 'BORDEAUX' && !empty($utilisateur->getLatitude()))
         {
@@ -324,7 +326,11 @@ class AdminCommandeController extends AbstractController
         {
             if (strtoupper($utilisateur->getCommune()) != 'BORDEAUX' && !empty($utilisateur->getLatitude()))
             {
-                $distance_km = FonctionsService::distanceKm(Societe::BORDEAUX_LAT, Societe::BORDEAUX_LON, $utilisateur->getLatitude(), $utilisateur->getLongitude(), $httpClient);
+                $distance_km = FonctionsService::distanceKm(
+                    Societe::BORDEAUX_LAT,
+                    Societe::BORDEAUX_LON,
+                    $utilisateur->getLatitude(),
+                    $utilisateur->getLongitude(), $httpClient);
 
                 if (!is_float($distance_km))
                 {

@@ -41,7 +41,7 @@ class MenuRegimeRepository
         $sql = "DELETE FROM menu_regime WHERE menu_id = :menu_id";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute(['menu_id' => $menu_id]);
+        return $stmt->execute([':menu_id' => $menu_id]);
     }
 
     public function findAllIdByMenuId($menu_id): array
@@ -53,7 +53,7 @@ class MenuRegimeRepository
                 WHERE menu_id = :menu_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['menu_id' => $menu_id]);
+        $stmt->execute([':menu_id' => $menu_id]);
 
         while ($row = $stmt->fetch())
         {
@@ -73,7 +73,7 @@ class MenuRegimeRepository
                 WHERE menu_regime.menu_id = :menu_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['menu_id' => $menu_id]);
+        $stmt->execute([':menu_id' => $menu_id]);
 
         while ($row = $stmt->fetch())
         {

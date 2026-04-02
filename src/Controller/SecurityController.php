@@ -51,15 +51,22 @@ class SecurityController extends AbstractController
 
     #[Route('/logout', name: 'logout')]
     public function logout(Request $request)
-    {}
+    {
+        //
+    }
 
     #[Route('/register', name: 'register')]
-    public function register(Request $request, UserRepository $userRepository, CsrfTokenManagerInterface $csrfTokenManager, HttpClientInterface $httpClient, AdminUtilisateurController $adminUtilisateurController): Response
+    public function register(
+        Request $request,
+        UserRepository $userRepository,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        HttpClientInterface $httpClient,
+        AdminUtilisateurController $adminUtilisateurController
+    ): Response
     {
 
         if ($request->isMethod('POST')) {
 
-            $token = new CsrfToken('register', $request->request->get('_csrf_token'));
             $email = trim($request->request->get('email'));
             $password = trim($request->request->get('password'));
             $confirm_password = trim($request->request->get('confirm_password'));
@@ -80,6 +87,8 @@ class SecurityController extends AbstractController
                 $request->request->get('longitude'),
                 trim($request->request->get('poste')) ?? ''
             );
+
+            $token = new CsrfToken('register', $request->request->get('_csrf_token'));
 
             if (!$csrfTokenManager->isTokenValid($token)) {
                 $this->addFlash('danger', 'CSRF invalide');

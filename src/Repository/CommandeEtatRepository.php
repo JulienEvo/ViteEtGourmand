@@ -20,7 +20,7 @@ class CommandeEtatRepository
                 VALUES (:libelle)";
         $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute(['libelle' => $etat->getLibelle()]);
+        return $stmt->execute([':libelle' => $etat->getLibelle()]);
     }
 
     public function update(CommandeEtat $etat): bool
@@ -29,8 +29,8 @@ class CommandeEtatRepository
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
-            'libelle' => $etat->getLibelle(),
-            'id' => $etat->getId()
+            ':libelle' => $etat->getLibelle(),
+            ':id' => $etat->getId()
         ]);
     }
 }

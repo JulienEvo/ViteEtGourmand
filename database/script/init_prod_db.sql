@@ -1,9 +1,9 @@
 -- commande pour lancer le script
--- > mysql -h mysql-vite-et-gourmand.alwaysdata.net -u vite-et-gourmand -p vite-et-gourmand_ecf-studi < database/script/init_prod_db.sql
+-- > mysql -h mysql-vite-et-gourmand.alwaysdata.net -u vite-et-gourmand -p vite-et-gourmand_studi < database/script/init_prod_db.sql
 
 
 /* USE vite_et_gourmand; */
-USE vite-et-gourmand_ecf-studi;
+USE vite-et-gourmand_studi;
 
 SET NAMES utf8mb4;
 
@@ -29,8 +29,7 @@ DROP TABLE IF EXISTS commande;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-
--- Schéma initial
+-- Schémas
 SOURCE database/schemas/001_societe.sql;
 SOURCE database/schemas/002_user.sql;
 SOURCE database/schemas/003_plat.sql;
@@ -38,11 +37,12 @@ SOURCE database/schemas/004_menu.sql;
 SOURCE database/schemas/005_commande.sql;
 SOURCE database/schemas/006_avis.sql;
 
-
--- Seed initial
+-- Seeds
 SOURCE database/seeds/001_societe.sql;
 SOURCE database/seeds/002_user.sql;
 SOURCE database/seeds/003_plat.sql;
 SOURCE database/seeds/004_menu.sql;
 SOURCE database/seeds/005_commande.sql;
 SOURCE database/seeds/006_avis.sql;
+
+

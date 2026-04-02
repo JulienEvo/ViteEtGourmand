@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 class Plat
@@ -11,7 +10,8 @@ class Plat
     private string $image;
     private bool $actif;
 
-    public function __construct(int $id = 0, string $libelle = '', $description = '', int $type_id = 0, string $image = '', bool $actif = true)
+    public function __construct(
+        int $id = 0, string $libelle = '', $description = '', int $type_id = 0, string $image = '', bool $actif = true)
     {
         $this->setId($id);
         $this->setLibelle($libelle);

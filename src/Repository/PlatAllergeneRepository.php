@@ -47,7 +47,7 @@ class PlatAllergeneRepository
         $sql = "DELETE FROM plat_allergene WHERE plat_id = :plat_id";
         $stmt = $this->pdo->prepare($sql);
 
-        if ($stmt->execute(['plat_id' => $plat_id]))
+        if ($stmt->execute([':plat_id' => $plat_id]))
         {
             return true;
         }
@@ -66,7 +66,7 @@ class PlatAllergeneRepository
                 WHERE plat_id = :plat_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['plat_id' => $plat_id]);
+        $stmt->execute([':plat_id' => $plat_id]);
 
         while ($row = $stmt->fetch())
         {
@@ -86,7 +86,7 @@ class PlatAllergeneRepository
                 WHERE plat_allergene.plat_id = :plat_id";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['plat_id' => $plat_id]);
+        $stmt->execute([':plat_id' => $plat_id]);
 
         while ($row = $stmt->fetch())
         {
