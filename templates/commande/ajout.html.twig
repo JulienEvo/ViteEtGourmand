@@ -22,7 +22,7 @@
     </section>
 
     <div class="row justify-content-center">
-        <div class="col-12 col-md-11">
+        <div class="col-12 col-md-11 ps-4 pe-3">
 
             <form method="post" id="form_commande" action="{{ path('commande_validation', {commande_id: comande_id ?? 0}) }}">
                 <input type="hidden" name="utilisateur_id" id="utilisateur_id" value="{{ user.getUserId() }}">
@@ -105,12 +105,12 @@
                     {% endif %}
 
 
-                    <div class="card-body">
+                    <div class="card-body mx-2">
                         <p class="text-center text-danger d-none" id="p_pers_remise">Une remise de 10% sera appliquée pour une commande à partir de <span id="nb_pers_remise">0</span> personnes</p>
                         <div class="row col-12">
                             <div class="col-12 col-lg-4">
                                 <label for="menu_id" class="form-label">Menu</label>
-                                <select class="form-select" name="menu_id" id="menu_id" onchange="loadMenu(this.value)">
+                                <select class="form-select" name="menu_id" id="menu_id" onchange="loadMenu(this.value)" required>
                                     <option value="">Choix</option>
                                     {% for item in tabMenu %}
                                         {% if item.quantite_min > item.quantite_disponible %}
@@ -127,7 +127,7 @@
                             </div>
                             <div class="col-12 col-lg-1">
                                 <label for="quantite" class="form-label">Quantité</label>
-                                <input type="number" class="form-control" step="1" min="{{ menu.quantite_min ?? 0 }}" max="{{ menu.quantite_disponible ?? 1 }}" name="quantite" id="quantite" value="{{ quantite ?? 0 }}" onchange="setRemise()">
+                                <input type="number" class="form-control" step="1" min="{{ menu.quantite_min ?? 0 }}" max="{{ menu.quantite_disponible ?? 1 }}" name="quantite" id="quantite" value="{{ quantite ?? 0 }}" onchange="setRemise()" required>
                                 <input type="hidden" class="form-control" step="0.01" min="1" name="tarif_unitaire" id="tarif_unitaire" value="{{ menu.tarif_unitaire ?? 0 }}">
                             </div>
                             <div class="col-12 col-lg-2">

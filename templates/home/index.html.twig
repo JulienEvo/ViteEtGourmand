@@ -92,7 +92,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center pb-3">
                                     <span>
-                                        <strong>{{ tab_utilisateur[avis.id].getPrenom() ~' '~ tab_utilisateur[avis.id].getNom()|first|upper ~ '.' }}</strong>
+                                        <strong>{{ tab_utilisateur[avis.utilisateur_id].getPrenom() ~' '~ tab_utilisateur[avis.utilisateur_id   ].getNom()|first|upper ~ '.' }}</strong>
                                         <span class="small">&nbsp;le {{ avis.created_at|date('d/m/Y')}}</span>
                                     </span>
                                     <span class="text-primary">

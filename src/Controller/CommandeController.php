@@ -322,7 +322,7 @@ class CommandeController extends AbstractController
         ]);
     }
 
-        #[Route('/loadMenu/{id}', name: 'load_menu_ajax', methods: ['GET'])]
+    #[Route('/loadMenu/{id}', name: 'load_menu_ajax', methods: ['GET'])]
     public function loadMenu(int $id, MenuRepository $menuRepository, PlatRepository $platRepository, GeneriqueRepository $platTypeRepository): JsonResponse
     {
         $menu = $menuRepository->findById($id);

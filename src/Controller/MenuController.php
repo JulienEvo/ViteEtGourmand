@@ -79,7 +79,11 @@ class MenuController extends AbstractController
     }
 
     #[Route('/menus/filter', name: 'filter_ajax')]
-    public function filter(Request $request, MenuRepository $menuRepository, GeneriqueRepository $generiqueRepository): Response
+    public function filter(
+        Request $request,
+        MenuRepository $menuRepository,
+        GeneriqueRepository $generiqueRepository
+    ): Response
     {
         // Récupèration des données du formulaire
         $filters = [

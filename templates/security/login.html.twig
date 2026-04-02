@@ -22,7 +22,7 @@
 
                         {% if error ?? false %}
                             <div class="alert alert-danger text-center">
-                                {{ error.message }}
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
                                 <br>
                                 <a href="{{ path('register') }}" class="small">Je crée mon compte</a>
                             </div>

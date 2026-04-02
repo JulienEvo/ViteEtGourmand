@@ -1,0 +1,6 @@
+# Traduction des erreurs du composant Security
+Bad credentials.: Identifiants invalides.
+Invalid credentials.: Identifiants invalides.
+Username could not be found.: Nom d'utilisateur introuvable.
+Account is disabled.: Compte désactivé.
+Account is locked.: Compte verrouillé.

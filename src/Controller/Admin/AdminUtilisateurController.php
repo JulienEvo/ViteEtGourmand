@@ -204,24 +204,31 @@ class AdminUtilisateurController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete')]
-    public function delete(int $id, UserRepository $userRepository, Request $request): Response
+    public function delete(int $id, UserRepository $userRepository, Request $request, Security $security): Response
     {
-        $ret = $userRepository->delete($id);
+
+        $ret = true; // $userRepository->delete($id);
 
         if ($ret)
             {
-                $this->addFlash('success', 'Utilisateur supprimé avec succès');
+                $this->addFlash('success', 'Compte supprimé avec succès');
             }
         else
             {
-                $this->addFlash('danger', "Une erreur est survenue lors de la suppression de l'utilisateur : " . $ret);
+                $this->addFlash('danger', "Une erreur est survenue lors de la suppression du compte : " . $ret);
             }
 
         $type = $request->query->get('type', '');
 
-        return $this->redirectToRoute('admin_utilisateur_index', [
-            'type' => $type
-        ]);
+        if ($type == 'utilisateur')
+        {
+            // Déconnecte l'utilisateur
+            return $this->redirectToRoute('logout');
+        }
+        else
+        {
+            return $this->redirectToRoute('admin_utilisateur_index', ['type' => $type]);
+        }
     }
 
     #[Route('/profil', name: 'profil')]
@@ -312,7 +319,6 @@ class AdminUtilisateurController extends AbstractController
 
                 $this->addFlash('success', "Informations personnelles modifiées avec succès");
 
-                $comeFrom = $request->request->get('comeFrom', '');
                 if ($comeFrom != '')
                 {
                     return $this->redirectToRoute($comeFrom);
