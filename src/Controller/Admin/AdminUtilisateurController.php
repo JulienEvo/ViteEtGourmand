@@ -336,7 +336,11 @@ class AdminUtilisateurController extends AbstractController
         ]);
     }
 
-    public function geocode(string $adresse, string $commune, HttpClientInterface $client): JsonResponse
+    public function geocode(
+        string $adresse,
+        string $commune,
+        HttpClientInterface $client
+    ): JsonResponse
     {
         try {
             $response = $client->request('GET', 'https://nominatim.openstreetmap.org/search', [

@@ -43,8 +43,9 @@ Le projet **Vite & Gourmand** est entièrement containérisé avec Docker afin d
 ### 1. Installation du projet
 
 #### Prérequis
-- Docker
-- Docker Compose
+- docker (ou docker.desktop sur Mac/Windows)
+- docker Compose
+- Git
 
 #### Cloner le dépot
 ``` bash 
@@ -52,10 +53,11 @@ Le projet **Vite & Gourmand** est entièrement containérisé avec Docker afin d
 ```
 Et on se place dans le dossier du projet :
 ``` bash 
-  cd vite-et-gourmand
+  cd ViteEtGourmand
 ```
 
 #### Lancer les conteneurs
+S'assurer que Docker est démarré (docker.desktop sur Mac/PC) et dans une console, exécuter la commande :
 ``` bash 
   docker compose up -d --build
 ```
@@ -63,10 +65,10 @@ Cette commande :
 - Construit l'image PHP
 - Démarre MariaDB
 - Démarre MongoDB
-- Démarre MailHog
+- Démarre Mailpit
 - Monte le volume du projet dans `/var/www`
 
-#### Lancer les dépendances Symfony
+#### Lancer la mise en place des dépendances Symfony
 ``` bash 
   docker compose exec app composer install
 ```
@@ -84,24 +86,29 @@ MONGODB_URL=mongodb://mongodb:27017/vite_gourmand_mongo
 ```
 `database` et `mongodb` correspondent aux noms des services Docker
 
-### 3. Base de données
-Exécuter le script pour créer la base de données et insérer les données nécessaires au bon fonctionnement. 
-``` bash
-  docker compose exec -T database mysql -u user -p < script/init_dev_db.sql
+### 3. Base de données relationnelle - MariaDB
+La base de données est initialisée via un script.
+Elle est automatiquement initialisée au démarrage via Docker.
+
+Aucun ORM comme Doctrine n'est utilisé dans ce projet.
+Toute modification du schéma de la base doit être répercutée dans le script SQL
+
+### 4. Base de données NoSQL - MongoDB
+Le script d'initialisation de la base non relationnelle est exécuté lors de la mise en place du conteneur mongodb.
+MongoDB est automatiquement initialisé via Docker.
+
+### 5. Accès aux services
+```
+  Application : http://localhost:8000
 ```
 
-### 4. Accès aux services
-```
-  http://localhost:8000
-```
-
-### 5. Arrêter l'environnement
+### 6. Arrêter l'environnement
 ``` bash
   docker compose down
 ```
 Avec l'option `-v` pour supprimer les volumes (reset de la base de données)
 
-### 6. Conclusion
+### 7. Conclusion
 Docker est une solution simple, efficace et professionnelle pour installer et configurer un environnement de travail sain et fonctionnel.
 
 ---
